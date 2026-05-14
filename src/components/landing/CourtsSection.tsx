@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Badge } from '@/components/ui/badge'
+import { useMobileScrollAnimation } from '@/lib/useMobileScrollAnimation'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -23,7 +24,7 @@ const sports = [
 ]
 
 export default function CourtsSection() {
-  const sectionRef = useRef<HTMLElement>(null)
+  const sectionRef = useMobileScrollAnimation('.courts-title, .sport-card', { staggerMs: 80 })
   const fieldRef = useRef<SVGSVGElement>(null)
 
   useEffect(() => {

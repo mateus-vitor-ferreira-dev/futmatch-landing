@@ -1,15 +1,16 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Button } from '@/components/ui/button'
 import { ArrowRight } from 'lucide-react'
+import { useMobileScrollAnimation } from '@/lib/useMobileScrollAnimation'
 
 gsap.registerPlugin(ScrollTrigger)
 
 export default function CTASection() {
-  const sectionRef = useRef<HTMLElement>(null)
+  const sectionRef = useMobileScrollAnimation('.cta-content')
 
   useEffect(() => {
     if (window.matchMedia('(max-width: 767px)').matches) return

@@ -1,8 +1,9 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useMobileScrollAnimation } from '@/lib/useMobileScrollAnimation'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -13,7 +14,7 @@ const highlights = [
 ]
 
 export default function StatsSection() {
-  const sectionRef = useRef<HTMLElement>(null)
+  const sectionRef = useMobileScrollAnimation('.stat-card', { staggerMs: 120 })
 
   useEffect(() => {
     const ctx = gsap.context(() => {

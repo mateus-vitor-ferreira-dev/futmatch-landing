@@ -1,9 +1,10 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Badge } from '@/components/ui/badge'
+import { useMobileScrollAnimation } from '@/lib/useMobileScrollAnimation'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -39,7 +40,7 @@ const features = [
 ]
 
 export default function FeaturesSection() {
-  const sectionRef = useRef<HTMLElement>(null)
+  const sectionRef = useMobileScrollAnimation('.features-title, .feature-card', { staggerMs: 100 })
 
   useEffect(() => {
     if (window.matchMedia('(max-width: 767px)').matches) return

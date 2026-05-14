@@ -5,6 +5,7 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin'
 import { Badge } from '@/components/ui/badge'
+import { useMobileScrollAnimation } from '@/lib/useMobileScrollAnimation'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -30,7 +31,7 @@ const steps = [
 ]
 
 export default function HowItWorksSection() {
-  const sectionRef = useRef<HTMLElement>(null)
+  const sectionRef = useMobileScrollAnimation('.hiw-title, .step-card', { staggerMs: 150 })
   const lineRef = useRef<SVGLineElement>(null)
 
   useEffect(() => {
