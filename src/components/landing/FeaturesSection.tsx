@@ -1,9 +1,10 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Badge } from '@/components/ui/badge'
+import { useMobileScrollAnimation } from '@/lib/useMobileScrollAnimation'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -39,33 +40,26 @@ const features = [
 ]
 
 export default function FeaturesSection() {
-  const sectionRef = useRef<HTMLElement>(null)
+  const sectionRef = useMobileScrollAnimation('.features-title, .feature-card', { staggerMs: 100 })
 
   useEffect(() => {
+    if (window.matchMedia('(max-width: 767px)').matches) return
+
     const ctx = gsap.context(() => {
+      gsap.from('.features-title', {
+        y: 30,
+        opacity: 0,
+        duration: 0.7,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: sectionRef.current, start: 'top 85%', once: true },
+      })
       gsap.from('.feature-card', {
         y: 60,
         opacity: 0,
         duration: 0.7,
         stagger: 0.12,
         ease: 'power3.out',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 75%',
-          once: true,
-        },
-      })
-
-      gsap.from('.features-title', {
-        y: 30,
-        opacity: 0,
-        duration: 0.7,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 80%',
-          once: true,
-        },
+        scrollTrigger: { trigger: sectionRef.current, start: 'top 80%', once: true },
       })
     }, sectionRef)
 
@@ -73,9 +67,9 @@ export default function FeaturesSection() {
   }, [])
 
   return (
-    <section id="features" ref={sectionRef} className="bg-white py-24">
+    <section id="features" ref={sectionRef} className="bg-white py-12 md:py-24">
       <div className="max-w-6xl mx-auto px-6">
-        <div className="features-title text-center mb-16">
+        <div className="features-title text-center mb-8 md:mb-16">
           <Badge className="mb-4">Funcionalidades</Badge>
           <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">
             Tudo que você precisa para{' '}

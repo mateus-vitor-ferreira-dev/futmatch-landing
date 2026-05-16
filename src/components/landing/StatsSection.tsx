@@ -1,8 +1,9 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useMobileScrollAnimation } from '@/lib/useMobileScrollAnimation'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -13,29 +14,27 @@ const highlights = [
 ]
 
 export default function StatsSection() {
-  const sectionRef = useRef<HTMLElement>(null)
+  const sectionRef = useMobileScrollAnimation('.stat-card', { staggerMs: 120 })
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from('.stat-card', {
-        y: 30,
-        opacity: 0,
-        duration: 0.6,
-        stagger: 0.15,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 80%',
-          once: true,
-        },
-      })
+      if (window.matchMedia('(min-width: 768px)').matches) {
+        gsap.from('.stat-card', {
+          y: 30,
+          opacity: 0,
+          duration: 0.6,
+          stagger: 0.15,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: sectionRef.current, start: 'top 85%', once: true },
+        })
+      }
     }, sectionRef)
 
     return () => ctx.revert()
   }, [])
 
   return (
-    <section ref={sectionRef} className="bg-gray-900 py-16">
+    <section ref={sectionRef} className="bg-gray-900 py-8 md:py-16">
       <div className="max-w-6xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {highlights.map((item, i) => (

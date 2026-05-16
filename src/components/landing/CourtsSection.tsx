@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Badge } from '@/components/ui/badge'
+import { useMobileScrollAnimation } from '@/lib/useMobileScrollAnimation'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -23,7 +24,7 @@ const sports = [
 ]
 
 export default function CourtsSection() {
-  const sectionRef = useRef<HTMLElement>(null)
+  const sectionRef = useMobileScrollAnimation('.courts-title, .sport-card', { staggerMs: 80 })
   const fieldRef = useRef<SVGSVGElement>(null)
 
   useEffect(() => {
@@ -40,50 +41,38 @@ export default function CourtsSection() {
           duration: 2.5,
           stagger: 0.1,
           ease: 'power2.inOut',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 70%',
-            once: true,
-          },
+          scrollTrigger: { trigger: sectionRef.current, start: 'top 85%', once: true },
         })
       }
 
-      // Sport cards fly in from different directions
-      const cards = sectionRef.current?.querySelectorAll('.sport-card')
-      cards?.forEach((card, i) => {
-        const dir = sports[i].from
-        gsap.from(card, {
-          x: dir.x,
-          y: dir.y,
-          opacity: 0,
-          duration: 0.8,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: card,
-            start: 'top 85%',
-            once: true,
-          },
+      if (window.matchMedia('(min-width: 768px)').matches) {
+        const cards = sectionRef.current?.querySelectorAll('.sport-card')
+        cards?.forEach((card, i) => {
+          const dir = sports[i].from
+          gsap.from(card, {
+            x: dir.x,
+            y: dir.y,
+            opacity: 0,
+            duration: 0.8,
+            ease: 'power3.out',
+            scrollTrigger: { trigger: card, start: 'top 90%', once: true },
+          })
         })
-      })
-
-      gsap.from('.courts-title', {
-        y: 30,
-        opacity: 0,
-        duration: 0.7,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 80%',
-          once: true,
-        },
-      })
+        gsap.from('.courts-title', {
+          y: 30,
+          opacity: 0,
+          duration: 0.7,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: sectionRef.current, start: 'top 85%', once: true },
+        })
+      }
     }, sectionRef)
 
     return () => ctx.revert()
   }, [])
 
   return (
-    <section id="courts" ref={sectionRef} className="relative bg-gray-950 py-24 overflow-hidden">
+    <section id="courts" ref={sectionRef} className="relative bg-gray-950 py-12 md:py-24 overflow-hidden">
       {/* Animated field lines background */}
       <svg
         ref={fieldRef}
@@ -112,7 +101,7 @@ export default function CourtsSection() {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(34,197,94,0.06),transparent)]" />
 
       <div className="relative max-w-6xl mx-auto px-6">
-        <div className="courts-title text-center mb-16">
+        <div className="courts-title text-center mb-8 md:mb-16">
           <Badge variant="dark" className="mb-4">Modalidades</Badge>
           <h2 className="text-4xl md:text-5xl font-black text-white mb-4">
             Quadras para todos os{' '}

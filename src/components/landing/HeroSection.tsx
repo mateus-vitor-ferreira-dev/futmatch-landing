@@ -59,7 +59,7 @@ export default function HeroSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen flex items-center overflow-hidden bg-gray-950"
+      className="relative flex items-center overflow-hidden bg-gray-950 min-h-[70vh] md:min-h-screen"
     >
       {/* Field lines SVG background */}
       <svg
@@ -87,7 +87,7 @@ export default function HeroSection() {
       {/* Radial glow */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_50%,rgba(34,197,94,0.07),transparent)]" />
 
-      <div className="relative max-w-6xl mx-auto px-6 pt-24 pb-16 grid md:grid-cols-2 gap-12 items-center">
+      <div className="relative max-w-6xl mx-auto px-6 pt-20 pb-10 md:pt-24 md:pb-16 grid md:grid-cols-2 gap-8 md:gap-12 items-center">
         {/* Text side */}
         <div>
           <div ref={badgeRef}>
@@ -129,13 +129,12 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* Ball side */}
-        <div className="flex items-center justify-center">
+        {/* Ball side — hidden on mobile to save vertical space */}
+        <div className="hidden md:flex items-center justify-center">
           <div ref={ballRef} className="relative">
             <div className="w-64 h-64 md:w-80 md:h-80 rounded-full bg-gradient-to-br from-green-500/20 to-green-900/10 border border-green-500/20 flex items-center justify-center shadow-[0_0_80px_rgba(34,197,94,0.15)]">
               <span className="text-[8rem] md:text-[10rem] select-none drop-shadow-2xl">⚽</span>
             </div>
-            {/* Orbit badges */}
             <div className="absolute -top-4 -right-4 bg-gray-900 border border-green-500/30 rounded-2xl px-4 py-2 text-white text-sm font-semibold shadow-xl">
               🏅 11 modalidades
             </div>

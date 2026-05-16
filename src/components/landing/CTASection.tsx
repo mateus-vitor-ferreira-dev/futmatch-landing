@@ -1,28 +1,27 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Button } from '@/components/ui/button'
 import { ArrowRight } from 'lucide-react'
+import { useMobileScrollAnimation } from '@/lib/useMobileScrollAnimation'
 
 gsap.registerPlugin(ScrollTrigger)
 
 export default function CTASection() {
-  const sectionRef = useRef<HTMLElement>(null)
+  const sectionRef = useMobileScrollAnimation('.cta-content')
 
   useEffect(() => {
+    if (window.matchMedia('(max-width: 767px)').matches) return
+
     const ctx = gsap.context(() => {
       gsap.from('.cta-content', {
         y: 40,
         opacity: 0,
         duration: 0.8,
         ease: 'power3.out',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 75%',
-          once: true,
-        },
+        scrollTrigger: { trigger: sectionRef.current, start: 'top 80%', once: true },
       })
     }, sectionRef)
 
@@ -30,9 +29,9 @@ export default function CTASection() {
   }, [])
 
   return (
-    <section ref={sectionRef} className="bg-white py-24">
+    <section ref={sectionRef} className="bg-white py-12 md:py-24">
       <div className="max-w-4xl mx-auto px-6 text-center cta-content">
-        <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-3xl p-12 md:p-16 relative overflow-hidden shadow-2xl shadow-green-500/20">
+        <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-3xl p-8 md:p-16 relative overflow-hidden shadow-2xl shadow-green-500/20">
           {/* Field pattern inside CTA */}
           <svg
             className="absolute inset-0 w-full h-full opacity-10 pointer-events-none"
