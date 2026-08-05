@@ -1,0 +1,17 @@
+# CODEOWNERS — quem é chamado automaticamente para revisar o quê.
+# Área principal ≠ exclusividade: qualquer pessoa pode revisar, o CODEOWNERS só
+# garante que alguém da área seja notificado. Ver o manual da equipe:
+# https://github.com/mateus-vitor-ferreira-dev/so-mais-um-api/blob/main/docs/EQUIPE.md
+#
+# Só funciona para pessoas com acesso de escrita no repositório.
+# Descomente as linhas conforme a equipe definir as áreas na primeira planning.
+
+# A landing é a vitrine do produto — área de Marketing responde por ela
+*                       @mateus-vitor-ferreira-dev
+
+# Copy, SEO e metadados — área de Marketing
+# src/app/layout.tsx    @usuario-da-area-de-marketing
+# public/               @usuario-da-area-de-marketing
+
+# Identidade visual e seções — área de Design
+# src/components/       @usuario-da-area-de-design
