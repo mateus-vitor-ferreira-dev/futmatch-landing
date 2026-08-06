@@ -131,7 +131,7 @@ flowchart LR
     </tr>
     <tr>
       <td><strong>Qualidade</strong></td>
-      <td><img src="https://img.shields.io/badge/ESLint_9-4B32C3?style=flat-square&logo=eslint&logoColor=white"/> <img src="https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white"/> — lint + build a cada push e PR</td>
+      <td><img src="https://img.shields.io/badge/ESLint_9-4B32C3?style=flat-square&logo=eslint&logoColor=white"/> <img src="https://img.shields.io/badge/Vitest_4-6E9F18?style=flat-square&logo=vitest&logoColor=white"/> <img src="https://img.shields.io/badge/Testing_Library-E33332?style=flat-square&logo=testinglibrary&logoColor=white"/> <img src="https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white"/> — lint + typecheck + teste + build a cada push e PR</td>
     </tr>
     <tr>
       <td><strong>Deploy</strong></td>
@@ -233,8 +233,51 @@ O `grep` no `curl` é o teste que importa: se o `<title>` e o texto do Hero vêm
 | `npm run build` | build de produção — é o que o CI roda antes de deixar passar |
 | `npm start` | serve o build de produção localmente (exige `build` antes) |
 | `npm run lint` | ESLint 9 com `eslint-config-next` |
+| `npm run typecheck` | `tsc --noEmit` — checa os tipos sem gerar arquivo |
+| `npm test` | Roda a suíte uma vez e sai — é o que o CI executa |
+| `npm run test:watch` | Modo interativo: reexecuta só o que você mexeu |
+| `npm run test:coverage` | Suíte + relatório em `coverage/index.html` |
 
-Esses quatro são **todos** os scripts do `package.json`. Não há suíte de testes neste repositório — o portão de qualidade é `lint` + `build` no CI.
+> O CI roda, nesta ordem, `lint` → `typecheck` → `test` → `build`. Qualquer um vermelho barra o merge.
+
+---
+
+## 🧪 Testes
+
+**Vitest + Testing Library + jsdom**, configurados em `vitest.config.mts`.
+
+Diferente do [app web](https://github.com/mateus-vitor-ferreira-dev/so-mais-um-web), aqui **não existe um `vite.config` para o Vitest reaproveitar** — a landing é Next.js, e o build é dele. Então a configuração de teste é própria, seguindo o guia oficial do Next (`node_modules/next/dist/docs/01-app/02-guides/testing/vitest.md`):
+
+- `vite-tsconfig-paths` para o alias `@/*` continuar valendo dentro do teste
+- `.mts` na extensão, porque o `package.json` não declara `"type": "module"`
+
+### Onde o teste mora
+
+Ao lado do componente, com sufixo `.test.tsx`:
+
+```
+src/components/landing/FAQSection.tsx  →  src/components/landing/FAQSection.test.tsx
+```
+
+`src/test/setup.ts` roda antes de cada arquivo: matchers do jest-dom, stub de `matchMedia` e de `IntersectionObserver`, e limpeza do DOM.
+
+### O GSAP fica de fora dos testes
+
+Não é preguiça, é necessidade. As seções entram com `autoAlpha`, que é opacidade **mais** `visibility`. Sem scroll — e não existe scroll no jsdom — o ScrollTrigger nunca dispara, tudo fica em `visibility: hidden`, e o que está escondido assim **some da árvore de acessibilidade**: `getByRole` deixa de achar os elementos.
+
+Por isso os testes mockam o `gsap`, deixando o componente renderizar o estado final. O `onComplete` do dublê é chamado na hora, porque há comportamento que só vira estado quando a animação termina.
+
+### O que já está coberto
+
+| Comportamento | Onde |
+|---|---|
+| Acessibilidade do FAQ | `components/landing/FAQSection.test.tsx` |
+
+São 14 testes sobre o que a revisão visual não pega: `inert` no bloco fechado, `aria-expanded` acompanhando o estado, o vínculo `aria-controls` ↔ `id` ↔ `aria-labelledby`, navegação por Tab, Enter e Espaço, e o texto das respostas seguindo no HTML para o buscador.
+
+Foi o que motivou a suíte existir: são atributos que ninguém percebe quebrando — a tela continua idêntica, a animação continua funcionando, e só quem usa leitor de tela descobre.
+
+**Sem meta de porcentagem.** O critério é cobrir o que dói quando quebra.
 
 ---
 

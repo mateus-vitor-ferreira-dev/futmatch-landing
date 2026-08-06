@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Badge } from '@/components/ui/badge'
@@ -36,9 +36,25 @@ const faqs = [
   },
 ]
 
+/**
+ * Item do FAQ.
+ *
+ * A resposta fica **sempre montada** no DOM, escondida por altura zero e
+ * animada pelo GSAP — é o que permite a animação de abrir e o que entrega o
+ * texto ao buscador. O preço disso é que `height: 0` esconde só visualmente:
+ * para o leitor de tela, as seis respostas continuam ali, lidas em sequência,
+ * sem relação com o que está aberto.
+ *
+ * Quem resolve é o `inert` no wrapper fechado. Ele tira o bloco da árvore de
+ * acessibilidade e da ordem de foco **sem** tirar do HTML servido — diferente
+ * de `display: none`, que resolveria a acessibilidade e mataria a animação.
+ */
 function FAQItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen]      = useState(false)
   const contentRef           = useRef<HTMLDivElement>(null)
+  const id                   = useId()
+  const idPergunta           = `${id}-pergunta`
+  const idResposta           = `${id}-resposta`
 
   const toggle = () => {
     const el = contentRef.current
@@ -61,7 +77,11 @@ function FAQItem({ q, a }: { q: string; a: string }) {
   return (
     <div className={`border rounded-2xl overflow-hidden transition-colors duration-200 ${open ? 'border-green-500/20 bg-gray-900/80' : 'border-white/5 hover:border-white/10 bg-gray-900/40'}`}>
       <button
+        id={idPergunta}
+        type="button"
         onClick={toggle}
+        aria-expanded={open}
+        aria-controls={idResposta}
         className="w-full flex items-center justify-between p-5 text-left group"
       >
         <span className="text-white font-semibold pr-4 text-sm md:text-base group-hover:text-green-400 transition-colors duration-200">
@@ -69,12 +89,25 @@ function FAQItem({ q, a }: { q: string; a: string }) {
         </span>
         <ChevronDown
           size={18}
+          aria-hidden="true"
           className={`flex-shrink-0 transition-all duration-300 ${open ? 'rotate-180 text-green-400' : 'text-gray-500 group-hover:text-green-400'}`}
         />
       </button>
 
-      {/* Animated content wrapper */}
-      <div ref={contentRef} style={{ height: 0, overflow: 'hidden', opacity: 0 }}>
+      {/*
+        `inert` entra e sai junto com o `open`, e a ordem sai de graça: ao
+        abrir, `setOpen(true)` roda antes da animação, então o bloco já está
+        acessível enquanto expande; ao fechar, `setOpen(false)` só roda no
+        `onComplete`, então ele continua legível durante todo o recolhimento.
+      */}
+      <div
+        id={idResposta}
+        ref={contentRef}
+        role="region"
+        aria-labelledby={idPergunta}
+        inert={!open}
+        style={{ height: 0, overflow: 'hidden', opacity: 0 }}
+      >
         <div className="px-5 pb-5">
           <p className="text-gray-400 leading-relaxed text-sm pt-3 border-t border-white/5">{a}</p>
         </div>
