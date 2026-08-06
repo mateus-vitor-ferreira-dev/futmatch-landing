@@ -47,7 +47,7 @@ const steps = [
 
 export default function HowItWorksSection() {
   const sectionRef = useMobileScrollAnimation('.hiw-title, .step-card', { staggerMs: 150 })
-  const lineRef = useRef<SVGLineElement>(null)
+  const lineRef    = useRef<SVGLineElement>(null)
 
   useEffect(() => {
     if (window.matchMedia('(max-width: 767px)').matches) return
@@ -57,30 +57,23 @@ export default function HowItWorksSection() {
         const length = lineRef.current.getTotalLength()
         gsap.set(lineRef.current, { strokeDasharray: length, strokeDashoffset: length })
         gsap.to(lineRef.current, {
-          strokeDashoffset: 0,
-          duration: 1.5,
-          ease: 'none',
+          strokeDashoffset: 0, duration: 1.5, ease: 'none',
           scrollTrigger: { trigger: sectionRef.current, start: 'top 80%', once: true },
         })
       }
+
       const stepCards = sectionRef.current?.querySelectorAll('.step-card')
-      const hiwTitle = sectionRef.current?.querySelector('.hiw-title')
+      const hiwTitle  = sectionRef.current?.querySelector('.hiw-title')
+
       if (stepCards?.length) gsap.set(Array.from(stepCards), { autoAlpha: 0, y: 50 })
       if (hiwTitle) gsap.set(hiwTitle, { autoAlpha: 0, y: 30 })
 
       if (stepCards?.length) gsap.to(Array.from(stepCards), {
-        autoAlpha: 1,
-        y: 0,
-        duration: 0.7,
-        stagger: 0.2,
-        ease: 'back.out(1.4)',
+        autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.2, ease: 'back.out(1.4)',
         scrollTrigger: { trigger: sectionRef.current, start: 'top 80%', once: true },
       })
       if (hiwTitle) gsap.to(hiwTitle, {
-        autoAlpha: 1,
-        y: 0,
-        duration: 0.7,
-        ease: 'power3.out',
+        autoAlpha: 1, y: 0, duration: 0.7, ease: 'power3.out',
         scrollTrigger: { trigger: sectionRef.current, start: 'top 85%', once: true },
       })
     }, sectionRef)
@@ -110,10 +103,8 @@ export default function HowItWorksSection() {
               <line
                 ref={lineRef}
                 x1="0" y1="2" x2="800" y2="2"
-                stroke="#22c55e"
-                strokeWidth="1.5"
-                strokeDasharray="8 6"
-                opacity="0.4"
+                stroke="#22c55e" strokeWidth="1.5"
+                strokeDasharray="8 6" opacity="0.4"
               />
             </svg>
           </div>
@@ -121,9 +112,13 @@ export default function HowItWorksSection() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
             {steps.map((step, i) => (
               <div key={i} className="step-card group flex flex-col items-center text-center">
-                {/* Step badge */}
                 <div className="relative mb-8">
-                  <div className={`w-28 h-28 rounded-2xl bg-gray-800/80 border border-white/10 flex flex-col items-center justify-center gap-2 shadow-xl ${step.glow} group-hover:border-white/20 transition-all duration-300 group-hover:-translate-y-1`}>
+                  {/* Large background number */}
+                  <span className={`absolute -top-6 left-1/2 -translate-x-1/2 text-8xl font-black ${step.color} opacity-[0.06] select-none pointer-events-none leading-none`}>
+                    {step.number}
+                  </span>
+
+                  <div className={`relative w-28 h-28 rounded-2xl bg-gray-800/80 border border-white/10 flex flex-col items-center justify-center gap-2 shadow-xl ${step.glow} group-hover:border-white/20 transition-all duration-300 group-hover:-translate-y-1`}>
                     <span className={`text-xs font-bold tracking-widest ${step.color} opacity-60`}>{step.number}</span>
                     <div className={`w-12 h-12 rounded-xl ${step.bg} border ${step.border} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
                       <step.Icon size={22} className={step.color} />

@@ -152,7 +152,7 @@ export default function AppPreviewSection() {
                 <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-2xl font-black text-white flex-shrink-0">
                   M
                 </div>
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <h4 className="text-white font-bold text-base">Mateus F.</h4>
                   <div className="flex items-center gap-1 mt-0.5">
                     {[1,2,3,4,5].map(s => (
@@ -161,9 +161,9 @@ export default function AppPreviewSection() {
                     <span className="text-gray-500 text-xs ml-1">4.9 · 38 jogos</span>
                   </div>
                 </div>
-                <div className="ml-auto flex flex-col items-end gap-1.5 flex-shrink-0">
-                  <span className="text-xs font-bold text-yellow-400 bg-yellow-500/10 border border-yellow-500/20 px-2.5 py-0.5 rounded-full whitespace-nowrap">⭐ Craque</span>
-                  <span className="text-xs font-bold text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2.5 py-0.5 rounded-full whitespace-nowrap">🤝 Confiável</span>
+                <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
+                  <span className="text-xs font-bold text-yellow-400 bg-yellow-500/10 border border-yellow-500/20 px-2.5 py-0.5 rounded-full">⭐ Craque</span>
+                  <span className="text-xs font-bold text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2.5 py-0.5 rounded-full">🤝 Confiável</span>
                 </div>
               </div>
               <div className="grid grid-cols-3 gap-3">
