@@ -5,21 +5,11 @@ import { gsap } from 'gsap'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, Star, Trophy, Users } from 'lucide-react'
 
-const AVATARS = ['M', 'R', 'A', 'P', 'G']
-const AVATAR_COLORS = [
-  'from-green-500 to-emerald-600',
-  'from-blue-500 to-blue-600',
-  'from-purple-500 to-purple-600',
-  'from-orange-500 to-orange-600',
-  'from-pink-500 to-pink-600',
-]
-
 export default function HeroSection() {
   const sectionRef   = useRef<HTMLElement>(null)
   const headlineRef  = useRef<HTMLHeadingElement>(null)
   const subRef       = useRef<HTMLParagraphElement>(null)
   const ctaRef       = useRef<HTMLDivElement>(null)
-  const socialRef    = useRef<HTMLDivElement>(null)
   const cardRef      = useRef<HTMLDivElement>(null)
   const fieldLinesRef = useRef<SVGSVGElement>(null)
 
@@ -42,7 +32,7 @@ export default function HeroSection() {
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
       tl.from(cardRef.current, { y: 70, opacity: 0, duration: 1.1, ease: 'back.out(1.2)' })
       tl.from(
-        [headlineRef.current, subRef.current, ctaRef.current, socialRef.current],
+        [headlineRef.current, subRef.current, ctaRef.current],
         { y: 40, opacity: 0, duration: 0.7, stagger: 0.12 },
         '-=0.7'
       )
@@ -51,7 +41,11 @@ export default function HeroSection() {
     // Mouse parallax on card
     const section = sectionRef.current
     const card    = cardRef.current
-    if (!section || !card) return
+
+    // Sem os dois elementos não há parallax a montar, mas o ctx do GSAP acima
+    // já existe: retornar seco aqui deixaria a animação de entrada sem
+    // limpeza no desmonte.
+    if (!section || !card) return () => ctx.revert()
 
     const onMouseMove = (e: MouseEvent) => {
       const { left, top, width, height } = section.getBoundingClientRect()
@@ -103,14 +97,12 @@ export default function HeroSection() {
       <div className="relative max-w-6xl mx-auto px-6 pt-20 pb-10 md:pt-24 md:pb-16 grid md:grid-cols-2 gap-10 md:gap-16 items-center">
         {/* Text side */}
         <div>
-          {/* Live badge */}
+          {/* Badge — sem `animate-ping`: a bolinha pulsando comunica "leitura ao
+              vivo", e aqui não há nada sendo lido em tempo real. */}
           <div className="inline-flex items-center gap-2.5 bg-gray-900/80 border border-green-500/25 rounded-full px-4 py-2 mb-7 text-sm">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
-            </span>
+            <span className="inline-flex rounded-full h-2 w-2 bg-green-500" />
             <span className="text-gray-300">
-              <span className="text-green-400 font-semibold">847</span> jogadores online agora
+              Plataforma <span className="text-green-400 font-semibold">gratuita</span> para jogadores
             </span>
           </div>
 
@@ -133,7 +125,7 @@ export default function HeroSection() {
             Encontre peladas abertas na sua cidade, entre com um clique e sorteie os times na hora. Sem grupo de WhatsApp, sem confusão — só jogo.
           </p>
 
-          <div ref={ctaRef} className="flex flex-wrap gap-4 mb-8">
+          <div ref={ctaRef} className="flex flex-wrap gap-4">
             <a href="https://app.so-mais-um.com/register">
               <Button size="xl" className="group btn-shimmer">
                 Entrar na próxima pelada
@@ -147,22 +139,6 @@ export default function HeroSection() {
             </a>
           </div>
 
-          {/* Social proof row */}
-          <div ref={socialRef} className="flex items-center gap-3">
-            <div className="flex -space-x-2">
-              {AVATARS.map((letter, i) => (
-                <div
-                  key={i}
-                  className={`w-8 h-8 rounded-full bg-gradient-to-br ${AVATAR_COLORS[i]} border-2 border-gray-950 flex items-center justify-center text-xs font-black text-white flex-shrink-0`}
-                >
-                  {letter}
-                </div>
-              ))}
-            </div>
-            <p className="text-sm text-gray-500">
-              Mais de <span className="text-gray-300 font-semibold">800 jogadores</span> já usam
-            </p>
-          </div>
         </div>
 
         {/* Card side */}

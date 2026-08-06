@@ -48,15 +48,6 @@ export default function CTASection() {
           <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-emerald-300/15 rounded-full blur-3xl pointer-events-none" />
 
           <div className="relative z-10">
-            {/* Live indicator */}
-            <div className="inline-flex items-center gap-2 bg-black/20 border border-white/20 rounded-full px-4 py-1.5 mb-6 text-sm text-green-100">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-300 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-300" />
-              </span>
-              32 peladas acontecendo agora
-            </div>
-
             {/* Animated trophy */}
             <div className="animate-float-slow inline-block mb-4">
               <span className="text-5xl">🏆</span>

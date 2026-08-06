@@ -7,10 +7,17 @@ import { useMobileScrollAnimation } from '@/lib/useMobileScrollAnimation'
 
 gsap.registerPlugin(ScrollTrigger)
 
+/**
+ * Todo número aqui precisa ser verificável — é afirmação pública sobre o
+ * produto, num domínio de produção. Contagem de jogadores e "peladas
+ * acontecendo agora" ficaram de fora de propósito: são dados que mudam, e
+ * constante no código vira mentira na primeira semana. Quando existir rota
+ * na API que devolva isso, dá para trazer de volta lendo de lá.
+ */
 const highlights = [
-  { target: 847, suffix: '+', label: 'Jogadores na plataforma', icon: '🏃', description: 'e crescendo todo dia' },
-  { target: 12,  suffix: '',  label: 'Modalidades esportivas',  icon: '🏅', description: 'do futsal ao poker' },
-  { target: 100, suffix: '%', label: 'Gratuito para jogadores', icon: '🆓', description: 'sem taxas, para sempre' },
+  { target: 26,  suffix: '+', label: 'Arenas parceiras em Lavras', icon: '🏟️' },
+  { target: 12,  suffix: '',  label: 'Modalidades esportivas',     icon: '🏅', description: 'do futsal ao poker' },
+  { target: 100, suffix: '%', label: 'Gratuito para jogadores',    icon: '🆓', description: 'sem taxas, para sempre' },
 ]
 
 export default function StatsSection() {
@@ -71,7 +78,9 @@ export default function StatsSection() {
                   <span ref={el => { countRefs.current[i] = el }}>0{item.suffix}</span>
                 </div>
                 <p className="text-gray-300 text-sm font-semibold">{item.label}</p>
-                <p className="text-gray-600 text-xs mt-0.5">{item.description}</p>
+                {item.description && (
+                  <p className="text-gray-600 text-xs mt-0.5">{item.description}</p>
+                )}
               </div>
             </div>
           ))}

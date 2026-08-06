@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: 'Só+1 — Encontre sua pelada hoje',
-    description: 'Plataforma gratuita para organizar peladas, sortear times e avaliar jogadores. 12 modalidades, 847+ jogadores.',
+    description: 'Plataforma gratuita para organizar peladas, sortear times e avaliar jogadores. 12 modalidades, do futsal ao beach tennis.',
     type: 'website',
     url: 'https://so-mais-um.com',
     siteName: 'Só+1',

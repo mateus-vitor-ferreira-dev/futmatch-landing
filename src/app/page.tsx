@@ -2,7 +2,6 @@ import Navbar from '@/components/landing/Navbar'
 import HeroSection from '@/components/landing/HeroSection'
 import StatsSection from '@/components/landing/StatsSection'
 import FeaturesSection from '@/components/landing/FeaturesSection'
-import SocialProofSection from '@/components/landing/SocialProofSection'
 import AppPreviewSection from '@/components/landing/AppPreviewSection'
 import HowItWorksSection from '@/components/landing/HowItWorksSection'
 import OwnerSection from '@/components/landing/OwnerSection'
@@ -19,7 +18,6 @@ export default function LandingPage() {
         <HeroSection />
         <StatsSection />
         <FeaturesSection />
-        <SocialProofSection />
         <AppPreviewSection />
         <HowItWorksSection />
         <OwnerSection />
