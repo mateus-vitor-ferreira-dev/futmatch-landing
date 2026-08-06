@@ -19,6 +19,8 @@ const features = [
     color: 'text-green-400',
     bg: 'bg-green-500/10',
     border: 'border-green-500/20',
+    hoverBorder: 'hover:border-green-500/40',
+    glow: 'hover:shadow-[0_0_24px_rgba(34,197,94,0.1)]',
   },
   {
     Icon: Shuffle,
@@ -29,26 +31,32 @@ const features = [
     color: 'text-blue-400',
     bg: 'bg-blue-500/10',
     border: 'border-blue-500/20',
+    hoverBorder: 'hover:border-blue-500/40',
+    glow: 'hover:shadow-[0_0_24px_rgba(59,130,246,0.1)]',
   },
   {
     Icon: Star,
     title: 'Avaliações com tags e badges',
     description:
-      'Avalie com estrelas e tags como CRAQUE_DA_PELADA, FAIR_PLAY e PONTUAL. Badges são conquistados automaticamente pelo histórico.',
+      'Avalie com estrelas e tags como Craque, Fair Play e Pontual. Badges são conquistados automaticamente pelo histórico.',
     highlight: 'Reputação real',
     color: 'text-yellow-400',
     bg: 'bg-yellow-500/10',
     border: 'border-yellow-500/20',
+    hoverBorder: 'hover:border-yellow-500/40',
+    glow: 'hover:shadow-[0_0_24px_rgba(234,179,8,0.1)]',
   },
   {
     Icon: Zap,
     title: 'Notificações em tempo real',
     description:
-      'Seja avisado na hora quando alguém entra, a pelada lota ou é cancelada. Conexão SSE persistente — sem polling, sem recarregar.',
+      'Seja avisado na hora quando alguém entra, a pelada lota ou é cancelada. Conexão SSE persistente — sem polling.',
     highlight: 'Ao vivo',
     color: 'text-orange-400',
     bg: 'bg-orange-500/10',
     border: 'border-orange-500/20',
+    hoverBorder: 'hover:border-orange-500/40',
+    glow: 'hover:shadow-[0_0_24px_rgba(249,115,22,0.1)]',
   },
   {
     Icon: Trophy,
@@ -59,16 +67,20 @@ const features = [
     color: 'text-purple-400',
     bg: 'bg-purple-500/10',
     border: 'border-purple-500/20',
+    hoverBorder: 'hover:border-purple-500/40',
+    glow: 'hover:shadow-[0_0_24px_rgba(168,85,247,0.1)]',
   },
   {
     Icon: BarChart2,
-    title: 'Perfil e histórico',
+    title: 'Perfil e histórico completo',
     description:
       'Peladas criadas, participadas e avaliações recebidas. Seu perfil público mostra badge, média de estrelas e estatísticas.',
-    highlight: 'Histórico completo',
+    highlight: 'Histórico',
     color: 'text-cyan-400',
     bg: 'bg-cyan-500/10',
     border: 'border-cyan-500/20',
+    hoverBorder: 'hover:border-cyan-500/40',
+    glow: 'hover:shadow-[0_0_24px_rgba(6,182,212,0.1)]',
   },
 ]
 
@@ -86,18 +98,11 @@ export default function FeaturesSection() {
 
     const ctx = gsap.context(() => {
       if (title) gsap.to(title, {
-        autoAlpha: 1,
-        y: 0,
-        duration: 0.7,
-        ease: 'power3.out',
+        autoAlpha: 1, y: 0, duration: 0.7, ease: 'power3.out',
         scrollTrigger: { trigger: sectionRef.current, start: 'top 85%', once: true },
       })
       if (cards?.length) gsap.to(Array.from(cards), {
-        autoAlpha: 1,
-        y: 0,
-        duration: 0.7,
-        stagger: 0.1,
-        ease: 'power3.out',
+        autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.12, ease: 'back.out(1.1)',
         scrollTrigger: { trigger: sectionRef.current, start: 'top 75%', once: true },
       })
     }, sectionRef)
@@ -125,9 +130,10 @@ export default function FeaturesSection() {
           {features.map((feat, i) => (
             <div
               key={i}
-              className="feature-card group relative bg-gray-900/60 border border-white/5 hover:border-white/10 rounded-2xl p-7 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl overflow-hidden"
+              className={`feature-card group relative bg-gray-900/60 border border-white/5 ${feat.hoverBorder} rounded-2xl p-7 transition-all duration-300 hover:-translate-y-1 ${feat.glow} overflow-hidden`}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-transparent to-white/[0.02] pointer-events-none" />
+              {/* Gradient overlay on hover */}
+              <div className="absolute inset-0 bg-gradient-to-br from-transparent to-white/[0.02] group-hover:to-white/[0.04] transition-all duration-300 pointer-events-none" />
 
               <div className={`w-12 h-12 rounded-xl ${feat.bg} border ${feat.border} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300`}>
                 <feat.Icon size={22} className={feat.color} />

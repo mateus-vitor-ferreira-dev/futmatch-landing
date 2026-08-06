@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Badge } from '@/components/ui/badge'
@@ -24,11 +24,11 @@ const faqs = [
   },
   {
     q: 'Como funcionam os badges de reputação?',
-    a: 'Após cada pelada finalizada, os participantes se avaliam com estrelas (1–5) e tags como CRAQUE_DA_PELADA, FAIR_PLAY e PONTUAL. O sistema calcula automaticamente os badges (Craque, Confiável, Pontual) com base no histórico acumulado.',
+    a: 'Após cada pelada finalizada, os participantes se avaliam com estrelas (1–5) e tags como Craque, Fair Play e Pontual. O sistema calcula automaticamente os badges com base no histórico acumulado.',
   },
   {
     q: 'Sou dono de uma quadra. Como cadastro meu espaço?',
-    a: 'Acesse o portal de parceiros em app.so-mais-um.com/seja-parceiro. Após aprovação pelo nosso time, você gerencia suas quadras, visualiza estatísticas e pode criar torneios pelo painel de OWNER.',
+    a: 'Acesse o portal de parceiros em app.so-mais-um.com/seja-parceiro. Após aprovação pelo nosso time, você gerencia suas quadras, visualiza estatísticas e pode criar torneios pelo painel de parceiro.',
   },
   {
     q: 'As notificações funcionam sem recarregar a página?',
@@ -37,25 +37,48 @@ const faqs = [
 ]
 
 function FAQItem({ q, a }: { q: string; a: string }) {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen]      = useState(false)
+  const contentRef           = useRef<HTMLDivElement>(null)
+
+  const toggle = () => {
+    const el = contentRef.current
+    if (!el) { setOpen(o => !o); return }
+
+    if (!open) {
+      setOpen(true)
+      gsap.fromTo(el,
+        { height: 0, opacity: 0 },
+        { height: 'auto', opacity: 1, duration: 0.3, ease: 'power2.out' }
+      )
+    } else {
+      gsap.to(el, {
+        height: 0, opacity: 0, duration: 0.22, ease: 'power2.in',
+        onComplete: () => setOpen(false),
+      })
+    }
+  }
 
   return (
-    <div className="border border-white/5 rounded-2xl overflow-hidden">
+    <div className={`border rounded-2xl overflow-hidden transition-colors duration-200 ${open ? 'border-green-500/20 bg-gray-900/80' : 'border-white/5 hover:border-white/10 bg-gray-900/40'}`}>
       <button
-        onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between p-5 text-left bg-gray-900/60 hover:bg-gray-900/80 transition-colors duration-200 group"
+        onClick={toggle}
+        className="w-full flex items-center justify-between p-5 text-left group"
       >
-        <span className="text-white font-semibold pr-4 text-sm md:text-base">{q}</span>
+        <span className="text-white font-semibold pr-4 text-sm md:text-base group-hover:text-green-400 transition-colors duration-200">
+          {q}
+        </span>
         <ChevronDown
           size={18}
-          className={`text-gray-500 flex-shrink-0 transition-transform duration-300 group-hover:text-green-400 ${open ? 'rotate-180 text-green-400' : ''}`}
+          className={`flex-shrink-0 transition-all duration-300 ${open ? 'rotate-180 text-green-400' : 'text-gray-500 group-hover:text-green-400'}`}
         />
       </button>
-      {open && (
-        <div className="px-5 pb-5 bg-gray-900/40">
+
+      {/* Animated content wrapper */}
+      <div ref={contentRef} style={{ height: 0, overflow: 'hidden', opacity: 0 }}>
+        <div className="px-5 pb-5">
           <p className="text-gray-400 leading-relaxed text-sm pt-3 border-t border-white/5">{a}</p>
         </div>
-      )}
+      </div>
     </div>
   )
 }
