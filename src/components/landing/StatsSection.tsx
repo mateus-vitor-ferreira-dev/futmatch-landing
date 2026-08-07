@@ -1,26 +1,63 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useMobileScrollAnimation } from '@/lib/useMobileScrollAnimation'
+import type { NumerosPublicos } from '@/lib/stats'
 
 gsap.registerPlugin(ScrollTrigger)
 
 /**
  * Todo número aqui precisa ser verificável — é afirmação pública sobre o
- * produto, num domínio de produção. Contagem de jogadores e "peladas
- * acontecendo agora" ficaram de fora de propósito: são dados que mudam, e
- * constante no código vira mentira na primeira semana. Quando existir rota
- * na API que devolva isso, dá para trazer de volta lendo de lá.
+ * produto, num domínio de produção.
+ *
+ * Os que mudam vêm da API (`GET /stats`), que os conta no banco. Os que não
+ * mudam continuam aqui, porque são fato de produto e não medição: a lista de
+ * modalidades e a gratuidade para jogadores não dependem de quantas pessoas se
+ * cadastraram.
+ *
+ * **Sem indicador de "ao vivo".** A resposta é revalidada a cada 5 minutos, e
+ * bolinha piscando ao lado de dado de 5 minutos atrás é a mesma promessa falsa
+ * que derrubou a primeira versão desta seção.
  */
-const highlights = [
-  { target: 26,  suffix: '+', label: 'Arenas parceiras em Lavras', icon: '🏟️' },
-  { target: 12,  suffix: '',  label: 'Modalidades esportivas',     icon: '🏅', description: 'do futsal ao poker' },
-  { target: 100, suffix: '%', label: 'Gratuito para jogadores',    icon: '🆓', description: 'sem taxas, para sempre' },
+interface Cartao {
+  target: number
+  suffix: string
+  label: string
+  icon: string
+  /** Linha de apoio, só onde acrescenta — nem todo cartão precisa. */
+  description?: string
+}
+
+const FIXOS: Cartao[] = [
+  { target: 12,  suffix: '',  label: 'Modalidades esportivas',  icon: '🏅', description: 'do futsal ao poker' },
+  { target: 100, suffix: '%', label: 'Gratuito para jogadores', icon: '🆓', description: 'sem taxas, para sempre' },
 ]
 
-export default function StatsSection() {
+/** Quando a API não responde, sobram só os fixos — nunca um zero no lugar. */
+function montarCartoes(numeros: NumerosPublicos | null): Cartao[] {
+  if (!numeros) return FIXOS
+
+  return [
+    { target: numeros.arenas,         suffix: '', label: 'Arenas parceiras',    icon: '🏟️' },
+    { target: numeros.jogadores,      suffix: '', label: 'Jogadores na plataforma', icon: '👥' },
+    { target: numeros.peladasAbertas, suffix: '', label: 'Peladas abertas',     icon: '⚽', description: 'atualizado a cada 5 minutos' },
+    { target: numeros.cidades,        suffix: '', label: 'Cidades atendidas',   icon: '📍' },
+    ...FIXOS,
+  ]
+}
+
+export interface StatsSectionProps {
+  /** Números da API. `null` quando ela não respondeu — ver getNumerosPublicos. */
+  numeros: NumerosPublicos | null
+}
+
+export default function StatsSection({ numeros }: StatsSectionProps) {
+  // useMemo para o efeito abaixo não rodar de novo a cada render: sem isso, o
+  // array seria novo toda vez e a animação reiniciaria sozinha.
+  const highlights = useMemo(() => montarCartoes(numeros), [numeros])
+
   const sectionRef = useMobileScrollAnimation('.stat-card', { staggerMs: 120 })
   const countRefs  = useRef<(HTMLSpanElement | null)[]>([])
 
@@ -58,7 +95,7 @@ export default function StatsSection() {
     }, sectionRef)
 
     return () => ctx.revert()
-  }, [])
+  }, [highlights])
 
   return (
     <section ref={sectionRef} className="relative bg-gray-950 py-8 md:py-16 overflow-hidden">
