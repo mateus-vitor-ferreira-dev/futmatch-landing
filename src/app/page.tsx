@@ -1,3 +1,4 @@
+import { getNumerosPublicos } from '@/lib/stats'
 import Navbar from '@/components/landing/Navbar'
 import HeroSection from '@/components/landing/HeroSection'
 import StatsSection from '@/components/landing/StatsSection'
@@ -10,13 +11,18 @@ import FAQSection from '@/components/landing/FAQSection'
 import CTASection from '@/components/landing/CTASection'
 import Footer from '@/components/landing/Footer'
 
-export default function LandingPage() {
+// Server Component: os números são buscados no servidor e chegam prontos no
+// HTML. Nada de useEffect no cliente — assim quem visita não vê a seção pular
+// de vazia para preenchida, e o dado não depende do JavaScript carregar.
+export default async function LandingPage() {
+  const numeros = await getNumerosPublicos()
+
   return (
     <>
       <Navbar />
       <main>
         <HeroSection />
-        <StatsSection />
+        <StatsSection numeros={numeros} />
         <FeaturesSection />
         <AppPreviewSection />
         <HowItWorksSection />
