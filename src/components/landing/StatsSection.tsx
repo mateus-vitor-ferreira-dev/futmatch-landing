@@ -35,17 +35,27 @@ const FIXOS: Cartao[] = [
   { target: 100, suffix: '%', label: 'Gratuito para jogadores', icon: '🆓', description: 'sem taxas, para sempre' },
 ]
 
-/** Quando a API não responde, sobram só os fixos — nunca um zero no lugar. */
+/**
+ * Quando a API não responde, sobram só os fixos — nunca um zero no lugar.
+ *
+ * E o mesmo vale para o cartão que **veio** zerado. O guarda de `null` cobre a
+ * API fora do ar; não cobre o caso que a produção mostra hoje, em que a rota
+ * responde 200 com todos os campos em zero. "0 jogadores na plataforma" é
+ * verdade e ainda assim é o pior cartaz possível numa landing — e o contador
+ * animando de 0 até 0 parece defeito, não dado. Cartão sem número some; os
+ * fixos seguram a seção de pé.
+ */
 function montarCartoes(numeros: NumerosPublicos | null): Cartao[] {
   if (!numeros) return FIXOS
 
-  return [
+  const doDado: Cartao[] = [
     { target: numeros.arenas,         suffix: '', label: 'Arenas parceiras',    icon: '🏟️' },
     { target: numeros.jogadores,      suffix: '', label: 'Jogadores na plataforma', icon: '👥' },
     { target: numeros.peladasAbertas, suffix: '', label: 'Peladas abertas',     icon: '⚽', description: 'atualizado a cada 5 minutos' },
     { target: numeros.cidades,        suffix: '', label: 'Cidades atendidas',   icon: '📍' },
-    ...FIXOS,
   ]
+
+  return [...doDado.filter(cartao => cartao.target > 0), ...FIXOS]
 }
 
 export interface StatsSectionProps {
