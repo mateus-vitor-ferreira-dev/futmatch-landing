@@ -73,3 +73,29 @@ describe('StatsSection sem resposta da API', () => {
     expect(contadores).toHaveLength(2)
   })
 })
+
+/**
+ * A API responder é uma coisa; ter o que contar é outra. Hoje `GET /stats` em
+ * produção devolve 200 com os quatro campos em zero, e o guarda de `null` não
+ * pega esse caso — o cartão passaria direto, com o contador indo de 0 até 0.
+ */
+describe('StatsSection com número zerado', () => {
+  it('esconde só o cartão sem número, e mantém os que têm', () => {
+    render(<StatsSection numeros={{ ...NUMEROS, peladasAbertas: 0 }} />)
+
+    expect(screen.queryByText('Peladas abertas')).not.toBeInTheDocument()
+    expect(screen.getByText('Arenas parceiras')).toBeInTheDocument()
+    expect(screen.getByText('Jogadores na plataforma')).toBeInTheDocument()
+    expect(screen.getByText('Cidades atendidas')).toBeInTheDocument()
+  })
+
+  it('com tudo zerado, encolhe igual à API fora do ar', () => {
+    const { container } = render(
+      <StatsSection numeros={{ arenas: 0, jogadores: 0, peladasAbertas: 0, cidades: 0 }} />,
+    )
+
+    expect(container.querySelectorAll('.stat-card')).toHaveLength(2)
+    expect(screen.getByText('Modalidades esportivas')).toBeInTheDocument()
+    expect(screen.getByText('Gratuito para jogadores')).toBeInTheDocument()
+  })
+})
