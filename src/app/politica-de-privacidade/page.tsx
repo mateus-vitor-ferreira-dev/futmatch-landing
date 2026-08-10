@@ -11,7 +11,7 @@ export default function PoliticaDePrivacidadePage() {
     <LegalDocument title="Política de Privacidade" description="Este documento explica quais dados pessoais a Só+1 utiliza, para quais finalidades e quais são os seus direitos.">
       <section>
         <h2>1. Quem controla seus dados</h2>
-        <p>A Só+1 é a controladora dos dados pessoais tratados na plataforma. A Equipe Só+1 responde pelo canal de privacidade e recebe solicitações pelo e-mail <a href="mailto:contato@so-mais-um.com">contato@so-mais-um.com</a>.</p>
+        <p>A Só+1 é a controladora dos dados pessoais tratados na plataforma. O encarregado pelo tratamento de dados pessoais (DPO) é <strong>Gabriel Soares</strong>, contatável por <a href="mailto:gabriel.soares@so-mais-um.com">gabriel.soares@so-mais-um.com</a>. O canal geral <a href="mailto:contato@so-mais-um.com">contato@so-mais-um.com</a> também recebe solicitações de privacidade.</p>
       </section>
       <section>
         <h2>2. Dados que tratamos</h2>
@@ -47,7 +47,7 @@ export default function PoliticaDePrivacidadePage() {
       <section>
         <h2>7. Seus direitos</h2>
         <p>Nos termos da LGPD, você pode solicitar confirmação do tratamento, acesso, correção, anonimização, bloqueio ou eliminação de dados desnecessários ou irregulares, portabilidade quando regulamentada, informação sobre compartilhamentos e consequências de não consentir, revogação do consentimento e revisão de decisões automatizadas, quando aplicável.</p>
-        <p>Para exercer um direito, escreva para <a href="mailto:contato@so-mais-um.com">contato@so-mais-um.com</a>. Podemos pedir informações adicionais para confirmar sua identidade e proteger sua conta.</p>
+        <p>Para exercer um direito, escreva para <a href="mailto:gabriel.soares@so-mais-um.com">gabriel.soares@so-mais-um.com</a> ou <a href="mailto:contato@so-mais-um.com">contato@so-mais-um.com</a>. Confirmaremos o recebimento em até 2 dias úteis e enviaremos a resposta completa em até 15 dias corridos, salvo prazo legal específico ou justificativa comunicada ao titular. Podemos pedir informações adicionais para confirmar sua identidade e proteger sua conta.</p>
       </section>
       <section>
         <h2>8. Segurança e incidentes</h2>
