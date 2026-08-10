@@ -41,6 +41,11 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="pt-BR" className={`${inter.variable} h-full antialiased`}>
+      <head>
+        <link rel="icon" href="/logo.svg" />
+        <link rel="shortcut icon" href="/logo.svg" />
+        <link rel="apple-touch-icon" href="/logo.svg" />
+      </head>
       <body className="min-h-full flex flex-col font-(--font-inter)">{children}</body>
     </html>
   )
