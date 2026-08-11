@@ -1,4 +1,5 @@
 import { Mail, AtSign, GitBranch } from 'lucide-react'
+import Link from 'next/link'
 import LogoSvg from '@/components/LogoSvg'
 
 const platformLinks = [
@@ -103,6 +104,14 @@ export default function Footer() {
           <p className="text-gray-600 text-sm">
             © {new Date().getFullYear()} Só+1. Todos os direitos reservados.
           </p>
+          <nav aria-label="Documentos legais" className="flex gap-4 text-xs">
+            <Link className="text-gray-500 hover:text-green-400" href="/termos-de-uso">
+              Termos de Uso
+            </Link>
+            <Link className="text-gray-500 hover:text-green-400" href="/politica-de-privacidade">
+              Política de Privacidade
+            </Link>
+          </nav>
           <p className="text-gray-700 text-xs">
             Feito com <span className="text-green-500">paixão</span> por quem ama jogar
           </p>
