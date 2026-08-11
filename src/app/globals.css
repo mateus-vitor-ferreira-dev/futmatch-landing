@@ -105,3 +105,24 @@ body {
   color: #f9fafb;
   overflow-x: hidden;
 }
+
+.legal-document h2 {
+  margin-bottom: 0.75rem;
+  color: #f9fafb;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.legal-document p,
+.legal-document li {
+  color: #9ca3af;
+  line-height: 1.8;
+}
+
+.legal-document p + p,
+.legal-document p + ul { margin-top: 0.75rem; }
+.legal-document ul { margin-left: 1.25rem; list-style: disc; }
+.legal-document li + li { margin-top: 0.4rem; }
+.legal-document a { color: #4ade80; text-decoration: underline; text-underline-offset: 0.2em; }
+.legal-document a:hover { color: #86efac; }

@@ -28,6 +28,36 @@ interface Cartao {
   icon: string
   /** Linha de apoio, só onde acrescenta — nem todo cartão precisa. */
   description?: string
+  /**
+   * Abaixo disto o cartão não entra. Ausente nos fixos, que não são medição:
+   * "12 modalidades" não fica mais ou menos verdade conforme a base cresce.
+   */
+  minimo?: number
+}
+
+/**
+ * Quanto cada número precisa valer para sustentar a afirmação que ele faz.
+ *
+ * Esconder o zero não bastou (#36). Prova social existe para responder "outras
+ * pessoas usam isso?", e respondida com **2** ela chama atenção justamente para
+ * a falta de tração que deveria disfarçar — na primeira dobra, para todo
+ * visitante. O número é verdadeiro; o problema é que exibi-lo custa mais do que
+ * omiti-lo. Sem o cartão, quem visita não conclui nada. Com ele, conclui que
+ * ninguém usa.
+ *
+ * Os valores são por cartão porque convencem em escalas diferentes: "3 cidades
+ * atendidas" é plausível, "3 jogadores" é constrangedor. Não existe cálculo por
+ * trás — é julgamento, e revisá-lo é mudar um número aqui.
+ *
+ * O mesmo limiar vale no painel de login do app, em
+ * `so-mais-um-web/src/components/AuthLayout/index.tsx`: é a mesma afirmação,
+ * dita ao mesmo visitante, e as duas telas não podem discordar.
+ */
+const LIMIARES = {
+  jogadores:      50,
+  peladasAbertas:  5,
+  cidades:         3,
+  arenas:          3,
 }
 
 const FIXOS: Cartao[] = [
@@ -38,24 +68,24 @@ const FIXOS: Cartao[] = [
 /**
  * Quando a API não responde, sobram só os fixos — nunca um zero no lugar.
  *
- * E o mesmo vale para o cartão que **veio** zerado. O guarda de `null` cobre a
+ * E o mesmo vale para o cartão que **veio** fraco. O guarda de `null` cobre a
  * API fora do ar; não cobre o caso que a produção mostra hoje, em que a rota
- * responde 200 com todos os campos em zero. "0 jogadores na plataforma" é
- * verdade e ainda assim é o pior cartaz possível numa landing — e o contador
- * animando de 0 até 0 parece defeito, não dado. Cartão sem número some; os
- * fixos seguram a seção de pé.
+ * responde 200 com números que ainda não sustentam a afirmação. "0 jogadores
+ * na plataforma" é verdade e ainda assim é o pior cartaz possível numa
+ * landing — e o contador animando de 0 até 0 parece defeito, não dado. Cartão
+ * abaixo do `minimo` some; os fixos seguram a seção de pé.
  */
 function montarCartoes(numeros: NumerosPublicos | null): Cartao[] {
   if (!numeros) return FIXOS
 
   const doDado: Cartao[] = [
-    { target: numeros.arenas,         suffix: '', label: 'Arenas parceiras',    icon: '🏟️' },
-    { target: numeros.jogadores,      suffix: '', label: 'Jogadores na plataforma', icon: '👥' },
-    { target: numeros.peladasAbertas, suffix: '', label: 'Peladas abertas',     icon: '⚽', description: 'atualizado a cada 5 minutos' },
-    { target: numeros.cidades,        suffix: '', label: 'Cidades atendidas',   icon: '📍' },
+    { target: numeros.arenas,         suffix: '', label: 'Arenas parceiras',    icon: '🏟️', minimo: LIMIARES.arenas },
+    { target: numeros.jogadores,      suffix: '', label: 'Jogadores na plataforma', icon: '👥', minimo: LIMIARES.jogadores },
+    { target: numeros.peladasAbertas, suffix: '', label: 'Peladas abertas',     icon: '⚽', description: 'atualizado a cada 5 minutos', minimo: LIMIARES.peladasAbertas },
+    { target: numeros.cidades,        suffix: '', label: 'Cidades atendidas',   icon: '📍', minimo: LIMIARES.cidades },
   ]
 
-  return [...doDado.filter(cartao => cartao.target > 0), ...FIXOS]
+  return [...doDado.filter(cartao => cartao.target >= (cartao.minimo ?? 1)), ...FIXOS]
 }
 
 export interface StatsSectionProps {
@@ -67,6 +97,15 @@ export default function StatsSection({ numeros }: StatsSectionProps) {
   // useMemo para o efeito abaixo não rodar de novo a cada render: sem isso, o
   // array seria novo toda vez e a animação reiniciaria sozinha.
   const highlights = useMemo(() => montarCartoes(numeros), [numeros])
+
+  /**
+   * Grade do tamanho do que há para mostrar.
+   *
+   * Fixa em três colunas, a seção com só os dois cartões fixos — o caso de hoje,
+   * e o mesmo de quando a API não responde — deixa um vão à direita que lê como
+   * defeito de layout. Duas colunas para dois cartões, três a partir daí.
+   */
+  const colunas = highlights.length <= 2 ? 'md:grid-cols-2' : 'md:grid-cols-3'
 
   const sectionRef = useMobileScrollAnimation('.stat-card', { staggerMs: 120 })
   const countRefs  = useRef<(HTMLSpanElement | null)[]>([])
@@ -112,7 +151,7 @@ export default function StatsSection({ numeros }: StatsSectionProps) {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_50%,rgba(34,197,94,0.05),transparent)]" />
 
       <div className="relative max-w-6xl mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className={`grid grid-cols-1 ${colunas} gap-4`}>
           {highlights.map((item, i) => (
             <div
               key={i}
