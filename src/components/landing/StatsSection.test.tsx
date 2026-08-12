@@ -99,3 +99,71 @@ describe('StatsSection com número zerado', () => {
     expect(screen.getByText('Gratuito para jogadores')).toBeInTheDocument()
   })
 })
+
+/**
+ * Esconder o zero não bastou (#36): "2 jogadores na plataforma" é verdade e
+ * ainda assim prova que ninguém usa. O cartão só entra quando o número
+ * sustenta a afirmação que ele faz — e o limiar é por cartão, porque "3
+ * cidades atendidas" convence e "3 jogadores" não.
+ */
+describe('StatsSection com número abaixo do limiar', () => {
+  it('esconde o cartão do número que não sustenta a afirmação', () => {
+    // 49 jogadores é mais que zero e ainda assim não é prova social.
+    render(<StatsSection numeros={{ ...NUMEROS, jogadores: 49 }} />)
+
+    expect(screen.queryByText('Jogadores na plataforma')).not.toBeInTheDocument()
+    expect(screen.getByText('Arenas parceiras')).toBeInTheDocument()
+  })
+
+  it('o número igual ao limiar entra — o corte é "abaixo", não "até"', () => {
+    render(<StatsSection numeros={{ ...NUMEROS, jogadores: 50, peladasAbertas: 5, cidades: 3, arenas: 3 }} />)
+
+    expect(screen.getByText('Jogadores na plataforma')).toBeInTheDocument()
+    expect(screen.getByText('Peladas abertas')).toBeInTheDocument()
+    expect(screen.getByText('Cidades atendidas')).toBeInTheDocument()
+    expect(screen.getByText('Arenas parceiras')).toBeInTheDocument()
+  })
+
+  it('cada cartão tem o seu limiar: 4 cidades passa, 4 jogadores não', () => {
+    render(<StatsSection numeros={{ arenas: 0, jogadores: 4, peladasAbertas: 0, cidades: 4 }} />)
+
+    expect(screen.getByText('Cidades atendidas')).toBeInTheDocument()
+    expect(screen.queryByText('Jogadores na plataforma')).not.toBeInTheDocument()
+  })
+
+  it('com o dado que a produção devolve hoje, nenhum cartão da API entra', () => {
+    const { container } = render(
+      <StatsSection numeros={{ arenas: 0, jogadores: 2, peladasAbertas: 0, cidades: 0 }} />,
+    )
+
+    expect(screen.queryByText('Jogadores na plataforma')).not.toBeInTheDocument()
+    expect(container.querySelectorAll('.stat-card')).toHaveLength(2)
+    // A seção não some: os fatos de produto continuam de pé sozinhos.
+    expect(screen.getByText('Modalidades esportivas')).toBeInTheDocument()
+    expect(screen.getByText('Gratuito para jogadores')).toBeInTheDocument()
+  })
+})
+
+/**
+ * Grade fixa em três colunas deixaria um vão à direita sempre que sobrassem só
+ * os dois fixos — que é o caso de hoje e o de API fora do ar.
+ */
+describe('StatsSection — colunas', () => {
+  function grade(container: HTMLElement) {
+    return container.querySelector('.grid')?.className ?? ''
+  }
+
+  it('usa duas colunas quando sobram só os dois fixos', () => {
+    const { container } = render(<StatsSection numeros={null} />)
+
+    expect(grade(container)).toContain('md:grid-cols-2')
+  })
+
+  it('volta para três colunas assim que um cartão da API entra', () => {
+    const { container } = render(
+      <StatsSection numeros={{ arenas: 0, jogadores: 0, peladasAbertas: 0, cidades: 3 }} />,
+    )
+
+    expect(grade(container)).toContain('md:grid-cols-3')
+  })
+})
