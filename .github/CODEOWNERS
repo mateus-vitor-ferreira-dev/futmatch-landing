@@ -1,7 +1,7 @@
 # CODEOWNERS — quem o GitHub chama automaticamente para revisar o quê.
 #
-# Aqui só entra o que é PERMANENTE. A escala de área muda a cada sprint e vive
-# no manual da equipe, não neste arquivo. O porquê está lá, em
+# Aqui só entra o que é PERMANENTE. Quem responde por cada área vive no manual
+# da equipe, não neste arquivo. O porquê está lá, em
 # "Convenções → CODEOWNERS":
 # https://github.com/mateus-vitor-ferreira-dev/so-mais-um-api/blob/main/docs/EQUIPE.md
 #
