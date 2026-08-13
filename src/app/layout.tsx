@@ -29,11 +29,11 @@ export const metadata: Metadata = {
     title: 'Só+1 — Encontre sua pelada hoje',
     description: 'Plataforma gratuita para organizar peladas, sortear times e avaliar jogadores.',
   },
-  icons: {
-    icon: '/icon.svg',
-    shortcut: '/icon.svg',
-    apple: '/icon.svg',
-  },
+  // Os ícones não são declarados aqui de propósito: quem os define são os
+  // arquivos `icon.svg`, `apple-icon.png` e `favicon.ico` deste diretório, pela
+  // convenção de arquivo do App Router. Ter as duas coisas foi o que deixou o
+  // favicon do template no ar por três meses (#41) — o `.ico` do create-next-app
+  // vencia os `<link>` daqui, e ninguém percebia porque os dois pareciam certos.
 }
 
 export default function RootLayout({
@@ -41,11 +41,6 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="pt-BR" className={`${inter.variable} h-full antialiased`}>
-      <head>
-        <link rel="icon" href="/logo.svg" />
-        <link rel="shortcut icon" href="/logo.svg" />
-        <link rel="apple-touch-icon" href="/logo.svg" />
-      </head>
       <body className="min-h-full flex flex-col font-(--font-inter)">{children}</body>
     </html>
   )
