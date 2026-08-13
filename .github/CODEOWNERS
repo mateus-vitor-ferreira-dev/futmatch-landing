@@ -1,17 +1,16 @@
-# CODEOWNERS — quem é chamado automaticamente para revisar o quê.
-# Área principal ≠ exclusividade: qualquer pessoa pode revisar, o CODEOWNERS só
-# garante que alguém da área seja notificado. Ver o manual da equipe:
+# CODEOWNERS — quem o GitHub chama automaticamente para revisar o quê.
+#
+# Aqui só entra o que é PERMANENTE. Quem responde por cada área vive no manual
+# da equipe, não neste arquivo. O porquê está lá, em
+# "Convenções → CODEOWNERS":
 # https://github.com/mateus-vitor-ferreira-dev/so-mais-um-api/blob/main/docs/EQUIPE.md
 #
-# Só funciona para pessoas com acesso de escrita no repositório.
-# Descomente as linhas conforme a equipe definir as áreas na primeira planning.
+# Este arquivo não trava nada: aprovação obrigatória é zero, o que bloqueia o
+# merge é o CI. Ele só pede review automaticamente, e só funciona para quem tem
+# acesso de escrita no repositório.
 
-# A landing é a vitrine do produto — área de Marketing responde por ela
+# Fallback: o que não estiver coberto abaixo é de quem mantém o repositório
 *                       @mateus-vitor-ferreira-dev
 
-# Copy, SEO e metadados — área de Marketing
-# src/app/layout.tsx    @usuario-da-area-de-marketing
-# public/               @usuario-da-area-de-marketing
-
-# Identidade visual e seções — área de Design
-# src/components/       @usuario-da-area-de-design
+# CI e deploy: quebra aqui para todo mundo ao mesmo tempo
+.github/workflows/      @mateus-vitor-ferreira-dev
