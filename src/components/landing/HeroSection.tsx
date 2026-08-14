@@ -122,13 +122,13 @@ export default function HeroSection() {
           </h1>
 
           <p ref={subRef} className="text-lg text-gray-400 mb-10 leading-relaxed max-w-lg">
-            Encontre peladas abertas na sua cidade, entre com um clique e sorteie os times na hora. Sem grupo de WhatsApp, sem confusão — só jogo.
+            Encontre partidas abertas na sua cidade, entre com um clique e sorteie os times na hora. Sem grupo de WhatsApp, sem confusão — só jogo.
           </p>
 
           <div ref={ctaRef} className="flex flex-wrap gap-4">
             <a href="https://app.so-mais-um.com/register">
               <Button size="xl" className="group btn-shimmer">
-                Entrar na próxima pelada
+                Entrar na próxima partida
                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
               </Button>
             </a>
@@ -151,7 +151,7 @@ export default function HeroSection() {
             <div className="relative bg-gray-900 border border-white/10 rounded-3xl p-6 shadow-2xl shadow-black/50">
               <div className="flex items-center justify-between mb-5">
                 <div>
-                  <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Pelada aberta</p>
+                  <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Partida aberta</p>
                   <h3 className="text-white font-bold text-lg">Society da Quinta</h3>
                 </div>
                 <span className="text-3xl">⚽</span>
@@ -182,7 +182,7 @@ export default function HeroSection() {
                 </div>
               </div>
 
-              <Button className="w-full btn-shimmer" size="sm">Entrar na pelada</Button>
+              <Button className="w-full btn-shimmer" size="sm">Entrar na partida</Button>
             </div>
 
             {/* Floating badges with float animation */}

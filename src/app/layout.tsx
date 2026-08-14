@@ -8,8 +8,18 @@ const inter = Inter({
   display: 'swap',
 })
 
+// O recorte "para jogadores" é obrigatório nas três descrições.
+//
+// "Plataforma gratuita", sem qualificador, omite o modelo de negócio inteiro:
+// o dono de espaço paga assinatura mensal. O texto certo já estava na
+// `description`, que quase ninguém lê, enquanto o Open Graph e o Twitter — que
+// são o que aparece quando alguém cola o link no WhatsApp ou no X — traziam a
+// versão sem recorte (landing#44).
+//
+// `keywords` é o único lugar onde "pelada" fica de propósito: a copy migrou
+// para "partida" (web#245), mas quem procura no Google digita "pelada".
 export const metadata: Metadata = {
-  title: 'Só+1 — Encontre sua pelada hoje',
+  title: 'Só+1 — Encontre sua partida hoje',
   description:
     'Plataforma gratuita para jogadores: encontre partidas abertas, sorteie times e avalie jogadores. Do racha da várzea ao torneio organizado, tudo em um lugar.',
   keywords: [
@@ -18,16 +28,16 @@ export const metadata: Metadata = {
     'vôlei', 'basquete', 'esportes Lavras', 'app esportes',
   ],
   openGraph: {
-    title: 'Só+1 — Encontre sua pelada hoje',
-    description: 'Plataforma gratuita para organizar peladas, sortear times e avaliar jogadores. 12 modalidades, do futsal ao beach tennis.',
+    title: 'Só+1 — Encontre sua partida hoje',
+    description: 'Plataforma gratuita para jogadores: organize partidas, sorteie times e avalie jogadores. 12 modalidades, do futsal ao beach tennis.',
     type: 'website',
     url: 'https://so-mais-um.com',
     siteName: 'Só+1',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Só+1 — Encontre sua pelada hoje',
-    description: 'Plataforma gratuita para organizar peladas, sortear times e avaliar jogadores.',
+    title: 'Só+1 — Encontre sua partida hoje',
+    description: 'Plataforma gratuita para jogadores: organize partidas, sorteie times e avalie jogadores.',
   },
   // Os ícones não são declarados aqui de propósito: quem os define são os
   // arquivos `icon.svg`, `apple-icon.png` e `favicon.ico` deste diretório, pela

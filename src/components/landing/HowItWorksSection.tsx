@@ -24,7 +24,7 @@ const steps = [
   {
     number: '02',
     Icon: Search,
-    title: 'Encontre ou crie uma pelada',
+    title: 'Encontre ou crie uma partida',
     description:
       'Filtre por modalidade e cidade ou monte sua própria partida vinculada a uma quadra específica.',
     color: 'text-blue-400',
@@ -37,7 +37,7 @@ const steps = [
     Icon: Star,
     title: 'Jogue e avalie',
     description:
-      'Confirme presença, sorteie os times na hora e avalie os jogadores após a pelada. Sua reputação cresce.',
+      'Confirme presença, sorteie os times na hora e avalie os jogadores após a partida. Sua reputação cresce.',
     color: 'text-yellow-400',
     bg: 'bg-yellow-500/10',
     border: 'border-yellow-500/20',
@@ -89,7 +89,7 @@ export default function HowItWorksSection() {
           <h2 className="text-4xl md:text-5xl font-black text-white mb-4">
             Três passos para a{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-300">
-              próxima pelada
+              próxima partida
             </span>
           </h2>
           <p className="text-gray-400 text-lg max-w-xl mx-auto">

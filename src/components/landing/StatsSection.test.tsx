@@ -25,7 +25,7 @@ describe('StatsSection com números da API', () => {
 
     expect(screen.getByText('Arenas parceiras')).toBeInTheDocument()
     expect(screen.getByText('Jogadores na plataforma')).toBeInTheDocument()
-    expect(screen.getByText('Peladas abertas')).toBeInTheDocument()
+    expect(screen.getByText('Partidas abertas')).toBeInTheDocument()
     expect(screen.getByText('Cidades atendidas')).toBeInTheDocument()
   })
 
@@ -53,7 +53,7 @@ describe('StatsSection sem resposta da API', () => {
 
     expect(screen.queryByText('Arenas parceiras')).not.toBeInTheDocument()
     expect(screen.queryByText('Jogadores na plataforma')).not.toBeInTheDocument()
-    expect(screen.queryByText('Peladas abertas')).not.toBeInTheDocument()
+    expect(screen.queryByText('Partidas abertas')).not.toBeInTheDocument()
     expect(screen.queryByText('Cidades atendidas')).not.toBeInTheDocument()
   })
 
@@ -83,7 +83,7 @@ describe('StatsSection com número zerado', () => {
   it('esconde só o cartão sem número, e mantém os que têm', () => {
     render(<StatsSection numeros={{ ...NUMEROS, peladasAbertas: 0 }} />)
 
-    expect(screen.queryByText('Peladas abertas')).not.toBeInTheDocument()
+    expect(screen.queryByText('Partidas abertas')).not.toBeInTheDocument()
     expect(screen.getByText('Arenas parceiras')).toBeInTheDocument()
     expect(screen.getByText('Jogadores na plataforma')).toBeInTheDocument()
     expect(screen.getByText('Cidades atendidas')).toBeInTheDocument()
@@ -119,7 +119,7 @@ describe('StatsSection com número abaixo do limiar', () => {
     render(<StatsSection numeros={{ ...NUMEROS, jogadores: 50, peladasAbertas: 5, cidades: 3, arenas: 3 }} />)
 
     expect(screen.getByText('Jogadores na plataforma')).toBeInTheDocument()
-    expect(screen.getByText('Peladas abertas')).toBeInTheDocument()
+    expect(screen.getByText('Partidas abertas')).toBeInTheDocument()
     expect(screen.getByText('Cidades atendidas')).toBeInTheDocument()
     expect(screen.getByText('Arenas parceiras')).toBeInTheDocument()
   })

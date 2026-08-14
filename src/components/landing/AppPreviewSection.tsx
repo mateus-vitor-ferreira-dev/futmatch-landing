@@ -9,7 +9,7 @@ import { Star, Users, Trophy, Bell, MapPin, Calendar } from 'lucide-react'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const ALL_PELADAS = [
+const ALL_PARTIDAS = [
   { name: 'Society da Quinta',   local: 'Arena Sul Lavras',       time: 'Qui 19h', price: 'R$ 30', vagas: 4,  total: 12, type: 'Society',     icon: '⚽' },
   { name: 'Beach Tennis Livre',  local: 'Quadra de Areia Centro', time: 'Sáb 08h', price: 'R$ 25', vagas: 2,  total: 4,  type: 'Beach Tennis', icon: '🎾' },
   { name: 'Racha de Futsal',     local: 'Arena Indoor Lavras',    time: 'Sex 20h', price: 'R$ 20', vagas: 7,  total: 10, type: 'Futsal',       icon: '👟' },
@@ -47,7 +47,7 @@ function useCycler<T>(items: T[], interval: number, count: number) {
 
 export default function AppPreviewSection() {
   const sectionRef = useMobileScrollAnimation('.preview-title, .preview-left, .preview-right', { staggerMs: 100 })
-  const peladas = useCycler(ALL_PELADAS, 3200, 3)
+  const partidas = useCycler(ALL_PARTIDAS, 3200, 3)
   const notifs  = useCycler(ALL_NOTIFS,  2400, 3)
 
   useEffect(() => {
@@ -74,7 +74,7 @@ export default function AppPreviewSection() {
           start: 'top 80%',
           once: true,
           onEnter: () => {
-            peladas.activate()
+            partidas.activate()
             notifs.activate()
           },
         },
@@ -101,13 +101,13 @@ export default function AppPreviewSection() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 items-stretch">
-          {/* Left: Pelada list — cycles automatically */}
+          {/* Left: Partida list — cycles automatically */}
           <div className="preview-left flex flex-col gap-3">
-            <p className="text-xs text-gray-600 uppercase tracking-wider font-semibold mb-1">Peladas abertas</p>
+            <p className="text-xs text-gray-600 uppercase tracking-wider font-semibold mb-1">Partidas abertas</p>
             <div className="flex flex-col gap-3 flex-1">
-              {peladas.visible.map((p, i) => (
+              {partidas.visible.map((p, i) => (
                 <div
-                  key={`${peladas.animKey}-${i}`}
+                  key={`${partidas.animKey}-${i}`}
                   className="anim-slide-up bg-gray-800/60 border border-white/5 hover:border-white/10 rounded-2xl p-5 transition-colors duration-200 flex-1"
                   style={{ animationDelay: `${i * 60}ms` }}
                 >
@@ -168,7 +168,7 @@ export default function AppPreviewSection() {
               </div>
               <div className="grid grid-cols-3 gap-3">
                 {[
-                  { label: 'Peladas',    value: '38', Icon: Users },
+                  { label: 'Partidas',   value: '38', Icon: Users },
                   { label: 'Torneios',   value: '3',  Icon: Trophy },
                   { label: 'Avaliações', value: '24', Icon: Star },
                 ].map(({ label, value, Icon }, i) => (
