@@ -3,7 +3,7 @@
  *
  * A resposta fica sempre montada no DOM, escondida por altura zero e animada
  * pelo GSAP — é o que dá a animação de abrir e o que entrega o texto ao
- * buscador. O que impede o leitor de tela de ler as seis respostas o tempo
+ * buscador. O que impede o leitor de tela de ler todas as respostas o tempo
  * todo é o `inert` no bloco fechado.
  *
  * É comportamento invisível: se o `inert` sumir num refactor, a tela continua
@@ -53,10 +53,10 @@ function perguntas() {
 }
 
 describe('FAQSection — estado inicial', () => {
-  it('renderiza as seis perguntas como botões', () => {
+  it('renderiza as oito perguntas como botões', () => {
     render(<FAQSection />)
 
-    expect(perguntas()).toHaveLength(6)
+    expect(perguntas()).toHaveLength(8)
     expect(
       screen.getByRole('button', { name: /o só\+1 é gratuito para jogadores/i }),
     ).toBeInTheDocument()
@@ -74,7 +74,7 @@ describe('FAQSection — estado inicial', () => {
     const { container } = render(<FAQSection />)
 
     const respostas = container.querySelectorAll('[role="region"]')
-    expect(respostas).toHaveLength(6)
+    expect(respostas).toHaveLength(8)
     for (const resposta of respostas) {
       // `inert` é o que tira do leitor de tela e da ordem de foco sem tirar
       // do HTML. Altura zero, sozinha, esconde só visualmente.
@@ -108,7 +108,7 @@ describe('FAQSection — vínculo entre pergunta e resposta', () => {
     }
   })
 
-  it('os ids são únicos entre os seis itens', () => {
+  it('os ids são únicos entre os oito itens', () => {
     render(<FAQSection />)
 
     const ids = perguntas().map(b => b.getAttribute('aria-controls'))

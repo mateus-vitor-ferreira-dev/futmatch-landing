@@ -81,7 +81,10 @@ function montarCartoes(numeros: NumerosPublicos | null): Cartao[] {
   const doDado: Cartao[] = [
     { target: numeros.arenas,         suffix: '', label: 'Arenas parceiras',    icon: '🏟️', minimo: LIMIARES.arenas },
     { target: numeros.jogadores,      suffix: '', label: 'Jogadores na plataforma', icon: '👥', minimo: LIMIARES.jogadores },
-    { target: numeros.peladasAbertas, suffix: '', label: 'Peladas abertas',     icon: '⚽', description: 'atualizado a cada 5 minutos', minimo: LIMIARES.peladasAbertas },
+    // O rótulo virou "Partidas" (web#245), mas a chave continua
+    // `peladasAbertas`: é o nome do campo em `GET /stats`, e renomear aqui
+    // quebraria o contrato com a API sem trocar uma letra do que se lê na tela.
+    { target: numeros.peladasAbertas, suffix: '', label: 'Partidas abertas',    icon: '⚽', description: 'atualizado a cada 5 minutos', minimo: LIMIARES.peladasAbertas },
     { target: numeros.cidades,        suffix: '', label: 'Cidades atendidas',   icon: '📍', minimo: LIMIARES.cidades },
   ]
 

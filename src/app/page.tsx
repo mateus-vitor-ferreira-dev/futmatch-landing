@@ -7,6 +7,7 @@ import AppPreviewSection from '@/components/landing/AppPreviewSection'
 import HowItWorksSection from '@/components/landing/HowItWorksSection'
 import OwnerSection from '@/components/landing/OwnerSection'
 import CourtsSection from '@/components/landing/CourtsSection'
+import RoadmapSection from '@/components/landing/RoadmapSection'
 import FAQSection from '@/components/landing/FAQSection'
 import CTASection from '@/components/landing/CTASection'
 import Footer from '@/components/landing/Footer'
@@ -28,6 +29,12 @@ export default async function LandingPage() {
         <HowItWorksSection />
         <OwnerSection />
         <CourtsSection />
+        {/*
+          O roadmap entra depois de tudo o que já existe e antes do FAQ: quem
+          chega aqui já leu a página inteira de funcionalidades reais, então não
+          há como confundir uma lista com a outra.
+        */}
+        <RoadmapSection />
         <FAQSection />
         <CTASection />
       </main>

@@ -12,27 +12,38 @@ gsap.registerPlugin(ScrollTrigger)
 const faqs = [
   {
     q: 'O Só+1 é gratuito para jogadores?',
-    a: 'Sim, 100% gratuito. Jogadores criam conta, entram em peladas e usam todas as funcionalidades sem pagar nada. O valor que aparece na pelada é o custo da quadra cobrado pelo organizador.',
+    a: 'Sim, 100% gratuito. Jogadores criam conta, entram em partidas e usam todas as funcionalidades sem pagar nada. O valor que aparece na partida é o custo da quadra, cobrado pelo organizador. Quem paga assinatura é o dono do espaço, pelo painel de parceiro.',
   },
   {
     q: 'Como funciona o sorteio de times?',
     a: 'O organizador clica em "Sortear times" com os participantes confirmados. O sistema usa o algoritmo Fisher-Yates para distribuição aleatória, garantindo grupos com diferença máxima de 1 jogador entre times.',
   },
   {
-    q: 'Posso criar uma pelada sem ter uma quadra cadastrada?',
-    a: 'A pelada precisa ser vinculada a uma quadra cadastrada na plataforma. Se a quadra do seu racha ainda não está no Só+1, entre em contato com o dono do espaço para solicitar o cadastro — ou cadastre você mesmo pelo portal de parceiros.',
+    q: 'Como funciona o pagamento da partida?',
+    a: 'O Só+1 não fica no meio: o organizador informa o valor total e a própria chave Pix, o sistema divide pelo número de vagas e mostra a chave para quem já está dentro. O pagamento acontece direto entre vocês, fora da plataforma.',
   },
   {
+    q: 'Posso criar uma partida sem ter uma quadra cadastrada?',
+    a: 'A partida precisa ser vinculada a uma quadra cadastrada na plataforma. Se a quadra do seu racha ainda não está no Só+1, entre em contato com o dono do espaço para solicitar o cadastro — ou cadastre você mesmo pelo portal de parceiros.',
+  },
+  {
+    // A landing citava "Craque, Fair Play e Pontual". São seis tags no
+    // `enum ReviewTag`, e o rótulo é "Craque da Pelada" — o texto errado já
+    // tinha contaminado a primeira carga do Instagram (landing#44).
     q: 'Como funcionam os badges de reputação?',
-    a: 'Após cada pelada finalizada, os participantes se avaliam com estrelas (1–5) e tags como Craque, Fair Play e Pontual. O sistema calcula automaticamente os badges com base no histórico acumulado.',
+    a: 'Após cada partida finalizada, os participantes se avaliam com estrelas (1–5) e uma das seis tags: Craque da Pelada, Joga Fácil, Passa de Ano, Pontual, Fair Play e Boa Comunicação. Os badges são calculados automaticamente com base no histórico acumulado.',
   },
   {
     q: 'Sou dono de uma quadra. Como cadastro meu espaço?',
-    a: 'Acesse o portal de parceiros em app.so-mais-um.com/seja-parceiro. Após aprovação pelo nosso time, você gerencia suas quadras, visualiza estatísticas e pode criar torneios pelo painel de parceiro.',
+    a: 'Acesse o portal de parceiros em app.so-mais-um.com/seja-parceiro. Após aprovação pelo nosso time, você assina um dos planos e passa a gerenciar quadras, estoque e equipamentos pelo painel de parceiro. O cadastro do espaço é gratuito; o painel é uma assinatura mensal.',
+  },
+  {
+    q: 'Posso apagar minha conta e levar meus dados?',
+    a: 'Pode, e sem falar com ninguém. Pelo perfil você exporta tudo o que guardamos sobre você e apaga a conta, que é anonimizada. O consentimento para receber e-mail de marketing é separado do cadastro e pode ser retirado a qualquer momento.',
   },
   {
     q: 'As notificações funcionam sem recarregar a página?',
-    a: 'Sim. Usamos SSE (Server-Sent Events) — uma conexão persistente entre o app e o servidor. Quando alguém entra na pelada, lota ou cancela, você recebe a notificação em tempo real sem precisar recarregar.',
+    a: 'Sim. Usamos SSE (Server-Sent Events) — uma conexão persistente entre o app e o servidor. Quando alguém entra na partida, ela lota ou é cancelada, você recebe a notificação em tempo real sem precisar recarregar.',
   },
 ]
 
@@ -42,7 +53,7 @@ const faqs = [
  * A resposta fica **sempre montada** no DOM, escondida por altura zero e
  * animada pelo GSAP — é o que permite a animação de abrir e o que entrega o
  * texto ao buscador. O preço disso é que `height: 0` esconde só visualmente:
- * para o leitor de tela, as seis respostas continuam ali, lidas em sequência,
+ * para o leitor de tela, todas as respostas continuam ali, lidas em sequência,
  * sem relação com o que está aberto.
  *
  * Quem resolve é o `inert` no wrapper fechado. Ele tira o bloco da árvore de
@@ -154,7 +165,7 @@ export default function FAQSection() {
             </span>
           </h2>
           <p className="text-gray-400 text-lg">
-            Tudo que você precisa saber antes de entrar na pelada.
+            Tudo que você precisa saber antes de entrar na partida.
           </p>
         </div>
 
