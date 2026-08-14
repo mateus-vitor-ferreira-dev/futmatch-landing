@@ -1,4 +1,5 @@
 import { getNumerosPublicos } from '@/lib/stats'
+import { getGradeDePlanos } from '@/lib/planos'
 import Navbar from '@/components/landing/Navbar'
 import HeroSection from '@/components/landing/HeroSection'
 import StatsSection from '@/components/landing/StatsSection'
@@ -6,6 +7,7 @@ import FeaturesSection from '@/components/landing/FeaturesSection'
 import AppPreviewSection from '@/components/landing/AppPreviewSection'
 import HowItWorksSection from '@/components/landing/HowItWorksSection'
 import OwnerSection from '@/components/landing/OwnerSection'
+import PlanosSection from '@/components/landing/PlanosSection'
 import CourtsSection from '@/components/landing/CourtsSection'
 import RoadmapSection from '@/components/landing/RoadmapSection'
 import FAQSection from '@/components/landing/FAQSection'
@@ -16,7 +18,12 @@ import Footer from '@/components/landing/Footer'
 // HTML. Nada de useEffect no cliente — assim quem visita não vê a seção pular
 // de vazia para preenchida, e o dado não depende do JavaScript carregar.
 export default async function LandingPage() {
-  const numeros = await getNumerosPublicos()
+  // Em paralelo: são duas rotas independentes, e encadeá-las somaria as duas
+  // latências no tempo de resposta da página.
+  const [numeros, planos] = await Promise.all([
+    getNumerosPublicos(),
+    getGradeDePlanos(),
+  ])
 
   return (
     <>
@@ -28,6 +35,12 @@ export default async function LandingPage() {
         <AppPreviewSection />
         <HowItWorksSection />
         <OwnerSection />
+        {/*
+          Logo depois da seção do dono, porque é a continuação da mesma
+          conversa: ali ele vê o que ganha, aqui vê se existe um plano do
+          tamanho do espaço dele. Some sozinha quando a API não responde.
+        */}
+        <PlanosSection grade={planos} />
         <CourtsSection />
         {/*
           O roadmap entra depois de tudo o que já existe e antes do FAQ: quem
