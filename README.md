@@ -37,7 +37,7 @@ Landing de conversão do **Só+1**: descubra peladas abertas, entre com um cliqu
 
 Organizar uma pelada hoje é uma sequência de mensagens perdidas: alguém pergunta "fecha 12?", três confirmam, dois somem na hora, o time é dividido no olho e ninguém lembra quem furou semana passada. O **Só+1** resolve isso num app — peladas abertas com vagas visíveis, entrada em um clique, sorteio automático de times e reputação por avaliação. Este repositório é a **landing**: a página que o visitante encontra antes de saber que o app existe.
 
-O papel dela no funil é único e estreito — **transformar visitante em jogador cadastrado**. Ela não guarda dado, não tem formulário e não fala com backend: comunica a proposta em segundos e entrega o clique para `app.so-mais-um.com`. Toda conversão sai daqui por link — cadastro e login para jogadores, portal de parceiros para donos de quadra. São **9 seções** encadeadas numa narrativa `Descobrir → Entrar → Jogar`, cada uma com sua própria animação de entrada.
+O papel dela no funil é único e estreito — **transformar visitante em jogador cadastrado**. Ela não guarda dado e não tem formulário: comunica a proposta em segundos e entrega o clique para `app.so-mais-um.com`. Do backend ela lê uma coisa só, e somente no servidor — os números públicos de `GET /stats`, que alimentam a prova social. Toda conversão sai daqui por link — cadastro e login para jogadores, portal de parceiros para donos de quadra. São **10 seções** encadeadas numa narrativa `Descobrir → Entrar → Jogar`, fechando com o que ainda está por vir, cada uma com sua própria animação de entrada.
 
 ```mermaid
 flowchart LR
@@ -60,7 +60,7 @@ flowchart LR
     style V fill:#1f2937,stroke:#4b5563,color:#fff
 ```
 
-> A landing é uma **folha do funil**: sem banco, sem API, sem variável de ambiente. HTML pré-renderizado no build e servido pelo CDN da Vercel — o único trabalho dela é não perder o visitante antes do clique.
+> A landing é uma **folha do funil**: sem banco e sem estado. HTML pré-renderizado e servido pelo CDN da Vercel — o único trabalho dela é não perder o visitante antes do clique. A única variável de ambiente é `API_URL` (padrão `https://api.so-mais-um.com`), usada no servidor para ler `GET /stats` com revalidação de 5 minutos; se a API não responder, a prova social simplesmente some e a página continua de pé.
 
 ---
 
@@ -90,14 +90,15 @@ flowchart LR
   </thead>
   <tbody>
     <tr><td><code>Navbar</code></td><td>Âncoras e os CTAs de <em>Entrar</em> / <em>Começar grátis</em>; fica sólida com blur após 40px de scroll</td><td>GSAP na entrada</td></tr>
-    <tr><td><code>Hero</code></td><td>Headline, subheadline e um card de pelada real (vagas 8/12, horário, quadra, Pix)</td><td>Timeline GSAP + campo em SVG que se desenha</td></tr>
-    <tr><td><code>Stats</code></td><td>Três provas rápidas: arenas parceiras, modalidades, gratuidade</td><td>Stagger no scroll</td></tr>
-    <tr><td><code>Features</code></td><td>6 cards — descoberta, sorteio Fisher-Yates, avaliações, tempo real (SSE), torneios, perfil</td><td><code>autoAlpha</code> + stagger</td></tr>
-    <tr><td><code>App Preview</code></td><td>Mock vivo do produto: lista de peladas e notificações que ciclam sozinhas</td><td>Entrada lateral + ciclagem ativada no viewport</td></tr>
-    <tr><td><code>How It Works</code></td><td>3 passos: criar conta → achar ou criar pelada → jogar e avaliar</td><td>Linha tracejada em SVG que se desenha ligando os passos</td></tr>
-    <tr><td><code>Owner</code></td><td>O outro público: dono de quadra, com mock do painel de parceiro</td><td>Entrada lateral</td></tr>
+    <tr><td><code>Hero</code></td><td>Headline, subheadline e um card de partida real (vagas 8/12, horário, quadra, Pix)</td><td>Timeline GSAP + campo em SVG que se desenha</td></tr>
+    <tr><td><code>Stats</code></td><td>Dois cartões fixos (modalidades, gratuidade) + até quatro vindos de <code>GET /stats</code>, cada um sumindo abaixo do seu limiar</td><td>Stagger no scroll</td></tr>
+    <tr><td><code>Features</code></td><td>9 cards — descoberta, sorteio Fisher-Yates, avaliações, tempo real (SSE), torneios, perfil, rateio por Pix, presença confirmada, controle de conta e dados</td><td><code>autoAlpha</code> + stagger</td></tr>
+    <tr><td><code>App Preview</code></td><td>Mock vivo do produto: lista de partidas e notificações que ciclam sozinhas</td><td>Entrada lateral + ciclagem ativada no viewport</td></tr>
+    <tr><td><code>How It Works</code></td><td>3 passos: criar conta → achar ou criar partida → jogar e avaliar</td><td>Linha tracejada em SVG que se desenha ligando os passos</td></tr>
+    <tr><td><code>Owner</code></td><td>O outro público: dono de quadra, com mock do painel de parceiro, os módulos de estoque e equipamentos e a nota da assinatura</td><td>Entrada lateral</td></tr>
     <tr><td><code>Courts</code></td><td><strong>12 modalidades</strong> — do futsal ao poker, cada card entrando de uma direção diferente</td><td>Direção por card + campo em SVG</td></tr>
-    <tr><td><code>FAQ</code></td><td>6 objeções tratadas antes do cadastro (é grátis? como sorteia? e sem quadra?)</td><td>Accordion + stagger</td></tr>
+    <tr><td><code>Roadmap</code></td><td><strong>O que ainda não existe</strong> — 5 trilhas com card aberto no board. Desenhada para <em>não</em> parecer a de funcionalidades: borda tracejada, paleta âmbar e status por cartão</td><td>Stagger no scroll</td></tr>
+    <tr><td><code>FAQ</code></td><td>8 objeções tratadas antes do cadastro (é grátis? como sorteia? como pago? e meus dados?)</td><td>Accordion + stagger</td></tr>
     <tr><td><code>CTA</code></td><td>O fechamento: criar conta gratuita ou entrar</td><td>Reveal no scroll</td></tr>
     <tr><td><code>Footer</code></td><td>Links de plataforma, portal de parceiros e contato</td><td>—</td></tr>
   </tbody>

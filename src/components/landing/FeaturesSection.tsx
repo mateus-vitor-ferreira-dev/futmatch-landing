@@ -5,14 +5,23 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Badge } from '@/components/ui/badge'
 import { useMobileScrollAnimation } from '@/lib/useMobileScrollAnimation'
-import { Search, Shuffle, Star, Zap, Trophy, BarChart2 } from 'lucide-react'
+import { Search, Shuffle, Star, Zap, Trophy, BarChart2, QrCode, UserCheck, ShieldCheck } from 'lucide-react'
 
 gsap.registerPlugin(ScrollTrigger)
 
+/**
+ * Cada card aqui é uma afirmação pública sobre o que o produto faz, e a #15
+ * já mostrou o preço de afirmar o que não se sustenta. A regra ao mexer neste
+ * array: todo card precisa apontar para código que existe hoje. O que está
+ * planejado mora na `RoadmapSection`, rotulado como tal.
+ *
+ * As classes do Tailwind são strings completas de propósito — o JIT do v4 não
+ * detecta template string parcial (`bg-${cor}-500` não gera nada).
+ */
 const features = [
   {
     Icon: Search,
-    title: 'Encontre e entre em peladas',
+    title: 'Encontre e entre em partidas',
     description:
       'Veja partidas abertas com vagas, horário, quadra e valor. Entre com um clique — sem grupo de WhatsApp, sem planilha.',
     highlight: 'Zero burocracia',
@@ -37,8 +46,11 @@ const features = [
   {
     Icon: Star,
     title: 'Avaliações com tags e badges',
+    // As seis tags são o `enum ReviewTag` da api, não uma lista de exemplo: a
+    // landing citava "Craque" (o rótulo é "Craque da Pelada") e o texto errado
+    // já contaminou material de marketing uma vez (landing#44).
     description:
-      'Avalie com estrelas e tags como Craque, Fair Play e Pontual. Badges são conquistados automaticamente pelo histórico.',
+      'Avalie com estrelas e uma das seis tags, de Craque da Pelada a Passa de Ano. Os selos são conquistados pelo histórico, automaticamente.',
     highlight: 'Reputação real',
     color: 'text-yellow-400',
     bg: 'bg-yellow-500/10',
@@ -50,7 +62,7 @@ const features = [
     Icon: Zap,
     title: 'Notificações em tempo real',
     description:
-      'Seja avisado na hora quando alguém entra, a pelada lota ou é cancelada. Conexão SSE persistente — sem polling.',
+      'Seja avisado na hora quando alguém entra, a partida lota ou é cancelada. Conexão SSE persistente — sem polling.',
     highlight: 'Ao vivo',
     color: 'text-orange-400',
     bg: 'bg-orange-500/10',
@@ -60,9 +72,12 @@ const features = [
   },
   {
     Icon: Trophy,
-    title: 'Torneios completos',
+    title: 'Torneios por formato e nível',
+    // Dizia "controle de inscrições", que não existe: o api#203 registra que o
+    // módulo hoje é casca — sem inscrição, chaveamento, partida ou placar. O
+    // que falta virou item da `RoadmapSection`, em vez de promessa aqui.
     description:
-      'Campeonatos com formato configurável (liga, mata-mata, grupos, suíço), divisões por nível e controle de inscrições.',
+      'Campeonatos com formato configurável (liga, mata-mata, grupos, dupla eliminação, suíço) e divisões por nível, do iniciante ao profissional.',
     highlight: 'Campeonatos',
     color: 'text-purple-400',
     bg: 'bg-purple-500/10',
@@ -74,13 +89,49 @@ const features = [
     Icon: BarChart2,
     title: 'Perfil e histórico completo',
     description:
-      'Peladas criadas, participadas e avaliações recebidas. Seu perfil público mostra badge, média de estrelas e estatísticas.',
+      'Partidas criadas, participadas e avaliações recebidas. Seu perfil público mostra badge, média de estrelas e estatísticas.',
     highlight: 'Histórico',
     color: 'text-cyan-400',
     bg: 'bg-cyan-500/10',
     border: 'border-cyan-500/20',
     hoverBorder: 'hover:border-cyan-500/40',
     glow: 'hover:shadow-[0_0_24px_rgba(6,182,212,0.1)]',
+  },
+  {
+    Icon: QrCode,
+    title: 'Rateio por Pix',
+    description:
+      'O valor total é dividido pelas vagas e a chave Pix do organizador aparece para quem está dentro. O Só+1 não fica no meio do pagamento.',
+    highlight: 'Sem vaquinha',
+    color: 'text-teal-400',
+    bg: 'bg-teal-500/10',
+    border: 'border-teal-500/20',
+    hoverBorder: 'hover:border-teal-500/40',
+    glow: 'hover:shadow-[0_0_24px_rgba(20,184,166,0.1)]',
+  },
+  {
+    Icon: UserCheck,
+    title: 'Presença confirmada',
+    description:
+      'O organizador marca quem apareceu de verdade. Quem não fura acumula presença e conquista o selo Confiável.',
+    highlight: 'Quem apareceu',
+    color: 'text-rose-400',
+    bg: 'bg-rose-500/10',
+    border: 'border-rose-500/20',
+    hoverBorder: 'hover:border-rose-500/40',
+    glow: 'hover:shadow-[0_0_24px_rgba(244,63,94,0.1)]',
+  },
+  {
+    Icon: ShieldCheck,
+    title: 'Conta e dados sob seu controle',
+    description:
+      'Exporte tudo o que guardamos sobre você ou apague sua conta pelo perfil. Login com Google e sessão em cookie fora do alcance do JavaScript.',
+    highlight: 'Seus dados',
+    color: 'text-indigo-400',
+    bg: 'bg-indigo-500/10',
+    border: 'border-indigo-500/20',
+    hoverBorder: 'hover:border-indigo-500/40',
+    glow: 'hover:shadow-[0_0_24px_rgba(99,102,241,0.1)]',
   },
 ]
 
@@ -122,7 +173,7 @@ export default function FeaturesSection() {
             </span>
           </h2>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            Só+1 cobre o ciclo completo: descobrir pelada, entrar, sortear times, jogar, avaliar e construir reputação.
+            Só+1 cobre o ciclo completo: descobrir a partida, entrar, dividir o valor, sortear times, jogar, avaliar e construir reputação.
           </p>
         </div>
 

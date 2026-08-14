@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, type ReactNode } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Badge } from '@/components/ui/badge'
@@ -8,19 +8,159 @@ import { useMobileScrollAnimation } from '@/lib/useMobileScrollAnimation'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const sports = [
+/**
+ * Três modalidades não têm emoji, e não é questão de procurar melhor.
+ *
+ * O Unicode não tem peteca, não tem bola de futevôlei e não separa vôlei de
+ * praia de vôlei de quadra:
+ *
+ * - **Peteca** — não existe peteca sozinha. O mais perto é `🏸`, que é
+ *   "badminton racquet and shuttlecock" (U+1F3F8): vem com raquete junto, e
+ *   peteca se joga com a mão. Antes estava `🖐️`, uma mão, que dizia metade
+ *   da coisa.
+ * - **Futevôlei** — não existe bola de futevôlei. `⚽` já é do Society, e
+ *   repetir apagaria a diferença entre as duas. Antes estava `🏖️`, um
+ *   guarda-sol, que descreve a areia e não o esporte.
+ * - **Vôlei de areia** — `🏐` já é do Vôlei de quadra. Antes estava `🌊`,
+ *   uma onda, pelo mesmo motivo do guarda-sol.
+ *
+ * Como a landing não usa imagem raster, os três viram SVG inline desenhado a
+ * partir da bola/peteca real. Os outros nove continuam emoji: onde o emoji
+ * acerta, ele é mais leve e mais consistente entre plataformas que um desenho
+ * nosso.
+ *
+ * Duas coisas fazem esses três sentarem na mesma fileira sem denunciar a
+ * origem, e as duas vieram de comparar lado a lado com os emojis vizinhos:
+ *
+ * 1. **Volume.** A primeira versão era chapada, e ao lado de nove ilustrações
+ *    com sombra e brilho ficava evidente qual card tinha ícone de verdade.
+ *    Daí o gradiente radial com a luz vindo de cima à esquerda, mais a camada
+ *    `-esfera` por cima, que escurece a borda oposta.
+ * 2. **Enquadramento.** O emoji preenche a caixa inteira; um `viewBox` de
+ *    `0 0 32 32` com a bola em `r=13` deixava 20% de margem morta, e o ícone
+ *    parecia menor — e portanto pior — que os vizinhos. Os `viewBox` abaixo
+ *    são apertados no desenho de propósito.
+ */
+function IconePeteca() {
+  return (
+    <svg viewBox="2.5 1.6 27 27" width="30" height="30" role="img" aria-hidden="true">
+      <defs>
+        <linearGradient id="peteca-pena" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#ffffff" />
+          <stop offset="55%" stopColor="#efece0" />
+          <stop offset="100%" stopColor="#cbc7b6" />
+        </linearGradient>
+        <linearGradient id="peteca-base" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#4a4a52" />
+          <stop offset="38%" stopColor="#2d2d33" />
+          <stop offset="100%" stopColor="#141418" />
+        </linearGradient>
+        <linearGradient id="peteca-fita" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#ffdc5e" />
+          <stop offset="45%" stopColor="#f5c518" />
+          <stop offset="100%" stopColor="#c08d05" />
+        </linearGradient>
+      </defs>
+      {/* quatro penas abertas em leque */}
+      <g stroke="#b8b4a3" strokeWidth="0.25" fill="url(#peteca-pena)">
+        <path d="M16 19 C13.4 13 13.2 7.5 16 2.8 C18.8 7.5 18.6 13 16 19 Z" transform="rotate(-17 16 19)" />
+        <path d="M16 19 C13.4 13 13.2 7.5 16 2.8 C18.8 7.5 18.6 13 16 19 Z" transform="rotate(17 16 19)" />
+        <path d="M16 19 C13.4 13 13.2 7.5 16 2.8 C18.8 7.5 18.6 13 16 19 Z" transform="rotate(-6 16 19)" />
+        <path d="M16 19 C13.4 13 13.2 7.5 16 2.8 C18.8 7.5 18.6 13 16 19 Z" transform="rotate(6 16 19)" />
+      </g>
+      {/* etiqueta e base de borracha */}
+      <path d="M12.2 17.6 h7.6 v3.4 h-7.6 z" fill="url(#peteca-fita)" />
+      <ellipse cx="16" cy="21.2" rx="6.4" ry="2.3" fill="#4d4d56" />
+      <path d="M9.6 21.2 h12.8 v4.4 h-12.8 z" fill="url(#peteca-base)" />
+      <ellipse cx="16" cy="25.6" rx="6.4" ry="2.3" fill="#141418" />
+      <path d="M9.6 24.3 h12.8 v1.5 h-12.8 z" fill="url(#peteca-fita)" />
+    </svg>
+  )
+}
+
+function IconeFutevolei() {
+  return (
+    <svg viewBox="2.6 2.6 26.8 26.8" width="30" height="30" role="img" aria-hidden="true">
+      <defs>
+        <radialGradient id="futevolei-couro" cx="34%" cy="28%" r="78%">
+          <stop offset="0%" stopColor="#ffe273" />
+          <stop offset="45%" stopColor="#f5c518" />
+          <stop offset="100%" stopColor="#b8860a" />
+        </radialGradient>
+        <radialGradient id="futevolei-esfera" cx="34%" cy="28%" r="80%">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.42" />
+          <stop offset="52%" stopColor="#ffffff" stopOpacity="0" />
+          <stop offset="100%" stopColor="#000000" stopOpacity="0.3" />
+        </radialGradient>
+        <clipPath id="futevolei-recorte">
+          <circle cx="16" cy="16" r="13" />
+        </clipPath>
+      </defs>
+      <circle cx="16" cy="16" r="13" fill="url(#futevolei-couro)" />
+      {/* losangos pretos cortados na borda, o padrão da bola de futevôlei */}
+      <g clipPath="url(#futevolei-recorte)" fill="#1e1e1e">
+        <path d="M16 8.6 L21.4 16 L16 23.4 L10.6 16 Z" />
+        <path d="M16 -5.4 L21.4 1.6 L16 9 L10.6 1.6 Z" />
+        <path d="M16 23 L21.4 30.4 L16 37.8 L10.6 30.4 Z" />
+        <path d="M2.6 9 L8 16.4 L2.6 23.8 L-2.8 16.4 Z" />
+        <path d="M29.4 9 L34.8 16.4 L29.4 23.8 L24 16.4 Z" />
+      </g>
+      <circle cx="16" cy="16" r="13" fill="url(#futevolei-esfera)" />
+    </svg>
+  )
+}
+
+function IconeVoleiDeAreia() {
+  return (
+    <svg viewBox="2.6 2.6 26.8 26.8" width="30" height="30" role="img" aria-hidden="true">
+      <defs>
+        <radialGradient id="volei-areia-couro" cx="34%" cy="28%" r="80%">
+          <stop offset="0%" stopColor="#ffffff" />
+          <stop offset="55%" stopColor="#f2f2f2" />
+          <stop offset="100%" stopColor="#b9bcc4" />
+        </radialGradient>
+        <radialGradient id="volei-areia-esfera" cx="34%" cy="28%" r="80%">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.42" />
+          <stop offset="52%" stopColor="#ffffff" stopOpacity="0" />
+          <stop offset="100%" stopColor="#000000" stopOpacity="0.3" />
+        </radialGradient>
+        <clipPath id="volei-areia-recorte">
+          <circle cx="16" cy="16" r="13" />
+        </clipPath>
+      </defs>
+      <circle cx="16" cy="16" r="13" fill="url(#volei-areia-couro)" />
+      {/* calotas azuis e faixa amarela no equador, o desenho da bola de praia */}
+      <g clipPath="url(#volei-areia-recorte)">
+        <path d="M-1 16 A17 17 0 0 1 33 16 L33 6 L-1 6 Z" fill="#2a5fe0" />
+        <path d="M-1 16 A17 17 0 0 0 33 16 L33 26 L-1 26 Z" fill="#2a5fe0" />
+        <ellipse cx="16" cy="16" rx="13.4" ry="3.1" fill="#f5c518" />
+      </g>
+      <circle cx="16" cy="16" r="13" fill="url(#volei-areia-esfera)" />
+    </svg>
+  )
+}
+
+interface Sport {
+  icon: ReactNode
+  name: string
+  desc: string
+  color: string
+  from: { x: number; y: number }
+}
+
+const sports: Sport[] = [
   { icon: '👟', name: 'Futsal',            desc: 'Quadra coberta',               color: 'from-blue-600 to-blue-800',     from: { x: -100, y: 0 } },
   { icon: '⚽', name: 'Society',           desc: 'Grama sintética',              color: 'from-green-600 to-green-800',   from: { x: 0, y: -80 } },
   { icon: '🏟️', name: 'Futebol de Campo',  desc: 'Campo convencional',           color: 'from-emerald-600 to-emerald-800', from: { x: 100, y: 0 } },
   { icon: '🏀', name: 'Basquete',          desc: 'Quadra de basquete',           color: 'from-orange-600 to-red-700',    from: { x: -100, y: 0 } },
   { icon: '🏐', name: 'Vôlei',             desc: 'Quadra indoor',                color: 'from-yellow-500 to-yellow-700', from: { x: 0, y: 80 } },
   { icon: '🎾', name: 'Beach Tennis',      desc: 'Quadra de areia',              color: 'from-lime-500 to-lime-700',     from: { x: 100, y: 0 } },
-  { icon: '🏖️', name: 'Futevôlei',         desc: 'Quadra de areia',              color: 'from-orange-500 to-orange-700', from: { x: -100, y: 0 } },
+  { icon: <IconeFutevolei />, name: 'Futevôlei', desc: 'Quadra de areia',        color: 'from-orange-500 to-orange-700', from: { x: -100, y: 0 } },
   { icon: '🃏', name: 'Poker',             desc: 'Torneios e cash games',        color: 'from-purple-600 to-purple-800', from: { x: 0, y: -80 } },
   { icon: '🎾', name: 'Tênis',             desc: 'Quadra de tênis',              color: 'from-violet-500 to-violet-700', from: { x: 100, y: 0 } },
   { icon: '🤾', name: 'Handebol',          desc: 'Quadra de handebol',           color: 'from-red-500 to-red-700',       from: { x: -100, y: 0 } },
-  { icon: '🌊', name: 'Vôlei de Areia',    desc: 'Quadra de vôlei de areia',     color: 'from-cyan-500 to-cyan-700',     from: { x: 0, y: 80 } },
-  { icon: '🖐️', name: 'Peteca',            desc: 'Quadra de peteca',             color: 'from-pink-500 to-pink-700',     from: { x: 100, y: 0 } },
+  { icon: <IconeVoleiDeAreia />, name: 'Vôlei de Areia', desc: 'Quadra de vôlei de areia', color: 'from-cyan-500 to-cyan-700', from: { x: 0, y: 80 } },
+  { icon: <IconePeteca />, name: 'Peteca',    desc: 'Quadra de peteca',             color: 'from-pink-500 to-pink-700',     from: { x: 100, y: 0 } },
 ]
 
 export default function CourtsSection() {
@@ -113,7 +253,13 @@ export default function CourtsSection() {
             >
               <div className={`absolute inset-0 bg-gradient-to-br ${sport.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300 rounded-2xl`} />
               <div className="relative z-10">
-                <span className="text-3xl group-hover:scale-110 transition-transform duration-300 inline-block mb-3">
+                {/*
+                  Altura fixa e centralização vertical porque a linha agora
+                  mistura emoji e SVG: emoji ocupa a caixa de linha inteira do
+                  `text-3xl` (36px) e o SVG ocupa só os 30px dele, o que
+                  desalinharia os títulos entre cartões vizinhos.
+                */}
+                <span className="text-3xl group-hover:scale-110 transition-transform duration-300 inline-flex h-9 items-center mb-3">
                   {sport.icon}
                 </span>
                 <h3 className="text-base font-bold text-white mb-1">{sport.name}</h3>

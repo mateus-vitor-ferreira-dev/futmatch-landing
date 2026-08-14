@@ -1,4 +1,4 @@
-import { Mail, AtSign, GitBranch } from 'lucide-react'
+import { Mail, AtSign } from 'lucide-react'
 import Link from 'next/link'
 import LogoSvg from '@/components/LogoSvg'
 
@@ -8,6 +8,7 @@ const platformLinks = [
   { label: 'Funcionalidades',   href: '#features' },
   { label: 'Como funciona',     href: '#how-it-works' },
   { label: 'Modalidades',       href: '#courts' },
+  { label: 'Em breve',          href: '#roadmap' },
   { label: 'Portal de parceiros', href: 'https://app.so-mais-um.com/seja-parceiro' },
 ]
 
@@ -15,20 +16,14 @@ const socialLinks = [
   {
     Icon: Mail,
     label: 'E-mail',
-    href: 'mailto:mateus.ferreira10profissional@gmail.com',
-    text: 'mateus.ferreira10profissional@gmail.com',
+    href: 'mailto:empresa.so.mais.um@gmail.com',
+    text: 'empresa.so.mais.um@gmail.com',
   },
   {
     Icon: AtSign,
     label: 'Instagram',
-    href: 'https://instagram.com/so_mais_um_app',
-    text: '@so_mais_um_app',
-  },
-  {
-    Icon: GitBranch,
-    label: 'GitHub',
-    href: 'https://github.com/mateus-vitor-ferreira-dev',
-    text: 'github.com/mateus-vitor-ferreira-dev',
+    href: 'https://www.instagram.com/somaisumempresa/',
+    text: 'somaisumempresa',
   },
 ]
 
@@ -43,7 +38,7 @@ export default function Footer() {
               <LogoSvg width={96} />
             </div>
             <p className="text-gray-500 text-sm leading-relaxed max-w-xs mb-6">
-              A plataforma que conecta jogadores, espaços e peladas. Do racha da várzea ao torneio organizado.
+              A plataforma que conecta jogadores, espaços e partidas. Do racha da várzea ao torneio organizado.
             </p>
             {/* Social icon row */}
             <div className="flex gap-3">

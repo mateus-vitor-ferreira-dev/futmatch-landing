@@ -12,6 +12,7 @@ const links = [
   { label: 'Como funciona',   href: '#how-it-works' },
   { label: 'Modalidades',     href: '#courts' },
   { label: 'Para espaços',    href: '#owner' },
+  { label: 'Em breve',        href: '#roadmap' },
 ]
 
 export default function Navbar() {

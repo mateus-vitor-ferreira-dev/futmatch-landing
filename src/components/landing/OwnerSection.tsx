@@ -6,15 +6,25 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useMobileScrollAnimation } from '@/lib/useMobileScrollAnimation'
-import { ArrowRight, BarChart2, CalendarCheck, Users, MapPin, CheckCircle } from 'lucide-react'
+import { ArrowRight, BarChart2, LayoutGrid, Users, MapPin, Package, ClipboardList, CheckCircle } from 'lucide-react'
 
 gsap.registerPlugin(ScrollTrigger)
 
+/**
+ * A lista dizia "métricas de ocupação e receita" e "agenda integrada". Nenhuma
+ * das duas existe: `getStats` do painel do dono devolve contagem de espaços,
+ * quadras, partidas ativas e solicitações pendentes — e não há tela de agenda.
+ * Prometer relatório de receita para quem vai *pagar assinatura* é a pior
+ * versão do erro que a #15 pegou na prova social, então cada item aqui aponta
+ * para uma tela que existe no painel.
+ */
 const benefits = [
-  { Icon: BarChart2,    text: 'Painel com métricas de ocupação e receita' },
-  { Icon: CalendarCheck, text: 'Agenda de peladas e torneios integrada' },
-  { Icon: Users,        text: 'Visibilidade para todos os jogadores da plataforma' },
-  { Icon: MapPin,       text: 'Perfil público do espaço com todas as quadras' },
+  { Icon: BarChart2,     text: 'Painel com seus espaços, quadras e partidas ativas' },
+  { Icon: LayoutGrid,    text: 'Cadastro de quadras por modalidade, com preço e status' },
+  { Icon: Package,       text: 'Controle de estoque do bar, com alerta de estoque baixo' },
+  { Icon: ClipboardList, text: 'Controle de equipamentos emprestados, da saída à devolução' },
+  { Icon: Users,         text: 'Visibilidade para todos os jogadores da plataforma' },
+  { Icon: MapPin,        text: 'Perfil público do espaço com todas as quadras' },
 ]
 
 export default function OwnerSection() {
@@ -82,6 +92,28 @@ export default function OwnerSection() {
                 </Button>
               </a>
             </div>
+
+            {/*
+              O jogador não paga; o dono paga. A landing dizia isso em lugar
+              nenhum, e omitir o modelo de negócio inteiro só adia a conversa
+              para depois do cadastro (landing#44).
+
+              Sem tabela de preço aqui de propósito: `GET /plans` exige
+              autenticação, então a landing não tem como ler os valores do banco
+              como faz com `/stats`, e preço escrito no código desatualiza na
+              primeira mudança. Quem quiser o número vê a grade no painel.
+            */}
+            <p className="text-gray-500 text-sm pt-1">
+              O painel do parceiro é uma assinatura mensal — jogar no Só+1 segue gratuito para
+              os jogadores.{' '}
+              <a
+                href="https://app.so-mais-um.com/owner/plans"
+                className="text-green-400 underline underline-offset-4 hover:text-green-300 transition-colors"
+              >
+                Ver os planos
+              </a>
+              .
+            </p>
           </div>
 
           {/* Right: owner dashboard mockup */}
@@ -95,12 +127,18 @@ export default function OwnerSection() {
                 <span className="text-xs text-green-400 bg-green-500/10 border border-green-500/20 px-2.5 py-1 rounded-lg font-semibold">✓ Ativo</span>
               </div>
 
-              {/* Stats row */}
+              {/*
+                Os valores são ilustrativos — é um desenho de tela, não uma
+                afirmação sobre a plataforma. Os *rótulos*, não: eles precisam
+                existir no produto. Antes eram "Jogadores únicos" e "Taxa de
+                ocupação", que o painel não calcula; agora são os três
+                contadores que o `/owner/stats` devolve de verdade.
+              */}
               <div className="grid grid-cols-3 gap-3">
                 {[
-                  { label: 'Peladas este mês', value: '24' },
-                  { label: 'Jogadores únicos', value: '187' },
-                  { label: 'Taxa de ocupação', value: '78%' },
+                  { label: 'Espaços', value: '1' },
+                  { label: 'Quadras', value: '3' },
+                  { label: 'Partidas ativas', value: '5' },
                 ].map((s, i) => (
                   <div key={i} className="bg-gray-900/60 rounded-xl p-3 text-center">
                     <div className="text-green-400 font-black text-xl">{s.value}</div>
@@ -113,9 +151,12 @@ export default function OwnerSection() {
               <div className="space-y-2">
                 <p className="text-xs text-gray-600 uppercase tracking-wider">Suas quadras</p>
                 {[
-                  { name: 'Quadra 1 — Society', status: 'Pelada em 2h', dot: 'bg-yellow-400' },
-                  { name: 'Quadra 2 — Futsal',  status: 'Disponível',   dot: 'bg-green-400' },
-                  { name: 'Quadra 3 — Beach Tennis', status: 'Reservada', dot: 'bg-red-400' },
+                  // `Court.status` é OPEN ou CLOSED — não existe reserva de
+                  // quadra no produto, e "Reservada" sugeria um módulo inteiro
+                  // que ninguém construiu.
+                  { name: 'Quadra 1 — Society', status: 'Partida em 2h', dot: 'bg-yellow-400' },
+                  { name: 'Quadra 2 — Futsal',  status: 'Aberta',        dot: 'bg-green-400' },
+                  { name: 'Quadra 3 — Beach Tennis', status: 'Fechada',  dot: 'bg-red-400' },
                 ].map((c, i) => (
                   <div key={i} className="flex items-center justify-between py-2.5 border-b border-white/5 last:border-0">
                     <div className="flex items-center gap-2.5">

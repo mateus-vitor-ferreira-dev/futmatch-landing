@@ -54,7 +54,7 @@ export default function CTASection() {
             </div>
 
             <h2 className="text-4xl md:text-5xl font-black text-white mb-5 leading-tight">
-              Sua próxima pelada começa aqui
+              Sua próxima partida começa aqui
             </h2>
             <p className="text-green-100/80 text-lg mb-10 max-w-xl mx-auto leading-relaxed">
               Crie sua conta gratuita e encontre uma partida hoje. Times sorteados, vagas controladas, reputação garantida.
