@@ -6,50 +6,58 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useMobileScrollAnimation } from '@/lib/useMobileScrollAnimation'
-import { ArrowRight, Building2, LayoutGrid, Volleyball } from 'lucide-react'
+import { ArrowRight, BarChart3, Building2, Dumbbell, Package, Volleyball } from 'lucide-react'
 import type { GradeDePlanos, PlanoPublico } from '@/lib/planos'
 
 gsap.registerPlugin(ScrollTrigger)
 
 /**
- * "Cabe no meu espaço?" — e não "quanto custa".
+ * "O que eu ganho em cada degrau?" — e não "quanto custa" nem "cabe no meu espaço".
  *
  * A rota que alimenta esta seção não devolve preço, de propósito: o valor é
- * conversa do painel, depois da decisão de virar parceiro. O que a landing
- * consegue responder honestamente antes do cadastro é se existe um plano do
- * tamanho de quem está lendo — uma arena de uma quadra e um complexo de doze
- * precisam saber que os dois cabem.
+ * conversa do painel, depois da decisão de virar parceiro.
+ *
+ * Até a api#278 a comparação era por **quantidade** — quantos espaços, quantas
+ * quadras, quantas modalidades. Aquele eixo media o tamanho de quem lia e não o
+ * que ele ganhava ao subir: uma arena de duas quadras nunca encostava no teto do
+ * plano de entrada e por isso nunca tinha motivo para pagar mais. Agora cada
+ * degrau abre uma parte do painel, e é isso que a seção compara.
  *
  * Nenhum plano é destacado como recomendado. Recomendar exigiria saber algo
- * sobre o negócio de quem lê, e o único critério real está na própria tabela:
- * o tamanho do espaço.
+ * sobre o negócio de quem lê.
+ *
+ * **Nenhum plano dá direito a quadra.** A armadilha que a #36 pegou continua de
+ * pé, só mudou de forma: o que se assina é o painel, e um cartão que insinuasse
+ * "quadras inclusas" prometeria o que a plataforma não entrega.
  */
 
-/**
- * `null` é SEM LIMITE, jamais zero.
- *
- * Está comentado no `schema.prisma` e a api devolve `null` de propósito. Se
- * isto virar `0` em algum ponto, a seção passa a anunciar que o plano mais caro
- * não dá direito a quadra nenhuma — o mesmo erro que a #36 pegou no cartão de
- * prova social que exibia zero.
- */
-function limite(valor: number | null, singular: string, plural: string): string {
-  if (valor === null) return 'Ilimitado'
-  return `${valor} ${valor === 1 ? singular : plural}`
-}
+/** O que todo degrau inclui, inclusive o de entrada. */
+const INCLUSO_EM_TODO_PLANO = [
+  { chave: 'cadastro',  Icon: Building2,  texto: 'Cadastrar a arena e as quadras' },
+  { chave: 'partidas',  Icon: Volleyball, texto: 'Receber e administrar as partidas' },
+] as const
+
+/** Rótulo de cada funcionalidade, na ordem em que os degraus as abrem. */
+const FUNCIONALIDADES = [
+  { chave: 'ESTATISTICAS', Icon: BarChart3, texto: 'Estatísticas do espaço' },
+  { chave: 'EQUIPAMENTOS', Icon: Dumbbell,  texto: 'Controle de equipamento' },
+  { chave: 'ESTOQUE',      Icon: Package,   texto: 'Controle de estoque' },
+] as const
 
 /**
- * A `chave` é o nome do campo, e não o texto.
+ * As linhas de um cartão: o incluso primeiro, o que o degrau abre depois.
  *
- * No Premium os três limites são nulos, então os três textos são "Ilimitado" —
- * usar o texto como `key` dá three children with the same key e o React passa a
- * omitir linha.
+ * Sem as duas primeiras, o plano de entrada apareceria como um cartão vazio —
+ * ele é o degrau de entrada, não um plano que não faz nada, e cartão vazio não
+ * vende nem descreve o produto.
+ *
+ * A `chave` é o nome do campo e não o texto: dois planos podem repetir rótulo, e
+ * texto como `key` dá children com a mesma chave e o React passa a omitir linha.
  */
 function linhasDoPlano(plano: PlanoPublico) {
   return [
-    { chave: 'estabelecimentos', Icon: Building2,  texto: limite(plano.maxEstabelecimentos, 'espaço', 'espaços') },
-    { chave: 'quadras',          Icon: LayoutGrid, texto: limite(plano.maxQuadras, 'quadra', 'quadras') },
-    { chave: 'modalidades',      Icon: Volleyball, texto: limite(plano.maxModalidades, 'modalidade', 'modalidades') },
+    ...INCLUSO_EM_TODO_PLANO,
+    ...FUNCIONALIDADES.filter(f => plano.funcionalidades.includes(f.chave)),
   ]
 }
 
@@ -102,14 +110,14 @@ export default function PlanosSection({ grade }: PlanosSectionProps) {
         <div className="planos-title text-center mb-8 md:mb-14">
           <Badge variant="dark" className="mb-4">Planos</Badge>
           <h2 className="text-4xl md:text-5xl font-black text-white mb-4">
-            Qual plano{' '}
+            O que cada plano{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-300">
-              cabe no seu espaço
+              abre no painel
             </span>
           </h2>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            Da quadra única ao complexo com várias modalidades. Jogar segue gratuito para os
-            jogadores — o painel do parceiro é uma assinatura mensal.
+            Sem limite de quadras, espaços ou modalidades em nenhum plano. Jogar segue
+            gratuito para os jogadores — o painel do parceiro é uma assinatura mensal.
           </p>
         </div>
 

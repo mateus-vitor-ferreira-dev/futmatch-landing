@@ -7,16 +7,28 @@
  * anunciar o que o produto não entrega.
  *
  * `GET /plans/public` **não devolve preço**, de propósito. A landing responde
- * "cabe no meu espaço?", que é o que dá para responder honestamente antes do
- * cadastro; o valor é conversa do painel, depois da decisão. Isso também é o
- * que desacopla esta seção da virada da Stripe para live.
+ * "o que eu ganho em cada degrau?", que é o que dá para responder honestamente
+ * antes do cadastro; o valor é conversa do painel, depois da decisão. Isso também
+ * é o que desacopla esta seção da virada da Stripe para live.
  */
+
+/**
+ * O que um degrau abre no painel do parceiro. Espelha o enum `PlanFeature` da api.
+ *
+ * A grade deixou de se diferenciar por quantidade — quadras, espaços e modalidades
+ * — na api#278. Aquele eixo media o tamanho do cliente, não o que ele ganha ao
+ * subir de plano.
+ */
+export type Funcionalidade = 'ESTATISTICAS' | 'EQUIPAMENTOS' | 'ESTOQUE'
+
 export interface PlanoPublico {
   nome: string
-  /** `null` significa SEM LIMITE, nunca zero — ver o comentário no `schema.prisma`. */
-  maxEstabelecimentos: number | null
-  maxQuadras: number | null
-  maxModalidades: number | null
+  /**
+   * **Lista vazia é o degrau de entrada, não plano quebrado.** Cadastrar a arena e
+   * receber partidas não depende de funcionalidade nenhuma — é o que todo plano
+   * inclui, e a seção diz isso em vez de desenhar um cartão vazio.
+   */
+  funcionalidades: Funcionalidade[]
 }
 
 export interface GradeDePlanos {
@@ -30,17 +42,20 @@ const API_URL = process.env.API_URL ?? 'https://api.so-mais-um.com'
 /** Os mesmos cinco minutos que a api cacheia do lado dela. */
 const REVALIDAR_SEGUNDOS = 300
 
-/** `null` em qualquer campo esperado derruba a resposta inteira: meia grade é pior que nenhuma. */
+const FUNCIONALIDADES: readonly Funcionalidade[] = ['ESTATISTICAS', 'EQUIPAMENTOS', 'ESTOQUE']
+
+/** Campo inesperado derruba a resposta inteira: meia grade é pior que nenhuma. */
 function ehPlanoValido(valor: unknown): valor is PlanoPublico {
   const p = valor as Partial<PlanoPublico> | null
 
   if (typeof p?.nome !== 'string' || p.nome.length === 0) return false
 
-  // `null` é resposta legítima — é o "ilimitado". O que não pode passar é
-  // `undefined`, que viraria "NaN quadras" na tela.
-  return (['maxEstabelecimentos', 'maxQuadras', 'maxModalidades'] as const).every(
-    campo => p[campo] === null || typeof p[campo] === 'number'
-  )
+  // Array vazio é resposta legítima — é o plano de entrada. O que não pode passar é
+  // `undefined`, nem um nome de funcionalidade que esta versão da landing não conhece:
+  // renderizar um rótulo em branco seria pior do que esconder a seção.
+  if (!Array.isArray(p.funcionalidades)) return false
+
+  return p.funcionalidades.every(f => FUNCIONALIDADES.includes(f as Funcionalidade))
 }
 
 /**
