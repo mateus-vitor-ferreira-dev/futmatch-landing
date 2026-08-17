@@ -4,7 +4,7 @@
 
 ### A porta de entrada da plataforma que acaba com o _"falta um?"_ no grupo do WhatsApp.
 
-Landing de conversão do **Só+1**: descubra peladas abertas, entre com um clique e sorteie os times na hora — sem grupo de WhatsApp, sem confusão, só jogo.
+Landing de conversão do **Só+1**: descubra partidas abertas, entre com um clique e sorteie os times na hora — sem grupo de WhatsApp, sem confusão, só jogo.
 
 <p>
   <a href="https://so-mais-um.com"><img src="https://img.shields.io/badge/▶_Ver_ao_vivo-so--mais--um.com-22C55E?style=for-the-badge&logo=vercel&logoColor=white" alt="Ao vivo"/></a>
@@ -35,7 +35,7 @@ Landing de conversão do **Só+1**: descubra peladas abertas, entre com um cliqu
 
 ## 🎯 O que é
 
-Organizar uma pelada hoje é uma sequência de mensagens perdidas: alguém pergunta "fecha 12?", três confirmam, dois somem na hora, o time é dividido no olho e ninguém lembra quem furou semana passada. O **Só+1** resolve isso num app — peladas abertas com vagas visíveis, entrada em um clique, sorteio automático de times e reputação por avaliação. Este repositório é a **landing**: a página que o visitante encontra antes de saber que o app existe.
+Organizar uma partida hoje é uma sequência de mensagens perdidas: alguém pergunta "fecha 12?", três confirmam, dois somem na hora, o time é dividido no olho e ninguém lembra quem furou semana passada. O **Só+1** resolve isso num app — partidas abertas com vagas visíveis, entrada em um clique, sorteio automático de times e reputação por avaliação. Este repositório é a **landing**: a página que o visitante encontra antes de saber que o app existe.
 
 O papel dela no funil é único e estreito — **transformar visitante em jogador cadastrado**. Ela não guarda dado e não tem formulário: comunica a proposta em segundos e entrega o clique para `app.so-mais-um.com`. Do backend ela lê uma coisa só, e somente no servidor — os números públicos de `GET /stats`, que alimentam a prova social. Toda conversão sai daqui por link — cadastro e login para jogadores, portal de parceiros para donos de quadra. São **10 seções** encadeadas numa narrativa `Descobrir → Entrar → Jogar`, fechando com o que ainda está por vir, cada uma com sua própria animação de entrada.
 
@@ -72,7 +72,7 @@ flowchart LR
 
 **`gsap.context()` e `revert()` em todo componente.** Cada seção embrulha suas tweens em `gsap.context(..., sectionRef)` e devolve `ctx.revert()` no cleanup do effect. Sob o StrictMode do React 19 — que invoca o effect duas vezes em dev — nenhuma tween órfã e nenhum ScrollTrigger duplicado sobrevive. Sem isso, a segunda montagem deixaria triggers vazando e animações disparando em dobro.
 
-**O preview que só liga quando é visto.** A seção de preview do app cicla peladas (3200 ms) e notificações (2400 ms) para simular o produto ao vivo. Os `setInterval` **não começam no mount**: ficam atrás de uma flag `active` que só o `onEnter` do ScrollTrigger levanta. Quem nunca rolou até lá não paga por dois timers rodando numa seção invisível.
+**O preview que só liga quando é visto.** A seção de preview do app cicla partidas (3200 ms) e notificações (2400 ms) para simular o produto ao vivo. Os `setInterval` **não começam no mount**: ficam atrás de uma flag `active` que só o `onEnter` do ScrollTrigger levanta. Quem nunca rolou até lá não paga por dois timers rodando numa seção invisível.
 
 **Fonte resolvida no build, não no runtime.** `next/font/google` carrega a Inter com `subsets: ['latin']` e `display: 'swap'`, exposta como a CSS var `--font-inter`. O arquivo é self-hospedado no build — nenhuma request para o Google Fonts no carregamento, nenhum FOIT, e o subset corta o que o português não usa.
 
@@ -205,7 +205,7 @@ Abra `http://localhost:3000` e confira, nesta ordem:
 1. **O Hero anima sozinho** no load — as linhas do campo se desenham e o card "Society da Quinta" sobe. Se aparecer estático, o GSAP não montou: olhe o console.
 2. **Role a página.** Cada seção entra com sua animação. Seção que fica em branco até você rolar até ela é **comportamento esperado** — os triggers são `once: true`.
 3. **A navbar muda** de transparente para escura com blur depois de ~40px de scroll.
-4. **A seção "Plataforma"** começa a ciclar peladas e notificações assim que entra no viewport (e só então).
+4. **A seção "Plataforma"** começa a ciclar partidas e notificações assim que entra no viewport (e só então).
 
 Pelo terminal:
 
