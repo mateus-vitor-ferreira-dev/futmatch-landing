@@ -1,15 +1,14 @@
 /**
- * Esta seção existe para responder "cabe no meu espaço?" — e o jeito de errar
- * essa resposta é específico.
+ * Esta seção existe para responder "o que eu ganho em cada degrau?" — e há dois
+ * jeitos específicos de errar essa resposta.
  *
- * O limite nulo da tabela `Plan` significa **sem limite**, não zero. Se ele
- * virar `0` em qualquer ponto do caminho, a seção passa a dizer que o plano
- * mais caro não dá direito a quadra nenhuma. É o mesmo erro de leitura que a
- * #36 pegou no cartão de prova social que exibia zero, e é o que a maior parte
- * dos casos aqui protege.
+ * O primeiro é **o plano de entrada aparecer vazio**. Ele não abre funcionalidade
+ * nenhuma, e um cartão só com funcionalidades ficaria em branco: o leitor conclui
+ * que o degrau mais barato não faz nada, quando ele é o que cadastra a arena e
+ * recebe as partidas. É o parente do erro que a #36 pegou no cartão que exibia zero.
  *
- * O segundo risco é grade parcial: uma comparação com um plano faltando não é
- * informação incompleta, é informação errada.
+ * O segundo é grade parcial: uma comparação com um plano faltando não é informação
+ * incompleta, é informação errada.
  */
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
@@ -44,9 +43,9 @@ import type { GradeDePlanos } from '@/lib/planos'
 
 const GRADE: GradeDePlanos = {
   planos: [
-    { nome: 'Só+1 Básico', maxEstabelecimentos: 1, maxQuadras: 3, maxModalidades: 2 },
-    { nome: 'Só+1 Pro', maxEstabelecimentos: 3, maxQuadras: 10, maxModalidades: 5 },
-    { nome: 'Só+1 Premium', maxEstabelecimentos: null, maxQuadras: null, maxModalidades: null },
+    { nome: 'Só+1 Básico', funcionalidades: [] },
+    { nome: 'Só+1 Pro', funcionalidades: ['ESTATISTICAS'] },
+    { nome: 'Só+1 Premium', funcionalidades: ['ESTATISTICAS', 'EQUIPAMENTOS', 'ESTOQUE'] },
   ],
   parceiroUrl: 'https://app.so-mais-um.com/seja-parceiro',
 }
@@ -60,20 +59,38 @@ describe('PlanosSection com a grade da API', () => {
     expect(screen.getByText('Só+1 Premium')).toBeInTheDocument()
   })
 
-  it('escreve limite sem teto como "Ilimitado", nunca como zero', () => {
+  it('o plano de entrada não aparece vazio — mostra o que todo degrau inclui', () => {
     render(<PlanosSection grade={GRADE} />)
 
-    // Os três limites do Premium são nulos.
-    expect(screen.getAllByText('Ilimitado')).toHaveLength(3)
-    expect(screen.queryByText(/^0 /)).not.toBeInTheDocument()
+    // As duas linhas do incluso saem uma vez por plano, os três inclusive.
+    expect(screen.getAllByText('Cadastrar a arena e as quadras')).toHaveLength(3)
+    expect(screen.getAllByText('Receber e administrar as partidas')).toHaveLength(3)
   })
 
-  it('concorda o singular com o número', () => {
+  it('cada degrau mostra só o que ele abre', () => {
     render(<PlanosSection grade={GRADE} />)
 
-    expect(screen.getByText('1 espaço')).toBeInTheDocument()
-    expect(screen.getByText('3 espaços')).toBeInTheDocument()
-    expect(screen.getByText('10 quadras')).toBeInTheDocument()
+    // Estatística está no Pro e no Premium; estoque e equipamento, só no Premium.
+    expect(screen.getAllByText('Estatísticas do espaço')).toHaveLength(2)
+    expect(screen.getAllByText('Controle de estoque')).toHaveLength(1)
+    expect(screen.getAllByText('Controle de equipamento')).toHaveLength(1)
+  })
+
+  it('não promete teto de quantidade em lugar nenhum', () => {
+    const { container } = render(<PlanosSection grade={GRADE} />)
+
+    // O eixo antigo saiu na api#278: nenhum plano limita quadra, espaço ou
+    // modalidade, e insinuar limite aqui venderia um critério que não existe.
+    expect(container.textContent).not.toMatch(/ilimitad/i)
+    expect(container.textContent).not.toMatch(/\d+ (quadras?|espaços?|modalidades?)/i)
+  })
+
+  it('não promete quadra inclusa — o que se assina é o painel', () => {
+    const { container } = render(<PlanosSection grade={GRADE} />)
+
+    // A armadilha da #36 mudou de forma, mas continua de pé: plano dá acesso ao
+    // painel, nunca direito a quadra.
+    expect(container.textContent).not.toMatch(/quadras? inclus|inclui .*quadra/i)
   })
 
   it('não anuncia preço — o valor é conversa do painel', () => {
@@ -104,7 +121,7 @@ describe('PlanosSection sem dado', () => {
   it('não vaza título nem CTA no HTML quando some', () => {
     render(<PlanosSection grade={null} />)
 
-    expect(screen.queryByText(/cabe no seu espaço/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/abre no painel/i)).not.toBeInTheDocument()
     expect(screen.queryByRole('link')).not.toBeInTheDocument()
   })
 })

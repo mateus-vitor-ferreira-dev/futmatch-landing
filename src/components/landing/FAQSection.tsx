@@ -35,7 +35,7 @@ const faqs = [
   },
   {
     q: 'Sou dono de uma quadra. Como cadastro meu espaço?',
-    a: 'Acesse o portal de parceiros em app.so-mais-um.com/seja-parceiro. Após aprovação pelo nosso time, você assina um dos planos e passa a gerenciar quadras, estoque e equipamentos pelo painel de parceiro. O cadastro do espaço é gratuito; o painel é uma assinatura mensal.',
+    a: 'Acesse o portal de parceiros em app.so-mais-um.com/seja-parceiro. Após aprovação pelo nosso time, você assina um dos planos e passa a gerenciar suas quadras e as partidas pelo painel de parceiro — sem limite de quantidade em nenhum plano. Estatísticas, controle de equipamento e controle de estoque entram conforme o plano escolhido. O cadastro do espaço é gratuito; o painel é uma assinatura mensal.',
   },
   {
     q: 'Posso apagar minha conta e levar meus dados?',

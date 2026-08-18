@@ -29,8 +29,8 @@ gsap.registerPlugin(ScrollTrigger)
  * acerta, ele é mais leve e mais consistente entre plataformas que um desenho
  * nosso.
  *
- * Duas coisas fazem esses três sentarem na mesma fileira sem denunciar a
- * origem, e as duas vieram de comparar lado a lado com os emojis vizinhos:
+ * Três coisas fazem esses três sentarem na mesma fileira sem denunciar a
+ * origem, e as três vieram de comparar lado a lado com os emojis vizinhos:
  *
  * 1. **Volume.** A primeira versão era chapada, e ao lado de nove ilustrações
  *    com sombra e brilho ficava evidente qual card tinha ícone de verdade.
@@ -40,6 +40,24 @@ gsap.registerPlugin(ScrollTrigger)
  *    `0 0 32 32` com a bola em `r=13` deixava 20% de margem morta, e o ícone
  *    parecia menor — e portanto pior — que os vizinhos. Os `viewBox` abaixo
  *    são apertados no desenho de propósito.
+ * 3. **A silhueta é intocável, e o desenho vem depois dela** (#46). Era o que
+ *    faltava: a bola de futevôlei tinha losangos grandes o bastante para
+ *    encostar na borda a leste e a oeste, e o preto comia o contorno — a 30px
+ *    ela não lia como bola, lia como um losango amarelo. A de vôlei de areia
+ *    tinha as calotas fechadas em linha reta, então as faixas cruzavam a bola
+ *    chapadas e o resultado parecia um botão listrado, não uma esfera.
+ *
+ *    As duas foram refeitas com a mesma regra: **nada de cor escura toca a
+ *    borda**, e toda linha interna acompanha a curvatura, do polo ao polo. É o
+ *    que os emojis vizinhos fazem — a costura da 🏐 e as linhas da 🏀 são
+ *    curvas, e é delas que vem a leitura de volume num desenho de 30px.
+ *
+ * A decisão de escopo está registrada na #46: seguimos pelo caminho **A**, os
+ * três redesenhados por nós, sem partir de arte de terceiro. O caminho **C** —
+ * substituir as doze por um conjunto único — continua sendo o único que resolve
+ * a inconsistência entre plataformas de emoji, e continua em aberto: enquanto
+ * nove ícones vierem da fonte de quem visita, a fileira tem uma cara no iPhone
+ * e outra no Android, e nenhum desenho nosso muda isso.
  */
 function IconePeteca() {
   return (
@@ -97,13 +115,22 @@ function IconeFutevolei() {
         </clipPath>
       </defs>
       <circle cx="16" cy="16" r="13" fill="url(#futevolei-couro)" />
-      {/* losangos pretos cortados na borda, o padrão da bola de futevôlei */}
+      {/*
+        Os losangos da bola de futevôlei, em coluna do polo ao polo.
+        Antes havia dois deles a leste e a oeste, na parte mais larga da bola, e
+        o preto encostava na borda: a 30px o contorno redondo sumia e sobrava um
+        losango amarelo. Aqui a coluna atravessa a bola pelo eixo curto, onde a
+        ponta do losango é estreita e a silhueta sobrevive.
+      */}
       <g clipPath="url(#futevolei-recorte)" fill="#1e1e1e">
-        <path d="M16 8.6 L21.4 16 L16 23.4 L10.6 16 Z" />
-        <path d="M16 -5.4 L21.4 1.6 L16 9 L10.6 1.6 Z" />
-        <path d="M16 23 L21.4 30.4 L16 37.8 L10.6 30.4 Z" />
-        <path d="M2.6 9 L8 16.4 L2.6 23.8 L-2.8 16.4 Z" />
-        <path d="M29.4 9 L34.8 16.4 L29.4 23.8 L24 16.4 Z" />
+        <path d="M16 11.4 L19.6 16 L16 20.6 L12.4 16 Z" />
+        <path d="M16 2.6 L19.6 7.2 L16 11.8 L12.4 7.2 Z" />
+        <path d="M16 20.2 L19.6 24.8 L16 29.4 L12.4 24.8 Z" />
+      </g>
+      {/* costura clara acompanhando a curvatura, como a da bola de vôlei */}
+      <g clipPath="url(#futevolei-recorte)" fill="none" stroke="#7a5c07" strokeWidth="0.7" opacity="0.55">
+        <path d="M7.4 4.4 C10.6 10.4 10.6 21.6 7.4 27.6" />
+        <path d="M24.6 4.4 C21.4 10.4 21.4 21.6 24.6 27.6" />
       </g>
       <circle cx="16" cy="16" r="13" fill="url(#futevolei-esfera)" />
     </svg>
@@ -129,11 +156,17 @@ function IconeVoleiDeAreia() {
         </clipPath>
       </defs>
       <circle cx="16" cy="16" r="13" fill="url(#volei-areia-couro)" />
-      {/* calotas azuis e faixa amarela no equador, o desenho da bola de praia */}
+      {/*
+        Gomos curvos de polo a polo, o desenho da bola de praia.
+        Antes eram duas calotas fechadas em linha reta mais uma elipse no
+        equador: as faixas cruzavam a bola chapadas e ela lia como um botão
+        listrado. Cada gomo aqui é a área entre dois meridianos, então a linha
+        acompanha a curvatura e é ela que entrega o volume a 30px.
+      */}
       <g clipPath="url(#volei-areia-recorte)">
-        <path d="M-1 16 A17 17 0 0 1 33 16 L33 6 L-1 6 Z" fill="#2a5fe0" />
-        <path d="M-1 16 A17 17 0 0 0 33 16 L33 26 L-1 26 Z" fill="#2a5fe0" />
-        <ellipse cx="16" cy="16" rx="13.4" ry="3.1" fill="#f5c518" />
+        <path d="M16 3 C0 9, 0 23, 16 29 C8 23, 8 9, 16 3 Z" fill="#2a5fe0" />
+        <path d="M16 3 C12 9, 12 23, 16 29 C20 23, 20 9, 16 3 Z" fill="#f5c518" />
+        <path d="M16 3 C24 9, 24 23, 16 29 C32 23, 32 9, 16 3 Z" fill="#2a5fe0" />
       </g>
       <circle cx="16" cy="16" r="13" fill="url(#volei-areia-esfera)" />
     </svg>
