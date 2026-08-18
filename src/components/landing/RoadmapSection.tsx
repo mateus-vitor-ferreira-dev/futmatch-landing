@@ -88,7 +88,7 @@ export default function RoadmapSection() {
     }, sectionRef)
 
     return () => ctx.revert()
-  }, [])
+  }, [sectionRef])
 
   return (
     <section id="roadmap" ref={sectionRef} className="bg-gray-900 py-12 md:py-24">

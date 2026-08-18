@@ -159,7 +159,7 @@ export default function FeaturesSection() {
     }, sectionRef)
 
     return () => ctx.revert()
-  }, [])
+  }, [sectionRef])
 
   return (
     <section id="features" ref={sectionRef} className="bg-gray-950 py-12 md:py-24">

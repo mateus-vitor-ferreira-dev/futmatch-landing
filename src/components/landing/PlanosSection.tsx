@@ -98,7 +98,7 @@ export default function PlanosSection({ grade }: PlanosSectionProps) {
     }, sectionRef)
 
     return () => ctx.revert()
-  }, [])
+  }, [sectionRef])
 
   // Sem dado, sem seção. Grade parcial ou vazia faria o dono concluir que o
   // produto não serve para o tamanho dele — pior do que não dizer nada.
