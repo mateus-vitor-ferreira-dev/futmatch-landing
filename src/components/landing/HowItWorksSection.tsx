@@ -79,7 +79,7 @@ export default function HowItWorksSection() {
     }, sectionRef)
 
     return () => ctx.revert()
-  }, [])
+  }, [sectionRef])
 
   return (
     <section id="how-it-works" ref={sectionRef} className="bg-gray-900 py-12 md:py-24">

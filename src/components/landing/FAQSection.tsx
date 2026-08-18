@@ -151,7 +151,7 @@ export default function FAQSection() {
     }, sectionRef)
 
     return () => ctx.revert()
-  }, [])
+  }, [sectionRef])
 
   return (
     <section ref={sectionRef} className="bg-gray-950 py-12 md:py-24">

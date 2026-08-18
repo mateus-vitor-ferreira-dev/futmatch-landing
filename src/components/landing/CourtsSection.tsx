@@ -241,7 +241,7 @@ export default function CourtsSection() {
     }, sectionRef)
 
     return () => ctx.revert()
-  }, [])
+  }, [sectionRef])
 
   return (
     <section id="courts" ref={sectionRef} className="relative bg-gray-950 py-12 md:py-24 overflow-hidden">
