@@ -147,7 +147,7 @@ export default function StatsSection({ numeros }: StatsSectionProps) {
     }, sectionRef)
 
     return () => ctx.revert()
-  }, [highlights])
+  }, [highlights, sectionRef])
 
   return (
     <section ref={sectionRef} className="relative bg-gray-950 py-8 md:py-16 overflow-hidden">
