@@ -8,7 +8,7 @@
  */
 export interface NumerosPublicos {
   jogadores: number
-  peladasAbertas: number
+  matchesAbertas: number
   cidades: number
   arenas: number
 }
@@ -47,7 +47,7 @@ export async function getNumerosPublicos(): Promise<NumerosPublicos | null> {
     // cartões do que renderizar `undefined` formatado como número.
     if (
       typeof dados?.jogadores !== 'number' ||
-      typeof dados?.peladasAbertas !== 'number' ||
+      typeof dados?.matchesAbertas !== 'number' ||
       typeof dados?.cidades !== 'number' ||
       typeof dados?.arenas !== 'number'
     ) {

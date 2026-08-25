@@ -28,10 +28,14 @@ const faqs = [
   },
   {
     // A landing citava "Craque, Fair Play e Pontual". São seis tags no
-    // `enum ReviewTag`, e o rótulo é "Craque da Pelada" — o texto errado já
+    // `enum ReviewTag`, e o rótulo é "Craque da Partida" — o texto errado já
     // tinha contaminado a primeira carga do Instagram (landing#44).
+    //
+    // O valor gravado continua `CRAQUE_DA_PELADA`, e é o app quem traduz: o
+    // rótulo mudou na web#245, o enum não. Copiar o nome do enum para cá
+    // colocaria "pelada" na tela de novo.
     q: 'Como funcionam os badges de reputação?',
-    a: 'Após cada partida finalizada, os participantes se avaliam com estrelas (1–5) e uma das seis tags: Craque da Pelada, Joga Fácil, Passa de Ano, Pontual, Fair Play e Boa Comunicação. Os badges são calculados automaticamente com base no histórico acumulado.',
+    a: 'Após cada partida finalizada, os participantes se avaliam com estrelas (1–5) e uma das seis tags: Craque da Partida, Joga Fácil, Passa de Ano, Pontual, Fair Play e Boa Comunicação. Os badges são calculados automaticamente com base no histórico acumulado.',
   },
   {
     q: 'Sou dono de uma quadra. Como cadastro meu espaço?',
