@@ -15,7 +15,7 @@ import type { NumerosPublicos } from '@/lib/stats'
 const NUMEROS: NumerosPublicos = {
   arenas: 26,
   jogadores: 128,
-  peladasAbertas: 9,
+  matchesAbertas: 9,
   cidades: 4,
 }
 
@@ -81,7 +81,7 @@ describe('StatsSection sem resposta da API', () => {
  */
 describe('StatsSection com número zerado', () => {
   it('esconde só o cartão sem número, e mantém os que têm', () => {
-    render(<StatsSection numeros={{ ...NUMEROS, peladasAbertas: 0 }} />)
+    render(<StatsSection numeros={{ ...NUMEROS, matchesAbertas: 0 }} />)
 
     expect(screen.queryByText('Partidas abertas')).not.toBeInTheDocument()
     expect(screen.getByText('Arenas parceiras')).toBeInTheDocument()
@@ -91,7 +91,7 @@ describe('StatsSection com número zerado', () => {
 
   it('com tudo zerado, encolhe igual à API fora do ar', () => {
     const { container } = render(
-      <StatsSection numeros={{ arenas: 0, jogadores: 0, peladasAbertas: 0, cidades: 0 }} />,
+      <StatsSection numeros={{ arenas: 0, jogadores: 0, matchesAbertas: 0, cidades: 0 }} />,
     )
 
     expect(container.querySelectorAll('.stat-card')).toHaveLength(2)
@@ -116,7 +116,7 @@ describe('StatsSection com número abaixo do limiar', () => {
   })
 
   it('o número igual ao limiar entra — o corte é "abaixo", não "até"', () => {
-    render(<StatsSection numeros={{ ...NUMEROS, jogadores: 50, peladasAbertas: 5, cidades: 3, arenas: 3 }} />)
+    render(<StatsSection numeros={{ ...NUMEROS, jogadores: 50, matchesAbertas: 5, cidades: 3, arenas: 3 }} />)
 
     expect(screen.getByText('Jogadores na plataforma')).toBeInTheDocument()
     expect(screen.getByText('Partidas abertas')).toBeInTheDocument()
@@ -125,7 +125,7 @@ describe('StatsSection com número abaixo do limiar', () => {
   })
 
   it('cada cartão tem o seu limiar: 4 cidades passa, 4 jogadores não', () => {
-    render(<StatsSection numeros={{ arenas: 0, jogadores: 4, peladasAbertas: 0, cidades: 4 }} />)
+    render(<StatsSection numeros={{ arenas: 0, jogadores: 4, matchesAbertas: 0, cidades: 4 }} />)
 
     expect(screen.getByText('Cidades atendidas')).toBeInTheDocument()
     expect(screen.queryByText('Jogadores na plataforma')).not.toBeInTheDocument()
@@ -133,7 +133,7 @@ describe('StatsSection com número abaixo do limiar', () => {
 
   it('com o dado que a produção devolve hoje, nenhum cartão da API entra', () => {
     const { container } = render(
-      <StatsSection numeros={{ arenas: 0, jogadores: 2, peladasAbertas: 0, cidades: 0 }} />,
+      <StatsSection numeros={{ arenas: 0, jogadores: 2, matchesAbertas: 0, cidades: 0 }} />,
     )
 
     expect(screen.queryByText('Jogadores na plataforma')).not.toBeInTheDocument()
@@ -161,7 +161,7 @@ describe('StatsSection — colunas', () => {
 
   it('volta para três colunas assim que um cartão da API entra', () => {
     const { container } = render(
-      <StatsSection numeros={{ arenas: 0, jogadores: 0, peladasAbertas: 0, cidades: 3 }} />,
+      <StatsSection numeros={{ arenas: 0, jogadores: 0, matchesAbertas: 0, cidades: 3 }} />,
     )
 
     expect(grade(container)).toContain('md:grid-cols-3')

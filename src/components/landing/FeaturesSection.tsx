@@ -47,10 +47,10 @@ const features = [
     Icon: Star,
     title: 'Avaliações com tags e badges',
     // As seis tags são o `enum ReviewTag` da api, não uma lista de exemplo: a
-    // landing citava "Craque" (o rótulo é "Craque da Pelada") e o texto errado
+    // landing citava "Craque" (o rótulo é "Craque da Partida") e o texto errado
     // já contaminou material de marketing uma vez (landing#44).
     description:
-      'Avalie com estrelas e uma das seis tags, de Craque da Pelada a Passa de Ano. Os selos são conquistados pelo histórico, automaticamente.',
+      'Avalie com estrelas e uma das seis tags, de Craque da Partida a Passa de Ano. Os selos são conquistados pelo histórico, automaticamente.',
     highlight: 'Reputação real',
     color: 'text-yellow-400',
     bg: 'bg-yellow-500/10',
