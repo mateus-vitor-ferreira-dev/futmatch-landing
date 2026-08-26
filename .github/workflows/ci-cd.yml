@@ -32,7 +32,13 @@ jobs:
         run: npm run typecheck
 
       - name: Test
-        run: npm test
+        run: npm run test:ci
+
+      # Os números do README saem do relatório que o passo acima grava. O
+      # `test:ci` existe só por isso: `npm test` não emite JSON, e sem ele a
+      # conferência não teria de onde ler.
+      - name: Confere os números do README
+        run: npm run readme:check
 
       - name: Build
         run: npm run build
