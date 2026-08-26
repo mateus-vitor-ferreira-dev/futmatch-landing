@@ -16,8 +16,9 @@ const inter = Inter({
 // são o que aparece quando alguém cola o link no WhatsApp ou no X — traziam a
 // versão sem recorte (landing#44).
 //
-// `keywords` é o único lugar onde "pelada" fica de propósito: a copy migrou
-// para "partida" (web#245), mas quem procura no Google digita "pelada".
+// `keywords` é o único lugar onde "pelada" fica de propósito, e continuou
+// assim quando o rename varreu o resto da pilha (api#418): a copy é "partida",
+// mas quem procura no Google digita "pelada". Termo de busca não é copy.
 export const metadata: Metadata = {
   title: 'Só+1 — Encontre sua partida hoje',
   description:

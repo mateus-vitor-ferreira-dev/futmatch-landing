@@ -81,8 +81,9 @@ function montarCartoes(numeros: NumerosPublicos | null): Cartao[] {
   const doDado: Cartao[] = [
     { target: numeros.arenas,         suffix: '', label: 'Arenas parceiras',    icon: '🏟️', minimo: LIMIARES.arenas },
     { target: numeros.jogadores,      suffix: '', label: 'Jogadores na plataforma', icon: '👥', minimo: LIMIARES.jogadores },
-    // A chave acompanhou o rótulo: a api passou a emitir `matchesAbertas` ao
-    // lado de `peladasAbertas` (api#414), e este é o lado que fecha a janela.
+    // A chave acompanhou o rótulo. `peladasAbertas` conviveu com esta durante
+    // a janela de dois nomes (api#414) e saiu na api#418 — hoje é o único nome
+    // que a rota emite.
     { target: numeros.matchesAbertas, suffix: '', label: 'Partidas abertas',    icon: '⚽', description: 'atualizado a cada 5 minutos', minimo: LIMIARES.matchesAbertas },
     { target: numeros.cidades,        suffix: '', label: 'Cidades atendidas',   icon: '📍', minimo: LIMIARES.cidades },
   ]
