@@ -40,6 +40,16 @@ jobs:
       - name: Confere os números do README
         run: npm run readme:check
 
+      # Fala com a api de produção. Sai com 2 quando ela não responde, e não
+      # com 1: "api fora do ar" não é "a landing está errada", e o log precisa
+      # dizer qual dos dois é — foi a mesma distinção que a collection teve que
+      # fazer no `verifica-cobertura.py`.
+      #
+      # Cobre só o enumerável — modalidades e tags. Promessa em prosa é o item
+      # do `pull_request_template.md`.
+      - name: Confere o contrato com o produto
+        run: npm run contrato:check
+
       - name: Build
         run: npm run build
 
