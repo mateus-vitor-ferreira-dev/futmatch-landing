@@ -37,7 +37,7 @@ Landing de conversão do **Só+1**: descubra partidas abertas, entre com um cliq
 
 Organizar uma partida hoje é uma sequência de mensagens perdidas: alguém pergunta "fecha 12?", três confirmam, dois somem na hora, o time é dividido no olho e ninguém lembra quem furou semana passada. O **Só+1** resolve isso num app — partidas abertas com vagas visíveis, entrada em um clique, sorteio automático de times e reputação por avaliação. Este repositório é a **landing**: a página que o visitante encontra antes de saber que o app existe.
 
-O papel dela no funil é único e estreito — **transformar visitante em jogador cadastrado**. Ela não guarda dado e não tem formulário: comunica a proposta em segundos e entrega o clique para `app.so-mais-um.com`. Do backend ela lê uma coisa só, e somente no servidor — os números públicos de `GET /stats`, que alimentam a prova social. Toda conversão sai daqui por link — cadastro e login para jogadores, portal de parceiros para donos de quadra. São **10 seções** encadeadas numa narrativa `Descobrir → Entrar → Jogar`, fechando com o que ainda está por vir, cada uma com sua própria animação de entrada.
+O papel dela no funil é único e estreito — **transformar visitante em jogador cadastrado**. Ela não guarda dado e não tem formulário: comunica a proposta em segundos e entrega o clique para `app.so-mais-um.com`. Do backend ela lê uma coisa só, e somente no servidor — os números públicos de `GET /stats`, que alimentam a prova social. Toda conversão sai daqui por link — cadastro e login para jogadores, portal de parceiros para donos de quadra. São **11 seções** encadeadas numa narrativa `Descobrir → Entrar → Jogar`, fechando com o que ainda está por vir, cada uma com sua própria animação de entrada.
 
 ```mermaid
 flowchart LR
