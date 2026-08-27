@@ -9,6 +9,10 @@ import LogoSvg from '@/components/LogoSvg'
 
 const links = [
   { label: 'Funcionalidades', href: '#features' },
+  // As quatro seções da #63 entram no menu como uma só: cada uma tem id
+  // próprio para link direto, mas quatro entradas fariam uma navbar de nove
+  // itens — e quem procura no menu procura o assunto, não a seção.
+  { label: 'Recursos',        href: '#recursos' },
   { label: 'Como funciona',   href: '#how-it-works' },
   { label: 'Modalidades',     href: '#courts' },
   { label: 'Para espaços',    href: '#owner' },
