@@ -5,7 +5,7 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Badge } from '@/components/ui/badge'
 import { useMobileScrollAnimation } from '@/lib/useMobileScrollAnimation'
-import { Search, Shuffle, Star, Zap, Trophy, BarChart2, QrCode, UserCheck, ShieldCheck } from 'lucide-react'
+import { Search, Shuffle, Star, Zap, BarChart2, QrCode, UserCheck, ShieldCheck } from 'lucide-react'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -17,6 +17,19 @@ gsap.registerPlugin(ScrollTrigger)
  *
  * As classes do Tailwind são strings completas de propósito — o JIT do v4 não
  * detecta template string parcial (`bg-${cor}-500` não gera nada).
+ */
+/*
+ * O card de torneios saiu daqui na #63.
+ *
+ * Ele virou a `CampeonatosSection`, três seções abaixo, com a sequência
+ * inteira — inscrição, chaveamento, árbitro, placar. Mantê-lo seria um resumo
+ * do que o leitor encontra logo em seguida, e cards de um parágrafo existem
+ * para o que **não** tem seção própria.
+ *
+ * Só ele saiu, e não os quatro grandes que a issue cogitava: os outros três
+ * épicos — times fixos, quem vê e quem entra, peladas perto — nunca tiveram
+ * card aqui, porque a `RoadmapSection` os listava como "Planejado" até a #62.
+ * Não havia o que remover.
  */
 const features = [
   {
@@ -74,25 +87,6 @@ const features = [
     border: 'border-orange-500/20',
     hoverBorder: 'hover:border-orange-500/40',
     glow: 'hover:shadow-[0_0_24px_rgba(249,115,22,0.1)]',
-  },
-  {
-    Icon: Trophy,
-    title: 'Torneios por formato e nível',
-    // O comentário anterior dizia que o módulo era "casca — sem inscrição,
-    // chaveamento, partida ou placar", e por isso a copy prometia só formato e
-    // divisão. O épico api#203 fechou em 19/08: existem
-    // `tournament-registrations` (inscrever, aprovar, cancelar),
-    // `tournament-matches` com `PATCH /:matchId/result` para o placar,
-    // `bracket.ts` e a rota `/tournaments/matches/refereeing`. O campeonato é
-    // jogável de ponta a ponta, e era item do roadmap até a #62.
-    description:
-      'Campeonato de ponta a ponta: inscrição, divisões por nível, chaveamento e placar lançado pelo árbitro — em cinco formatos (liga, mata-mata, grupos, dupla eliminação, suíço).',
-    highlight: 'Campeonatos',
-    color: 'text-purple-400',
-    bg: 'bg-purple-500/10',
-    border: 'border-purple-500/20',
-    hoverBorder: 'hover:border-purple-500/40',
-    glow: 'hover:shadow-[0_0_24px_rgba(168,85,247,0.1)]',
   },
   {
     Icon: BarChart2,
