@@ -47,6 +47,9 @@ const API = (() => {
   return i > -1 ? process.argv[i + 1] : 'https://api.so-mais-um.com'
 })()
 
+/** Dono dos repositórios, para montar a URL da issue do roadmap. */
+const DONO = 'mateus-vitor-ferreira-dev'
+
 /** Numeral por extenso, para a copy que escreve "seis" em vez de "6". */
 const POR_EXTENSO = { seis: 6, doze: 12 }
 
@@ -88,8 +91,48 @@ async function catalogo(rota) {
   return (await resposta.json()).data
 }
 
+/**
+ * O estado de uma issue no GitHub: `open` ou `closed`.
+ *
+ * Segunda fonte de verdade deste script, e por um motivo diferente da api. A
+ * api diz o que o produto **faz**; o board diz o que ele **ainda não faz**, e é
+ * essa metade que a `RoadmapSection` afirma. Não há como conferir roadmap
+ * contra código: a ausência de uma funcionalidade não deixa rastro em lugar
+ * nenhum — o que existe é o card aberto.
+ *
+ * **Precisa de token**, e não por causa de limite: o repositório da api é
+ * privado, então sem credencial o GitHub responde 404 — indistinguível de
+ * "issue não existe". Localmente o `gh auth token` resolve; no CI é preciso um
+ * PAT com leitura do repo da api, porque o `GITHUB_TOKEN` que o Actions injeta
+ * sozinho só enxerga o repositório onde o workflow roda.
+ */
+async function estadoDaIssue({ repo, numero }) {
+  const url = `https://api.github.com/repos/${DONO}/${repo}/issues/${numero}`
+  const headers = { Accept: 'application/vnd.github+json' }
+  if (process.env.GITHUB_TOKEN) headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`
+
+  let resposta
+  try {
+    resposta = await fetch(url, { headers, signal: AbortSignal.timeout(20_000) })
+  } catch (erro) {
+    console.error(`\n✗ Não consegui falar com o GitHub sobre ${repo}#${numero}: ${erro.message}`)
+    console.error('  A conferência do roadmap não roda sem ele — o board é a fonte da verdade aqui.\n')
+    // 2 pelo mesmo motivo da api: "GitHub fora do ar" não é "a landing está errada".
+    process.exit(2)
+  }
+  if (!resposta.ok) {
+    console.error(`\n✗ ${url} respondeu ${resposta.status}`)
+    if (resposta.status === 403) console.error('  Provavelmente limite de requisições. Defina GITHUB_TOKEN.')
+    console.error('')
+    process.exit(2)
+  }
+  return (await resposta.json()).state
+}
+
 const problemas = []
 const conferido = []
+/** O que este script deveria ter conferido e não conseguiu. Não reprova, mas aparece. */
+const naoConferido = []
 
 const sports = await catalogo('/sports')
 const tags = await catalogo('/review-tags')
@@ -160,6 +203,55 @@ const tags = await catalogo('/review-tags')
   conferido.push(`${tags.length} tags em ${mencoes} menção(ões)`)
 }
 
+// ── 5. O roadmap ainda é futuro ─────────────────────────────────────────────
+//
+// A #62 achou os cinco itens da seção **todos entregues**, com a página ainda
+// chamando cada um de "Planejado" — a landing prometendo menos do que o produto
+// dá. Foi a terceira deriva do tipo, e a primeira que ninguém acharia lendo a
+// página: só aparece comparando a seção com o board.
+//
+// A regra da seção sempre foi "se não tem issue, não entra". Ela agora está
+// escrita no código, item por item, e é o que torna a conferência possível:
+// issue fechada quer dizer funcionalidade no ar, e funcionalidade no ar não é
+// roadmap.
+{
+  const fonte = 'src/components/landing/RoadmapSection.tsx'
+  const refs = [...copyDe(fonte).matchAll(/issue: '([\w.-]+)#(\d+)'/g)].map((m) => ({
+    repo: m[1],
+    numero: Number(m[2]),
+  }))
+
+  // A seção tem itens e nenhum deles declara issue: ou o campo foi removido, ou
+  // a lista voltou a nascer de ideia solta. Nos dois casos, esta conferência
+  // passaria a aprovar qualquer coisa em silêncio.
+  const cartoes = (copyDe(fonte).match(/^\s{4}title:/gm) ?? []).length
+  if (cartoes > refs.length) {
+    problemas.push(`${fonte}: ${cartoes} cartões e ${refs.length} com \`issue\` — item sem issue não entra no roadmap`)
+  }
+
+  // Sem token não dá para ler issue de repositório privado, e o GitHub
+  // responde 404 — que é indistinguível de "issue não existe". Aqui a escolha
+  // é anunciar que NÃO conferiu, em vez de reprovar (deixaria o CI vermelho por
+  // falta de segredo, não por erro na página) ou de aprovar em silêncio (uma
+  // conferência que não roda e diz que rodou é pior do que nenhuma).
+  if (!process.env.GITHUB_TOKEN) {
+    naoConferido.push(
+      `${refs.length} itens de roadmap — sem GITHUB_TOKEN, e o repo da api é privado.\n` +
+        `    Local:  GITHUB_TOKEN=$(gh auth token) npm run contrato:check\n` +
+        `    No CI:  um PAT com leitura do repo da api, em secrets.BOARD_TOKEN`,
+    )
+  } else {
+    for (const ref of refs) {
+      if ((await estadoDaIssue(ref)) === 'closed') {
+        problemas.push(
+          `${fonte}: ${ref.repo}#${ref.numero} está fechada — o item já foi ao ar e a seção ainda o chama de futuro`,
+        )
+      }
+    }
+    conferido.push(`${refs.length} itens de roadmap ainda abertos`)
+  }
+}
+
 if (problemas.length > 0) {
   console.error(`\n✗ A landing diverge do produto em ${problemas.length} ponto(s):\n`)
   for (const p of problemas) console.error(`  ${p}`)
@@ -170,4 +262,6 @@ if (problemas.length > 0) {
   process.exit(1)
 }
 
-console.warn(`\n✓ A landing bate com o produto: ${conferido.join(' · ')}\n`)
+console.warn(`\n✓ A landing bate com o produto: ${conferido.join(' · ')}`)
+for (const n of naoConferido) console.warn(`\n⚠️  Não conferido: ${n}`)
+console.warn('')
