@@ -5,6 +5,10 @@ import HeroSection from '@/components/landing/HeroSection'
 import StatsSection from '@/components/landing/StatsSection'
 import FeaturesSection from '@/components/landing/FeaturesSection'
 import AppPreviewSection from '@/components/landing/AppPreviewSection'
+import TimesSection from '@/components/landing/TimesSection'
+import AcessoSection from '@/components/landing/AcessoSection'
+import PertoSection from '@/components/landing/PertoSection'
+import CampeonatosSection from '@/components/landing/CampeonatosSection'
 import HowItWorksSection from '@/components/landing/HowItWorksSection'
 import OwnerSection from '@/components/landing/OwnerSection'
 import PlanosSection from '@/components/landing/PlanosSection'
@@ -33,6 +37,23 @@ export default async function LandingPage() {
         <StatsSection numeros={numeros} />
         <FeaturesSection />
         <AppPreviewSection />
+        {/*
+          As quatro seções de profundidade, uma por épico que a semana fechou
+          (#63). Entram aqui, e não entre a `FeaturesSection` e o
+          `AppPreviewSection`, porque ali empurrariam a prova visual para o fim
+          da página — que é onde ela vale menos. A ordem lida vira: visão geral
+          → veja o app → os quatro recursos grandes → como começar.
+
+          O `div` com o id existe para o menu: quatro entradas novas fariam uma
+          navbar de nove itens, e o que a pessoa procura no menu é o assunto, não
+          cada seção. Cada uma mantém o id próprio, para link direto.
+        */}
+        <div id="recursos">
+          <TimesSection />
+          <AcessoSection />
+          <PertoSection />
+          <CampeonatosSection />
+        </div>
         <HowItWorksSection />
         <OwnerSection />
         {/*
