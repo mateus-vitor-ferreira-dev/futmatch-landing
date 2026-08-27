@@ -34,8 +34,13 @@ const features = [
   {
     Icon: Shuffle,
     title: 'Sorteio automático de times',
+    // Dizia só "distribuição aleatória", e o aleatório virou um dos DOIS modos
+    // na api#206 — `DRAW_MODES = ["ALEATORIO", "EQUILIBRADO"]`, em
+    // `draw.service.ts:10`. Não era falso, era incompleto justamente no ponto
+    // que mais pesa para quem escolhe o produto: o time equilibrado divide por
+    // nível e posição declarados, com teto de desequilíbrio (`balance.ts`).
     description:
-      'Algoritmo Fisher-Yates: distribuição aleatória, grupos equilibrados, diferença máxima de 1 jogador entre times.',
+      'Dois modos: aleatório puro, ou equilibrado por nível e posição declarados, com limite de desequilíbrio entre os times.',
     highlight: 'Times justos',
     color: 'text-blue-400',
     bg: 'bg-blue-500/10',
@@ -73,11 +78,15 @@ const features = [
   {
     Icon: Trophy,
     title: 'Torneios por formato e nível',
-    // Dizia "controle de inscrições", que não existe: o api#203 registra que o
-    // módulo hoje é casca — sem inscrição, chaveamento, partida ou placar. O
-    // que falta virou item da `RoadmapSection`, em vez de promessa aqui.
+    // O comentário anterior dizia que o módulo era "casca — sem inscrição,
+    // chaveamento, partida ou placar", e por isso a copy prometia só formato e
+    // divisão. O épico api#203 fechou em 19/08: existem
+    // `tournament-registrations` (inscrever, aprovar, cancelar),
+    // `tournament-matches` com `PATCH /:matchId/result` para o placar,
+    // `bracket.ts` e a rota `/tournaments/matches/refereeing`. O campeonato é
+    // jogável de ponta a ponta, e era item do roadmap até a #62.
     description:
-      'Campeonatos com formato configurável (liga, mata-mata, grupos, dupla eliminação, suíço) e divisões por nível, do iniciante ao profissional.',
+      'Campeonato de ponta a ponta: inscrição, divisões por nível, chaveamento e placar lançado pelo árbitro — em cinco formatos (liga, mata-mata, grupos, dupla eliminação, suíço).',
     highlight: 'Campeonatos',
     color: 'text-purple-400',
     bg: 'bg-purple-500/10',

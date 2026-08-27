@@ -199,6 +199,59 @@ describe('FAQSection — teclado', () => {
     expect(perguntas()[0]).toHaveAttribute('aria-expanded', 'true')
   })
 
+  /**
+   * As três promessas que a #64 tirou daqui.
+   *
+   * Nenhuma era descuido de redação: cada uma descrevia um produto plausível,
+   * e o produto é outro. "Exporta tudo pelo perfil" — a rota existe na api, a
+   * tela não; "cadastro do espaço é gratuito" — `POST /place-requests` passa
+   * por `requireActiveSubscription`; e a ordem estava invertida por
+   * consequência da segunda.
+   *
+   * O teste olha o **texto das respostas**, e não a tela montada, porque o
+   * defeito é de conteúdo: uma frase reescrita que volte a prometer exportação
+   * passaria por qualquer asserção de interface.
+   */
+  describe('as promessas que o produto precisa sustentar', () => {
+    /**
+     * O texto que chega à página, e não o módulo: as respostas ficam no HTML
+     * mesmo fechadas — é o que o teste de SEO acima garante —, então ler o
+     * `textContent` é ler exatamente o que o visitante e o buscador leem.
+     */
+    function respostasNaPagina() {
+      const { container } = render(<FAQSection />)
+      return container.textContent ?? ''
+    }
+
+    it('não promete exportar dados pelo perfil — a tela não existe', () => {
+      expect(respostasNaPagina()).not.toMatch(/exporta/i)
+    })
+
+    it('não diz que cadastrar o espaço é gratuito — exige assinatura ativa', () => {
+      expect(respostasNaPagina()).not.toMatch(/cadastro do espaço é grat/i)
+    })
+
+    /**
+     * A ordem é o que o dono de quadra usa para se planejar. Invertida, ele
+     * descobre a assinatura depois de já ter decidido entrar — e o lugar mais
+     * caro para essa descoberta é depois de a pessoa já ter se convencido.
+     */
+    it('descreve a ordem real: assina, pede o espaço, o time analisa', () => {
+      const pagina = respostasNaPagina()
+
+      expect(pagina).toMatch(/vale desde o pedido do espaço/i)
+      expect(pagina.indexOf('você assina um dos planos')).toBeLessThan(pagina.indexOf('analisa o pedido'))
+    })
+
+    /**
+     * Valor, nome de plano e prazo vêm da api em runtime — ou não existem.
+     * Escritos aqui, envelhecem em silêncio, que é como a #15 custou uma seção.
+     */
+    it('não cita valor, nome de plano nem prazo', () => {
+      expect(respostasNaPagina()).not.toMatch(/R\$|Só\+1 (Básico|Pro|Premium)|\d+ dias/)
+    })
+  })
+
   it('o chevron não entra na leitura — é decorativo', () => {
     const { container } = render(<FAQSection />)
 
