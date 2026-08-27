@@ -39,11 +39,26 @@ const faqs = [
   },
   {
     q: 'Sou dono de uma quadra. Como cadastro meu espaço?',
-    a: 'Acesse o portal de parceiros em app.so-mais-um.com/seja-parceiro. Após aprovação pelo nosso time, você assina um dos planos e passa a gerenciar suas quadras e as partidas pelo painel de parceiro — sem limite de quantidade em nenhum plano. Estatísticas, controle de equipamento e controle de estoque entram conforme o plano escolhido. O cadastro do espaço é gratuito; o painel é uma assinatura mensal.',
+    // Dizia "o cadastro do espaço é gratuito" e punha a aprovação ANTES da
+    // assinatura. As duas coisas estavam trocadas: `POST /place-requests` passa
+    // por `requireActiveSubscription` (`place-request.routes.ts`), então sem
+    // plano ativo o dono não consegue nem **pedir** o espaço. A ordem real é
+    // assinar, pedir, e o time analisar (#64).
+    //
+    // O lugar mais caro para essa descoberta acontecer é depois de a pessoa já
+    // ter se convencido — que é exatamente onde a versão antiga a colocava.
+    a: 'Acesse o portal de parceiros em app.so-mais-um.com/seja-parceiro. O painel é uma assinatura mensal, e ela vale desde o pedido do espaço: você assina um dos planos, cadastra o espaço e nosso time analisa o pedido. Aprovado, você passa a gerenciar suas quadras e as partidas pelo painel — sem limite de quantidade em nenhum plano. Estatísticas, controle de equipamento e controle de estoque entram conforme o plano escolhido.',
   },
   {
-    q: 'Posso apagar minha conta e levar meus dados?',
-    a: 'Pode, e sem falar com ninguém. Pelo perfil você exporta tudo o que guardamos sobre você e apaga a conta, que é anonimizada. O consentimento para receber e-mail de marketing é separado do cadastro e pode ser retirado a qualquer momento.',
+    q: 'Posso apagar minha conta?',
+    // A pergunta dizia "e levar meus dados", e a resposta prometia exportação
+    // "pelo perfil". A rota existe na api (`GET /users/me/export`), mas **não
+    // há botão nenhum no app**: `services/users.ts` não a chama, e o perfil tem
+    // só as abas pessoal/esportes/senha, "Sessão" e "Excluir conta".
+    //
+    // A promessa só volta quando a tela existir — a landing afirma o que o
+    // produto entrega, não o que a api já saberia responder (#64).
+    a: 'Pode, e sem falar com ninguém: o perfil tem "Excluir conta", e a conta é anonimizada. O consentimento para receber e-mail de marketing é separado do cadastro e pode ser retirado a qualquer momento. Para receber uma cópia dos seus dados, é só pedir ao nosso encarregado — o contato está na Política de Privacidade.',
   },
   {
     q: 'As notificações funcionam sem recarregar a página?',

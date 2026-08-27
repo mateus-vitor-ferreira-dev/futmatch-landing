@@ -274,7 +274,7 @@ Por isso os testes mockam o `gsap`, deixando o componente renderizar o estado fi
 |---|---|
 | Acessibilidade do FAQ | `components/landing/FAQSection.test.tsx` |
 
-São 14 testes sobre o que a revisão visual não pega: `inert` no bloco fechado, `aria-expanded` acompanhando o estado, o vínculo `aria-controls` ↔ `id` ↔ `aria-labelledby`, navegação por Tab, Enter e Espaço, e o texto das respostas seguindo no HTML para o buscador.
+São 18 testes sobre o que a revisão visual não pega: `inert` no bloco fechado, `aria-expanded` acompanhando o estado, o vínculo `aria-controls` ↔ `id` ↔ `aria-labelledby`, navegação por Tab, Enter e Espaço, o texto das respostas seguindo no HTML para o buscador — e as três promessas que a #64 tirou de lá, que só um teste sobre o conteúdo pega.
 
 Foi o que motivou a suíte existir: são atributos que ninguém percebe quebrando — a tela continua idêntica, a animação continua funcionando, e só quem usa leitor de tela descobre.
 
