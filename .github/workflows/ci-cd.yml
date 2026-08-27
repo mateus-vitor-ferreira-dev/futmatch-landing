@@ -45,10 +45,19 @@ jobs:
       # dizer qual dos dois é — foi a mesma distinção que a collection teve que
       # fazer no `verifica-cobertura.py`.
       #
-      # Cobre só o enumerável — modalidades e tags. Promessa em prosa é o item
-      # do `pull_request_template.md`.
+      # Cobre só o enumerável — modalidades, tags e os itens do roadmap.
+      # Promessa em prosa é o item do `pull_request_template.md`.
+      #
+      # O roadmap é conferido contra o board: item cuja issue já fechou é
+      # funcionalidade no ar, e a #62 achou os cinco de uma vez. Essa parte
+      # precisa de `BOARD_TOKEN` — um PAT com leitura do repo da api, que é
+      # privado; o `GITHUB_TOKEN` que o Actions injeta sozinho só enxerga este
+      # repositório. Sem o segredo o passo NÃO fica vermelho: ele anuncia, no
+      # log, que o roadmap não foi conferido.
       - name: Confere o contrato com o produto
         run: npm run contrato:check
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOARD_TOKEN }}
 
       - name: Build
         run: npm run build

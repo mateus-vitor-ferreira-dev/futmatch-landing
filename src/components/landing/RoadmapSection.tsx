@@ -5,7 +5,7 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Badge } from '@/components/ui/badge'
 import { useMobileScrollAnimation } from '@/lib/useMobileScrollAnimation'
-import { Users, Scale, Navigation, Lock, Trophy } from 'lucide-react'
+import { CalendarX, MessageCircle, UserCheck } from 'lucide-react'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -23,42 +23,46 @@ gsap.registerPlugin(ScrollTrigger)
  *
  * Os itens saem dos épicos do board, com o título derivado do card. Nada aqui
  * pode nascer de ideia solta: se não tem issue, não entra na lista.
+ *
+ * O erro que esta lista já cometeu, e o que impede a repetição
+ * ------------------------------------------------------------
+ * Os cinco itens anteriores — times fixos, sorteio equilibrado, partidas
+ * perto, partida privada e campeonatos jogáveis — **foram todos ao ar** e a
+ * seção continuou chamando cada um de "Planejado". A página passou a prometer
+ * *menos* do que o produto entrega, que é o inverso da #15 e custa igual: o
+ * visitante decide pelo que lê, e um roadmap que lista como futuro o que já
+ * existe também diz que o roadmap não anda (#62).
+ *
+ * Ninguém acharia isso lendo a landing — só comparando a seção com o board. Por
+ * isso cada item carrega o `issue` que o sustenta: o
+ * `scripts/verifica-contrato-com-o-produto.mjs` pergunta ao GitHub se ela
+ * continua aberta, e o `RoadmapSection.test.tsx` garante que nenhum item entre
+ * sem uma. A regra deixou de depender de disciplina.
  */
 const itens = [
   {
-    Icon: Users,
-    title: 'Times fixos com capitão',
+    Icon: CalendarX,
+    title: 'Partida sem gente se cancela sozinha',
     description:
-      'O grupo que joga toda quarta vira um time de verdade: capitão, convite, vaga garantida aos membros e histórico próprio.',
+      'A partida que não bate o mínimo de jogadores até a hora do jogo é cancelada sozinha, e quem tinha confirmado é avisado — em vez de todo mundo descobrir na quadra.',
     status: 'Planejado',
+    issue: 'so-mais-um-api#381',
   },
   {
-    Icon: Scale,
-    title: 'Sorteio equilibrado por nível e posição',
+    Icon: MessageCircle,
+    title: 'Aviso no WhatsApp, não só no e-mail',
     description:
-      'Cada jogador declara posição e nível por modalidade, e o sorteio passa a dividir por força — não mais no puro aleatório.',
+      'Confirmação, lembrete e cancelamento chegam onde a pessoa realmente lê. Hoje tudo o que o Só+1 fala com o jogador sai por e-mail, e só por e-mail.',
     status: 'Planejado',
+    issue: 'so-mais-um-api#382',
   },
   {
-    Icon: Navigation,
-    title: 'Partidas perto de você',
+    Icon: UserCheck,
+    title: 'Fechar a partida para quem te conhece',
     description:
-      'Busca por raio a partir de onde você está, em vez de nome de bairro. Quem mora na divisa para de perder o jogo do outro lado da rua.',
+      'Exigir vínculo social para entrar: só quem te segue, ou quem é seu amigo. Hoje o único vínculo entre pessoas que dá para exigir é ser do mesmo time.',
     status: 'Planejado',
-  },
-  {
-    Icon: Lock,
-    title: 'Partida privada, por link ou com requisitos',
-    description:
-      'Escolha quem enxerga a partida e quem pode entrar: pública, só por link ou fechada, com requisito de presença, nota ou selo.',
-    status: 'Planejado',
-  },
-  {
-    Icon: Trophy,
-    title: 'Campeonatos jogáveis',
-    description:
-      'Inscrição, chaveamento, partida com placar e árbitro que lança a súmula. Hoje o campeonato só existe até a divisão por categoria.',
-    status: 'Em estudo',
+    issue: 'so-mais-um-api#387',
   },
 ]
 
