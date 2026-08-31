@@ -5,7 +5,7 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Badge } from '@/components/ui/badge'
 import { useMobileScrollAnimation } from '@/lib/useMobileScrollAnimation'
-import { CalendarX, MessageCircle, UserCheck } from 'lucide-react'
+import { CalendarX, MessageCircle } from 'lucide-react'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -55,14 +55,6 @@ const itens = [
       'Confirmação, lembrete e cancelamento chegam onde a pessoa realmente lê. Hoje tudo o que o Só+1 fala com o jogador sai por e-mail, e só por e-mail.',
     status: 'Planejado',
     issue: 'so-mais-um-api#382',
-  },
-  {
-    Icon: UserCheck,
-    title: 'Fechar a partida para quem te conhece',
-    description:
-      'Exigir vínculo social para entrar: só quem te segue, ou quem é seu amigo. Hoje o único vínculo entre pessoas que dá para exigir é ser do mesmo time.',
-    status: 'Planejado',
-    issue: 'so-mais-um-api#387',
   },
 ]
 

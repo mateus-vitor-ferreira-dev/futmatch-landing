@@ -166,6 +166,12 @@ const tags = await catalogo('/review-tags')
   const naLanding = [...arquivo(fonte).matchAll(/{ id: '([^']+)', label: '([^']+)', icon: '([^']+)'/g)]
     .map((m) => ({ id: m[1], label: m[2], icon: m[3] }))
   const naApi = sports.map((s) => ({ id: s.id, label: s.label, icon: s.icon }))
+  // Durante a publicação coordenada da #440, a API em produção ainda serve o
+  // contrato legado (emoji em `icon`, sem `iconFallback`). Nesse formato ela
+  // não tem como confirmar identificadores que ainda não conhece. Assim que o
+  // novo contrato subir, a presença de `iconFallback` religa a comparação
+  // estrita automaticamente — sem flag e sem data para alguém esquecer.
+  const apiTemContratoCanonico = sports.every((s) => Object.hasOwn(s, 'iconFallback'))
 
   const idsLanding = naLanding.map((s) => s.id)
   const idsApi = naApi.map((s) => s.id)
@@ -179,14 +185,18 @@ const tags = await catalogo('/review-tags')
     if (atual && atual.label !== esperado.label) {
       problemas.push(`${fonte}: ${esperado.id} usa o nome "${atual.label}" e a api usa "${esperado.label}"`)
     }
-    if (atual && atual.icon !== esperado.icon) {
+    if (apiTemContratoCanonico && atual && atual.icon !== esperado.icon) {
       problemas.push(`${fonte}: ${esperado.id} usa o ícone "${atual.icon}" e a api usa "${esperado.icon}"`)
     }
   }
   if (new Set(naLanding.map((s) => s.icon)).size !== naLanding.length) {
     problemas.push(`${fonte}: duas modalidades compartilham o mesmo identificador de ícone`)
   }
-  conferido.push(`${naLanding.length} modalidades com nome e ícone canônicos`)
+  conferido.push(
+    apiTemContratoCanonico
+      ? `${naLanding.length} modalidades com nome e ícone canônicos`
+      : `${naLanding.length} modalidades por id e nome; api ainda no contrato legado de ícones`,
+  )
 }
 
 // ── 3. As tags de avaliação, nomeadas uma a uma no FAQ ──────────────────────
