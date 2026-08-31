@@ -1,10 +1,11 @@
 'use client'
 
-import { useEffect, useRef, type ReactNode } from 'react'
+import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Badge } from '@/components/ui/badge'
 import { useMobileScrollAnimation } from '@/lib/useMobileScrollAnimation'
+import type { Sport } from '@/lib/sports'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -173,30 +174,36 @@ function IconeVoleiDeAreia() {
   )
 }
 
-interface Sport {
-  icon: ReactNode
-  name: string
-  desc: string
+interface Decoracao {
   color: string
   from: { x: number; y: number }
 }
 
-const sports: Sport[] = [
-  { icon: '👟', name: 'Futsal',            desc: 'Quadra coberta',               color: 'from-blue-600 to-blue-800',     from: { x: -100, y: 0 } },
-  { icon: '⚽', name: 'Society',           desc: 'Grama sintética',              color: 'from-green-600 to-green-800',   from: { x: 0, y: -80 } },
-  { icon: '🏟️', name: 'Futebol de Campo',  desc: 'Campo convencional',           color: 'from-emerald-600 to-emerald-800', from: { x: 100, y: 0 } },
-  { icon: '🏀', name: 'Basquete',          desc: 'Quadra de basquete',           color: 'from-orange-600 to-red-700',    from: { x: -100, y: 0 } },
-  { icon: '🏐', name: 'Vôlei',             desc: 'Quadra indoor',                color: 'from-yellow-500 to-yellow-700', from: { x: 0, y: 80 } },
-  { icon: '🎾', name: 'Beach Tennis',      desc: 'Quadra de areia',              color: 'from-lime-500 to-lime-700',     from: { x: 100, y: 0 } },
-  { icon: <IconeFutevolei />, name: 'Futevôlei', desc: 'Quadra de areia',        color: 'from-orange-500 to-orange-700', from: { x: -100, y: 0 } },
-  { icon: '🃏', name: 'Poker',             desc: 'Torneios e cash games',        color: 'from-purple-600 to-purple-800', from: { x: 0, y: -80 } },
-  { icon: '🎾', name: 'Tênis',             desc: 'Quadra de tênis',              color: 'from-violet-500 to-violet-700', from: { x: 100, y: 0 } },
-  { icon: '🤾', name: 'Handebol',          desc: 'Quadra de handebol',           color: 'from-red-500 to-red-700',       from: { x: -100, y: 0 } },
-  { icon: <IconeVoleiDeAreia />, name: 'Vôlei de Areia', desc: 'Quadra de vôlei de areia', color: 'from-cyan-500 to-cyan-700', from: { x: 0, y: 80 } },
-  { icon: <IconePeteca />, name: 'Peteca',    desc: 'Quadra de peteca',             color: 'from-pink-500 to-pink-700',     from: { x: 100, y: 0 } },
-]
+const DECORACAO: Record<string, Decoracao> = {
+  FUTSAL: { color: 'from-blue-600 to-blue-800', from: { x: -100, y: 0 } },
+  SOCIETY: { color: 'from-green-600 to-green-800', from: { x: 0, y: -80 } },
+  CAMPO: { color: 'from-emerald-600 to-emerald-800', from: { x: 100, y: 0 } },
+  BASQUETE: { color: 'from-orange-600 to-red-700', from: { x: -100, y: 0 } },
+  VOLEI: { color: 'from-yellow-500 to-yellow-700', from: { x: 0, y: 80 } },
+  BEACH_TENNIS: { color: 'from-lime-500 to-lime-700', from: { x: 100, y: 0 } },
+  AREIA: { color: 'from-orange-500 to-orange-700', from: { x: -100, y: 0 } },
+  POKER: { color: 'from-purple-600 to-purple-800', from: { x: 0, y: -80 } },
+  TENIS: { color: 'from-violet-500 to-violet-700', from: { x: 100, y: 0 } },
+  HANDBALL: { color: 'from-red-500 to-red-700', from: { x: -100, y: 0 } },
+  VOLEI_AREIA: { color: 'from-cyan-500 to-cyan-700', from: { x: 0, y: 80 } },
+  PETECA: { color: 'from-pink-500 to-pink-700', from: { x: 100, y: 0 } },
+}
 
-export default function CourtsSection() {
+const DECORACAO_PADRAO: Decoracao = { color: 'from-green-600 to-green-800', from: { x: 0, y: 0 } }
+
+function iconeDe(sport: Sport) {
+  if (sport.icon === 'futevolei') return <IconeFutevolei />
+  if (sport.icon === 'volei-areia') return <IconeVoleiDeAreia />
+  if (sport.icon === 'peteca') return <IconePeteca />
+  return sport.iconFallback
+}
+
+export default function CourtsSection({ sports }: { sports: Sport[] }) {
   const sectionRef = useMobileScrollAnimation('.courts-title, .sport-card', { staggerMs: 80 })
   const fieldRef = useRef<SVGSVGElement>(null)
 
@@ -220,7 +227,7 @@ export default function CourtsSection() {
       if (window.matchMedia('(min-width: 768px)').matches) {
         const cards = sectionRef.current?.querySelectorAll('.sport-card')
         cards?.forEach((card, i) => {
-          const dir = sports[i].from
+          const dir = (DECORACAO[sports[i].id] ?? DECORACAO_PADRAO).from
           gsap.from(card, {
             x: dir.x,
             y: dir.y,
@@ -241,7 +248,7 @@ export default function CourtsSection() {
     }, sectionRef)
 
     return () => ctx.revert()
-  }, [sectionRef])
+  }, [sectionRef, sports])
 
   return (
     <section id="courts" ref={sectionRef} className="relative bg-gray-950 py-12 md:py-24 overflow-hidden">
@@ -279,12 +286,14 @@ export default function CourtsSection() {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          {sports.map((sport, i) => (
+          {sports.map((sport) => {
+            const decoracao = DECORACAO[sport.id] ?? DECORACAO_PADRAO
+            return (
             <div
-              key={i}
+              key={sport.id}
               className="sport-card group relative bg-gray-900 border border-white/10 hover:border-green-500/40 rounded-2xl p-5 overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-green-500/10"
             >
-              <div className={`absolute inset-0 bg-gradient-to-br ${sport.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300 rounded-2xl`} />
+              <div className={`absolute inset-0 bg-gradient-to-br ${decoracao.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300 rounded-2xl`} />
               <div className="relative z-10">
                 {/*
                   Altura fixa e centralização vertical porque a linha agora
@@ -293,14 +302,15 @@ export default function CourtsSection() {
                   desalinharia os títulos entre cartões vizinhos.
                 */}
                 <span className="text-3xl group-hover:scale-110 transition-transform duration-300 inline-flex h-9 items-center mb-3">
-                  {sport.icon}
+                  {iconeDe(sport)}
                 </span>
-                <h3 className="text-base font-bold text-white mb-1">{sport.name}</h3>
-                <p className="text-gray-500 text-xs leading-relaxed">{sport.desc}</p>
+                <h3 className="text-base font-bold text-white mb-1">{sport.label}</h3>
+                <p className="text-gray-500 text-xs leading-relaxed">{sport.description}</p>
               </div>
-              <div className={`absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r ${sport.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+              <div className={`absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r ${decoracao.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
             </div>
-          ))}
+            )
+          })}
         </div>
       </div>
     </section>

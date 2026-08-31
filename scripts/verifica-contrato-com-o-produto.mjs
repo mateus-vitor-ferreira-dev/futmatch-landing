@@ -156,22 +156,37 @@ const tags = await catalogo('/review-tags')
   conferido.push(`${sports.length} modalidades em ${mencoes} menção(ões)`)
 }
 
-// ── 2. Os nomes das modalidades da vitrine ──────────────────────────────────
+// ── 2. Os nomes e ícones do fallback da vitrine ─────────────────────────────
 //
 // A `CourtsSection` não mostra uma amostra: mostra as doze. Então o conjunto
 // tem que ser igual, e não apenas estar contido — modalidade nova na api que
 // não aparecesse aqui deixaria a página dizendo "12" e listando onze.
 {
-  const fonte = 'src/components/landing/CourtsSection.tsx'
-  const naLanding = [...arquivo(fonte).matchAll(/name: '([^']+)'/g)].map((m) => m[1])
-  const naApi = sports.map((s) => s.label)
+  const fonte = 'src/lib/sports.ts'
+  const naLanding = [...arquivo(fonte).matchAll(/{ id: '([^']+)', label: '([^']+)', icon: '([^']+)'/g)]
+    .map((m) => ({ id: m[1], label: m[2], icon: m[3] }))
+  const naApi = sports.map((s) => ({ id: s.id, label: s.label, icon: s.icon }))
 
-  const faltando = naApi.filter((l) => !naLanding.includes(l))
-  const sobrando = naLanding.filter((l) => !naApi.includes(l))
+  const idsLanding = naLanding.map((s) => s.id)
+  const idsApi = naApi.map((s) => s.id)
+  const faltando = naApi.filter((s) => !idsLanding.includes(s.id))
+  const sobrando = naLanding.filter((s) => !idsApi.includes(s.id))
 
-  for (const l of faltando) problemas.push(`${fonte}: a api serve "${l}" e a vitrine não mostra`)
-  for (const l of sobrando) problemas.push(`${fonte}: a vitrine mostra "${l}", que a api não serve`)
-  conferido.push(`${naLanding.length} nomes de modalidade`)
+  for (const s of faltando) problemas.push(`${fonte}: a api serve "${s.id}" e o fallback não mostra`)
+  for (const s of sobrando) problemas.push(`${fonte}: o fallback mostra "${s.id}", que a api não serve`)
+  for (const esperado of naApi) {
+    const atual = naLanding.find((s) => s.id === esperado.id)
+    if (atual && atual.label !== esperado.label) {
+      problemas.push(`${fonte}: ${esperado.id} usa o nome "${atual.label}" e a api usa "${esperado.label}"`)
+    }
+    if (atual && atual.icon !== esperado.icon) {
+      problemas.push(`${fonte}: ${esperado.id} usa o ícone "${atual.icon}" e a api usa "${esperado.icon}"`)
+    }
+  }
+  if (new Set(naLanding.map((s) => s.icon)).size !== naLanding.length) {
+    problemas.push(`${fonte}: duas modalidades compartilham o mesmo identificador de ícone`)
+  }
+  conferido.push(`${naLanding.length} modalidades com nome e ícone canônicos`)
 }
 
 // ── 3. As tags de avaliação, nomeadas uma a uma no FAQ ──────────────────────
