@@ -174,6 +174,18 @@ function IconeVoleiDeAreia() {
 }
 
 interface Sport {
+  /**
+   * O `id` do `CourtType` da api, e a razão de ele existir aqui.
+   *
+   * Sem ele esta lista era um conjunto solto de nomes e ícones, e a única
+   * amarra com a api era o `name` — que o `verifica-contrato-com-o-produto.mjs`
+   * já conferia. Nome batendo e ícone divergindo é exatamente o estado que a
+   * #440 encontrou: o tênis mostrava 🎾 aqui e 🥎 na api, e nada reprovava.
+   *
+   * Com o `id`, o script consegue parear cada cartão com a modalidade
+   * correspondente e conferir o ícone também.
+   */
+  id: string
   icon: ReactNode
   name: string
   desc: string
@@ -181,19 +193,29 @@ interface Sport {
   from: { x: number; y: number }
 }
 
+/**
+ * A ordem daqui é de apresentação, e não precisa bater com a da api: o que o
+ * `verifica-contrato-com-o-produto.mjs` confere é o **conjunto** — cada `id`
+ * existe lá, cada ícone bate com o `iconFallback` de lá, e nenhum ícone se
+ * repete. O `color` e o `from` são só desta tela e a api não os conhece.
+ */
 const sports: Sport[] = [
-  { icon: '👟', name: 'Futsal',            desc: 'Quadra coberta',               color: 'from-blue-600 to-blue-800',     from: { x: -100, y: 0 } },
-  { icon: '⚽', name: 'Society',           desc: 'Grama sintética',              color: 'from-green-600 to-green-800',   from: { x: 0, y: -80 } },
-  { icon: '🏟️', name: 'Futebol de Campo',  desc: 'Campo convencional',           color: 'from-emerald-600 to-emerald-800', from: { x: 100, y: 0 } },
-  { icon: '🏀', name: 'Basquete',          desc: 'Quadra de basquete',           color: 'from-orange-600 to-red-700',    from: { x: -100, y: 0 } },
-  { icon: '🏐', name: 'Vôlei',             desc: 'Quadra indoor',                color: 'from-yellow-500 to-yellow-700', from: { x: 0, y: 80 } },
-  { icon: '🎾', name: 'Beach Tennis',      desc: 'Quadra de areia',              color: 'from-lime-500 to-lime-700',     from: { x: 100, y: 0 } },
-  { icon: <IconeFutevolei />, name: 'Futevôlei', desc: 'Quadra de areia',        color: 'from-orange-500 to-orange-700', from: { x: -100, y: 0 } },
-  { icon: '🃏', name: 'Poker',             desc: 'Torneios e cash games',        color: 'from-purple-600 to-purple-800', from: { x: 0, y: -80 } },
-  { icon: '🎾', name: 'Tênis',             desc: 'Quadra de tênis',              color: 'from-violet-500 to-violet-700', from: { x: 100, y: 0 } },
-  { icon: '🤾', name: 'Handebol',          desc: 'Quadra de handebol',           color: 'from-red-500 to-red-700',       from: { x: -100, y: 0 } },
-  { icon: <IconeVoleiDeAreia />, name: 'Vôlei de Areia', desc: 'Quadra de vôlei de areia', color: 'from-cyan-500 to-cyan-700', from: { x: 0, y: 80 } },
-  { icon: <IconePeteca />, name: 'Peteca',    desc: 'Quadra de peteca',             color: 'from-pink-500 to-pink-700',     from: { x: 100, y: 0 } },
+  { id: 'FUTSAL',       icon: '👟',                   name: 'Futsal',            desc: 'Quadra coberta',               color: 'from-blue-600 to-blue-800',     from: { x: -100, y: 0 } },
+  { id: 'SOCIETY',      icon: '⚽',                   name: 'Society',           desc: 'Grama sintética',              color: 'from-green-600 to-green-800',   from: { x: 0, y: -80 } },
+  { id: 'CAMPO',        icon: '🏟️',                   name: 'Futebol de Campo',  desc: 'Campo convencional',           color: 'from-emerald-600 to-emerald-800', from: { x: 100, y: 0 } },
+  { id: 'BASQUETE',     icon: '🏀',                   name: 'Basquete',          desc: 'Quadra de basquete',           color: 'from-orange-600 to-red-700',    from: { x: -100, y: 0 } },
+  { id: 'VOLEI',        icon: '🏐',                   name: 'Vôlei',             desc: 'Quadra indoor',                color: 'from-yellow-500 to-yellow-700', from: { x: 0, y: 80 } },
+  { id: 'BEACH_TENNIS', icon: '🎾',                   name: 'Beach Tennis',      desc: 'Quadra de areia',              color: 'from-lime-500 to-lime-700',     from: { x: 100, y: 0 } },
+  { id: 'AREIA',        icon: <IconeFutevolei />,     name: 'Futevôlei',         desc: 'Quadra de areia',              color: 'from-orange-500 to-orange-700', from: { x: -100, y: 0 } },
+  { id: 'POKER',        icon: '🃏',                   name: 'Poker',             desc: 'Torneios e cash games',        color: 'from-purple-600 to-purple-800', from: { x: 0, y: -80 } },
+  // 🥎, e não a raquete 🎾 do Beach Tennis logo acima. Os dois dividiam o mesmo
+  // emoji e ficavam lado a lado na mesma grade: dois ícones idênticos, dois
+  // nomes diferentes. O app já tinha resolvido isso na web#279 e a decisão
+  // nunca atravessou para cá — é o defeito que a #440 veio corrigir.
+  { id: 'TENIS',        icon: '🥎',                   name: 'Tênis',             desc: 'Quadra de tênis',              color: 'from-violet-500 to-violet-700', from: { x: 100, y: 0 } },
+  { id: 'HANDBALL',     icon: '🤾',                   name: 'Handebol',          desc: 'Quadra de handebol',           color: 'from-red-500 to-red-700',       from: { x: -100, y: 0 } },
+  { id: 'VOLEI_AREIA',  icon: <IconeVoleiDeAreia />,  name: 'Vôlei de Areia',    desc: 'Quadra de vôlei de areia',     color: 'from-cyan-500 to-cyan-700',     from: { x: 0, y: 80 } },
+  { id: 'PETECA',       icon: <IconePeteca />,        name: 'Peteca',            desc: 'Quadra de peteca',             color: 'from-pink-500 to-pink-700',     from: { x: 100, y: 0 } },
 ]
 
 export default function CourtsSection() {
