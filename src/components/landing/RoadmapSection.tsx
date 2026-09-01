@@ -5,7 +5,7 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Badge } from '@/components/ui/badge'
 import { useMobileScrollAnimation } from '@/lib/useMobileScrollAnimation'
-import { CalendarX, MessageCircle, UserCheck } from 'lucide-react'
+import { MessageCircle } from 'lucide-react'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -39,15 +39,21 @@ gsap.registerPlugin(ScrollTrigger)
  * continua aberta, e o `RoadmapSection.test.tsx` garante que nenhum item entre
  * sem uma. A regra deixou de depender de disciplina.
  */
+//
+// 01/09/2026 — dois itens saíram daqui porque **foram ao ar**, e é a segunda vez
+// que a regra pega isso funcionando:
+//
+// - "Partida sem gente se cancela sozinha" (api#381), publicada em 01/09;
+// - "Fechar a partida para quem te conhece" (api#387), publicada em 28/08.
+//
+// A #62 tinha achado o mesmo estado na mão, cinco itens de uma vez. Desta vez
+// quem achou foi o CI, no PR seguinte à publicação — que é a diferença entre
+// exigir e apenas detectar.
+//
+// Eles saíram e não foram substituídos: item de roadmap é promessa pública, e
+// escolher qual promessa fazer não é decisão de quem conserta a lista. A seção
+// aguenta ficar com um só — o teste exige ao menos um, e o grid é responsivo.
 const itens = [
-  {
-    Icon: CalendarX,
-    title: 'Partida sem gente se cancela sozinha',
-    description:
-      'A partida que não bate o mínimo de jogadores até a hora do jogo é cancelada sozinha, e quem tinha confirmado é avisado — em vez de todo mundo descobrir na quadra.',
-    status: 'Planejado',
-    issue: 'so-mais-um-api#381',
-  },
   {
     Icon: MessageCircle,
     title: 'Aviso no WhatsApp, não só no e-mail',
@@ -55,14 +61,6 @@ const itens = [
       'Confirmação, lembrete e cancelamento chegam onde a pessoa realmente lê. Hoje tudo o que o Só+1 fala com o jogador sai por e-mail, e só por e-mail.',
     status: 'Planejado',
     issue: 'so-mais-um-api#382',
-  },
-  {
-    Icon: UserCheck,
-    title: 'Fechar a partida para quem te conhece',
-    description:
-      'Exigir vínculo social para entrar: só quem te segue, ou quem é seu amigo. Hoje o único vínculo entre pessoas que dá para exigir é ser do mesmo time.',
-    status: 'Planejado',
-    issue: 'so-mais-um-api#387',
   },
 ]
 
