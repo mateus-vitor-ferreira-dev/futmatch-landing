@@ -174,7 +174,74 @@ const tags = await catalogo('/review-tags')
   conferido.push(`${naLanding.length} nomes de modalidade`)
 }
 
-// ── 3. As tags de avaliação, nomeadas uma a uma no FAQ ──────────────────────
+// ── 3. Os ícones das modalidades ────────────────────────────────────────────
+//
+// A conferência de nomes acima passava com o tênis errado: a landing mostrava
+// 🎾 — o mesmo emoji do Beach Tennis, no cartão ao lado — enquanto a api servia
+// 🥎. Nome batendo e ícone divergindo foi o estado que a #440 encontrou, e não
+// havia nada aqui que o pegasse.
+//
+// Quem decide é `src/constants/sports.ts` da api: `icon` é um identificador
+// estável e `iconFallback` é o emoji, ou `null` para as três que o Unicode não
+// representa. `null` quer dizer "esta é desenhada pelo cliente" — e na landing
+// isso é um componente SVG, nunca um emoji aproximado, que foi de onde vieram o
+// guarda-sol e a raquete de badminton que a #46 removeu por escrito.
+{
+  const fonte = 'src/components/landing/CourtsSection.tsx'
+
+  // Cada entrada de `sports` abre com `id` e `icon`, nesta ordem. O `icon` é
+  // ou um emoji entre aspas, ou um componente JSX.
+  const cartoes = [
+    ...arquivo(fonte).matchAll(/\{\s*id: '([A-Z_]+)',\s*icon: (?:'([^']*)'|<(\w+)\s*\/>)/g),
+  ].map((m) => ({ id: m[1], emoji: m[2], componente: m[3] }))
+
+  // Sem isto, uma mudança de formatação na lista faria o regex achar zero
+  // cartões e a seção inteira aprovaria em silêncio — o mesmo modo de falha que
+  // as contagens de menção acima existem para evitar.
+  if (cartoes.length !== sports.length) {
+    problemas.push(
+      `${fonte}: li ${cartoes.length} cartões com \`id\` e a api serve ${sports.length} modalidades — ` +
+        'a forma da lista mudou e este script deixou de enxergá-la',
+    )
+  }
+
+  for (const cartao of cartoes) {
+    const naApi = sports.find((s) => s.id === cartao.id)
+    if (!naApi) {
+      problemas.push(`${fonte}: o cartão \`${cartao.id}\` não é uma modalidade que a api serve`)
+      continue
+    }
+
+    if (naApi.iconFallback === null) {
+      if (!cartao.componente) {
+        problemas.push(
+          `${fonte}: ${naApi.label} mostra o emoji ${cartao.emoji} e a api serve \`iconFallback: null\` — ` +
+            'esta modalidade não tem emoji correto e precisa do SVG desenhado',
+        )
+      }
+    } else if (cartao.emoji !== naApi.iconFallback) {
+      const mostrado = cartao.componente ? `<${cartao.componente} />` : cartao.emoji
+      problemas.push(`${fonte}: ${naApi.label} mostra ${mostrado} e a api serve ${naApi.iconFallback}`)
+    }
+  }
+
+  // Ícone repetido é o defeito da #440 na forma genérica: dois cartões lado a
+  // lado, visualmente idênticos, com nomes diferentes. Conferir um a um contra
+  // a api já impede isso enquanto a api estiver certa; esta checagem é o que
+  // faz a colisão aparecer AQUI, na tela onde ela machuca.
+  const vistos = new Map()
+  for (const cartao of cartoes) {
+    const chave = cartao.componente ? `<${cartao.componente} />` : cartao.emoji
+    if (vistos.has(chave)) {
+      problemas.push(`${fonte}: ${vistos.get(chave)} e ${cartao.id} mostram o mesmo ícone ${chave}`)
+    }
+    vistos.set(chave, cartao.id)
+  }
+
+  conferido.push(`${cartoes.length} ícones de modalidade`)
+}
+
+// ── 4. As tags de avaliação, nomeadas uma a uma no FAQ ──────────────────────
 {
   const fonte = 'src/components/landing/FAQSection.tsx'
   const copy = copyDe(fonte)
@@ -186,7 +253,7 @@ const tags = await catalogo('/review-tags')
   conferido.push(`${naApi.length} tags citadas`)
 }
 
-// ── 4. O total de tags, onde a copy o afirma ────────────────────────────────
+// ── 5. O total de tags, onde a copy o afirma ────────────────────────────────
 {
   const fontes = ['src/components/landing/FAQSection.tsx', 'src/components/landing/FeaturesSection.tsx']
   let mencoes = 0
@@ -203,7 +270,7 @@ const tags = await catalogo('/review-tags')
   conferido.push(`${tags.length} tags em ${mencoes} menção(ões)`)
 }
 
-// ── 5. O roadmap ainda é futuro ─────────────────────────────────────────────
+// ── 6. O roadmap ainda é futuro ─────────────────────────────────────────────
 //
 // A #62 achou os cinco itens da seção **todos entregues**, com a página ainda
 // chamando cada um de "Planejado" — a landing prometendo menos do que o produto

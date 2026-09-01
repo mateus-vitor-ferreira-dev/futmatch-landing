@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { Button } from '@/components/ui/button'
-import { ArrowRight, Star, Trophy, Users } from 'lucide-react'
+import { ArrowRight, Medal, Trophy, Users } from 'lucide-react'
 
 export default function HeroSection() {
   const sectionRef   = useRef<HTMLElement>(null)
@@ -191,11 +191,21 @@ export default function HeroSection() {
               <span className="text-white text-sm font-semibold">Torneios</span>
             </div>
 
+            {/*
+              Medalha, e não as cinco estrelas que estavam aqui.
+
+              "Craque da Partida" é uma das seis tags de avaliação — um prêmio
+              que alguém te dá. A estrela, no app e nesta mesma página, é a
+              **nota** de 1 a 5. Cinco estrelas rotulando o selo diziam
+              "avaliação máxima", que é outra coisa: dá para receber a tag sem
+              ter nota 5, e nota 5 sem receber a tag.
+
+              O ⭐ passa a significar uma coisa só (#440). O 🏆 já é de
+              Torneios, no selo logo acima — por isso medalha.
+            */}
             <div className="animate-float-slow absolute -bottom-4 -left-4 bg-gray-800 border border-green-500/30 rounded-2xl px-4 py-2.5 shadow-xl flex items-center gap-2" style={{ animationDelay: '1s' }}>
-              {[1,2,3,4,5].map(i => (
-                <Star key={i} size={13} className="text-green-400 fill-green-400" />
-              ))}
-              <span className="text-white text-sm font-semibold ml-1">Craque</span>
+              <Medal size={16} className="text-green-400" />
+              <span className="text-white text-sm font-semibold">Craque</span>
             </div>
 
             <div className="animate-float absolute top-1/2 -translate-y-1/2 -right-14 bg-gray-800 border border-white/10 rounded-2xl px-3 py-2 shadow-xl flex items-center gap-2" style={{ animationDelay: '0.5s' }}>

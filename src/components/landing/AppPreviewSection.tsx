@@ -162,7 +162,13 @@ export default function AppPreviewSection() {
                   </div>
                 </div>
                 <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
-                  <span className="text-xs font-bold text-yellow-400 bg-yellow-500/10 border border-yellow-500/20 px-2.5 py-0.5 rounded-full">⭐ Craque</span>
+                  {/*
+                    🏅, e não o ⭐ que estava aqui: a estrela é a nota, e ela
+                    aparece cinco linhas acima justamente como nota (o 4.9). O
+                    mesmo símbolo para a nota e para o prêmio apagava a
+                    diferença entre os dois no mesmo cartão (#440).
+                  */}
+                  <span className="text-xs font-bold text-yellow-400 bg-yellow-500/10 border border-yellow-500/20 px-2.5 py-0.5 rounded-full">🏅 Craque</span>
                   <span className="text-xs font-bold text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2.5 py-0.5 rounded-full">🤝 Confiável</span>
                 </div>
               </div>
