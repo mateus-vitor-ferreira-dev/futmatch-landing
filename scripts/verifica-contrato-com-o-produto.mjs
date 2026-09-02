@@ -174,71 +174,78 @@ const tags = await catalogo('/review-tags')
   conferido.push(`${naLanding.length} nomes de modalidade`)
 }
 
-// ── 3. Os ícones das modalidades ────────────────────────────────────────────
+// ── 3. Os ícones das modalidades, na vitrine e no mockup do app ─────────────
 //
 // A conferência de nomes acima passava com o tênis errado: a landing mostrava
 // 🎾 — o mesmo emoji do Beach Tennis, no cartão ao lado — enquanto a api servia
-// 🥎. Nome batendo e ícone divergindo foi o estado que a #440 encontrou, e não
-// havia nada aqui que o pegasse.
+// 🥎. O mesmo contrato cobre a vitrine completa e o mockup de partidas: as duas
+// listas desenham o produto e nenhuma pode inventar o ícone.
 //
-// Quem decide é `src/constants/sports.ts` da api: `icon` é um identificador
-// estável e `iconFallback` é o emoji, ou `null` para as três que o Unicode não
-// representa. `null` quer dizer "esta é desenhada pelo cliente" — e na landing
-// isso é um componente SVG, nunca um emoji aproximado, que foi de onde vieram o
-// guarda-sol e a raquete de badminton que a #46 removeu por escrito.
+// Quem decide é `src/constants/sports.ts` da api: `iconFallback` é o emoji,
+// ou `null` para modalidade que precisa do SVG desenhado pelo cliente.
 {
-  const fonte = 'src/components/landing/CourtsSection.tsx'
+  const fontes = [
+    {
+      caminho: 'src/components/landing/CourtsSection.tsx',
+      esperado: sports.length,
+      regex: /\{\s*id: '([A-Z_]+)',\s*icon: (?:'([^']*)'|<(\w+)\s*\/>)/g,
+    },
+    {
+      caminho: 'src/components/landing/AppPreviewSection.tsx',
+      esperado: 6,
+      regex: /\{\s*id: '([A-Z_]+)',[^\n]*icon: '([^']*)'/g,
+    },
+  ]
 
-  // Cada entrada de `sports` abre com `id` e `icon`, nesta ordem. O `icon` é
-  // ou um emoji entre aspas, ou um componente JSX.
-  const cartoes = [
-    ...arquivo(fonte).matchAll(/\{\s*id: '([A-Z_]+)',\s*icon: (?:'([^']*)'|<(\w+)\s*\/>)/g),
-  ].map((m) => ({ id: m[1], emoji: m[2], componente: m[3] }))
+  let total = 0
+  for (const fonte of fontes) {
+    const itens = [...arquivo(fonte.caminho).matchAll(fonte.regex)].map((m) => ({
+      id: m[1],
+      emoji: m[2],
+      componente: m[3],
+    }))
+    total += itens.length
 
-  // Sem isto, uma mudança de formatação na lista faria o regex achar zero
-  // cartões e a seção inteira aprovaria em silêncio — o mesmo modo de falha que
-  // as contagens de menção acima existem para evitar.
-  if (cartoes.length !== sports.length) {
-    problemas.push(
-      `${fonte}: li ${cartoes.length} cartões com \`id\` e a api serve ${sports.length} modalidades — ` +
-        'a forma da lista mudou e este script deixou de enxergá-la',
-    )
-  }
-
-  for (const cartao of cartoes) {
-    const naApi = sports.find((s) => s.id === cartao.id)
-    if (!naApi) {
-      problemas.push(`${fonte}: o cartão \`${cartao.id}\` não é uma modalidade que a api serve`)
-      continue
+    // Mudança de formatação não pode fazer uma lista desaparecer do radar.
+    if (itens.length !== fonte.esperado) {
+      problemas.push(
+        `${fonte.caminho}: li ${itens.length} itens com \`id\` e esperava ${fonte.esperado} — ` +
+          'a forma da lista mudou e este script deixou de enxergá-la',
+      )
     }
 
-    if (naApi.iconFallback === null) {
-      if (!cartao.componente) {
-        problemas.push(
-          `${fonte}: ${naApi.label} mostra o emoji ${cartao.emoji} e a api serve \`iconFallback: null\` — ` +
-            'esta modalidade não tem emoji correto e precisa do SVG desenhado',
-        )
+    for (const item of itens) {
+      const naApi = sports.find((s) => s.id === item.id)
+      if (!naApi) {
+        problemas.push(`${fonte.caminho}: \`${item.id}\` não é uma modalidade que a api serve`)
+        continue
       }
-    } else if (cartao.emoji !== naApi.iconFallback) {
-      const mostrado = cartao.componente ? `<${cartao.componente} />` : cartao.emoji
-      problemas.push(`${fonte}: ${naApi.label} mostra ${mostrado} e a api serve ${naApi.iconFallback}`)
+
+      if (naApi.iconFallback === null) {
+        if (!item.componente) {
+          problemas.push(
+            `${fonte.caminho}: ${naApi.label} mostra o emoji ${item.emoji} e a api serve ` +
+              '`iconFallback: null` — esta modalidade precisa do SVG desenhado',
+          )
+        }
+      } else if (item.emoji !== naApi.iconFallback) {
+        const mostrado = item.componente ? `<${item.componente} />` : item.emoji
+        problemas.push(`${fonte.caminho}: ${naApi.label} mostra ${mostrado} e a api serve ${naApi.iconFallback}`)
+      }
+    }
+
+    // A colisão importa dentro de cada lista, onde os itens aparecem juntos.
+    const vistos = new Map()
+    for (const item of itens) {
+      const chave = item.componente ? `<${item.componente} />` : item.emoji
+      if (vistos.has(chave)) {
+        problemas.push(`${fonte.caminho}: ${vistos.get(chave)} e ${item.id} mostram o mesmo ícone ${chave}`)
+      }
+      vistos.set(chave, item.id)
     }
   }
 
-  // Ícone repetido é o defeito da #440 na forma genérica: dois cartões lado a
-  // lado, visualmente idênticos, com nomes diferentes. Conferir um a um contra
-  // a api já impede isso enquanto a api estiver certa; esta checagem é o que
-  // faz a colisão aparecer AQUI, na tela onde ela machuca.
-  const vistos = new Map()
-  for (const cartao of cartoes) {
-    const chave = cartao.componente ? `<${cartao.componente} />` : cartao.emoji
-    if (vistos.has(chave)) {
-      problemas.push(`${fonte}: ${vistos.get(chave)} e ${cartao.id} mostram o mesmo ícone ${chave}`)
-    }
-    vistos.set(chave, cartao.id)
-  }
-
-  conferido.push(`${cartoes.length} ícones de modalidade`)
+  conferido.push(`${total} ícones de modalidade em ${fontes.length} listas`)
 }
 
 // ── 4. As tags de avaliação, nomeadas uma a uma no FAQ ──────────────────────
