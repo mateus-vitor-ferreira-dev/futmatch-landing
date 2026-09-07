@@ -29,9 +29,14 @@ vi.mock('@/lib/stats', () => ({
 vi.mock('@/lib/planos', () => ({
     getGradeDePlanos: vi.fn(),
 }))
+vi.mock('@/lib/sports', async (importOriginal) => {
+    const original = await importOriginal<typeof import('@/lib/sports')>()
+    return { ...original, getSports: vi.fn() }
+})
 
 import { getNumerosPublicos } from '@/lib/stats'
 import { getGradeDePlanos, type GradeDePlanos } from '@/lib/planos'
+import { FALLBACK_SPORTS, getSports } from '@/lib/sports'
 import LandingPage from './page'
 
 /**
@@ -74,6 +79,7 @@ describe('os números do README', () => {
     beforeEach(() => {
         vi.mocked(getNumerosPublicos).mockResolvedValue(NUMEROS)
         vi.mocked(getGradeDePlanos).mockResolvedValue(GRADE)
+        vi.mocked(getSports).mockResolvedValue(FALLBACK_SPORTS)
     })
 
     it('o total de seções bate com o que a página renderiza', async () => {
