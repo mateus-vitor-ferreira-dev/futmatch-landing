@@ -1,5 +1,6 @@
 import { getNumerosPublicos } from '@/lib/stats'
 import { getGradeDePlanos } from '@/lib/planos'
+import { getSports } from '@/lib/sports'
 import Navbar from '@/components/landing/Navbar'
 import HeroSection from '@/components/landing/HeroSection'
 import StatsSection from '@/components/landing/StatsSection'
@@ -24,9 +25,10 @@ import Footer from '@/components/landing/Footer'
 export default async function LandingPage() {
   // Em paralelo: são duas rotas independentes, e encadeá-las somaria as duas
   // latências no tempo de resposta da página.
-  const [numeros, planos] = await Promise.all([
+  const [numeros, planos, sports] = await Promise.all([
     getNumerosPublicos(),
     getGradeDePlanos(),
+    getSports(),
   ])
 
   return (
@@ -62,7 +64,7 @@ export default async function LandingPage() {
           tamanho do espaço dele. Some sozinha quando a API não responde.
         */}
         <PlanosSection grade={planos} />
-        <CourtsSection />
+        <CourtsSection sports={sports} />
         {/*
           O roadmap entra depois de tudo o que já existe e antes do FAQ: quem
           chega aqui já leu a página inteira de funcionalidades reais, então não
