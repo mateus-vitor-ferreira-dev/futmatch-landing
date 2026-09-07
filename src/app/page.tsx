@@ -12,6 +12,7 @@ import PertoSection from '@/components/landing/PertoSection'
 import CampeonatosSection from '@/components/landing/CampeonatosSection'
 import HowItWorksSection from '@/components/landing/HowItWorksSection'
 import OwnerSection from '@/components/landing/OwnerSection'
+import EscolinhaEDayUseSection from '@/components/landing/EscolinhaEDayUseSection'
 import PlanosSection from '@/components/landing/PlanosSection'
 import CourtsSection from '@/components/landing/CourtsSection'
 import RoadmapSection from '@/components/landing/RoadmapSection'
@@ -58,6 +59,12 @@ export default async function LandingPage() {
         </div>
         <HowItWorksSection />
         <OwnerSection />
+        {/*
+          Logo depois do pitch do dono, e antes dos planos (#87). A `OwnerSection`
+          diz "cadastre seu espaço"; esta diz de quantos jeitos ele vende; e os
+          planos, logo abaixo, dizem quanto custa. A ordem lida é a da decisão.
+        */}
+        <EscolinhaEDayUseSection />
         {/*
           Logo depois da seção do dono, porque é a continuação da mesma
           conversa: ali ele vê o que ganha, aqui vê se existe um plano do
