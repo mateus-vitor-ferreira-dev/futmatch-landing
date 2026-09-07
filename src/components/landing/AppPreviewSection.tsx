@@ -10,12 +10,12 @@ import { Star, Users, Trophy, Bell, MapPin, Calendar } from 'lucide-react'
 gsap.registerPlugin(ScrollTrigger)
 
 const ALL_PARTIDAS = [
-  { name: 'Society da Quinta',   local: 'Arena Sul Lavras',       time: 'Qui 19h', price: 'R$ 30', vagas: 4,  total: 12, type: 'Society',     icon: '⚽' },
-  { name: 'Beach Tennis Livre',  local: 'Quadra de Areia Centro', time: 'Sáb 08h', price: 'R$ 25', vagas: 2,  total: 4,  type: 'Beach Tennis', icon: '🎾' },
-  { name: 'Racha de Futsal',     local: 'Arena Indoor Lavras',    time: 'Sex 20h', price: 'R$ 20', vagas: 7,  total: 10, type: 'Futsal',       icon: '👟' },
-  { name: 'Futebol de Campo',    local: 'Campo Municipal Lavras', time: 'Dom 08h', price: 'R$ 15', vagas: 3,  total: 22, type: 'Campo',        icon: '🏟️' },
-  { name: 'Vôlei Indoor',        local: 'Ginásio UFLA',           time: 'Ter 19h', price: 'R$ 18', vagas: 5,  total: 12, type: 'Vôlei',        icon: '🏐' },
-  { name: 'Torneio de Poker',    local: 'Arena Poker Lavras',     time: 'Sáb 14h', price: 'R$ 50', vagas: 8,  total: 20, type: 'Poker',        icon: '🃏' },
+  { id: 'SOCIETY', name: 'Society da Quinta', local: 'Arena Sul Lavras', time: 'Qui 19h', price: 'R$ 30', vagas: 4, total: 12, type: 'Society', icon: '⚽' },
+  { id: 'BEACH_TENNIS', name: 'Beach Tennis Livre', local: 'Quadra de Areia Centro', time: 'Sáb 08h', price: 'R$ 25', vagas: 2, total: 4, type: 'Beach Tennis', icon: '🎾' },
+  { id: 'FUTSAL', name: 'Racha de Futsal', local: 'Arena Indoor Lavras', time: 'Sex 20h', price: 'R$ 20', vagas: 7, total: 10, type: 'Futsal', icon: '👟' },
+  { id: 'CAMPO', name: 'Futebol de Campo', local: 'Campo Municipal Lavras', time: 'Dom 08h', price: 'R$ 15', vagas: 3, total: 22, type: 'Campo', icon: '🏟️' },
+  { id: 'VOLEI', name: 'Vôlei Indoor', local: 'Ginásio UFLA', time: 'Ter 19h', price: 'R$ 18', vagas: 5, total: 12, type: 'Vôlei', icon: '🏐' },
+  { id: 'POKER', name: 'Torneio de Poker', local: 'Arena Poker Lavras', time: 'Sáb 14h', price: 'R$ 50', vagas: 8, total: 20, type: 'Poker', icon: '🃏' },
 ]
 
 const ALL_NOTIFS = [
@@ -162,7 +162,13 @@ export default function AppPreviewSection() {
                   </div>
                 </div>
                 <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
-                  <span className="text-xs font-bold text-yellow-400 bg-yellow-500/10 border border-yellow-500/20 px-2.5 py-0.5 rounded-full">🏆 Craque</span>
+                  {/*
+                    🏅, e não o ⭐ que estava aqui: a estrela é a nota, e ela
+                    aparece cinco linhas acima justamente como nota (o 4.9). O
+                    mesmo símbolo para a nota e para o prêmio apagava a
+                    diferença entre os dois no mesmo cartão (#440).
+                  */}
+                  <span className="text-xs font-bold text-yellow-400 bg-yellow-500/10 border border-yellow-500/20 px-2.5 py-0.5 rounded-full">🏅 Craque</span>
                   <span className="text-xs font-bold text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2.5 py-0.5 rounded-full">🤝 Confiável</span>
                 </div>
               </div>

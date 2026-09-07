@@ -163,15 +163,26 @@ const tags = await catalogo('/review-tags')
 // não aparecesse aqui deixaria a página dizendo "12" e listando onze.
 {
   const fonte = 'src/lib/sports.ts'
-  const naLanding = [...arquivo(fonte).matchAll(/{ id: '([^']+)', label: '([^']+)', icon: '([^']+)'/g)]
-    .map((m) => ({ id: m[1], label: m[2], icon: m[3] }))
-  const naApi = sports.map((s) => ({ id: s.id, label: s.label, icon: s.icon }))
-  // Durante a publicação coordenada da #440, a API em produção ainda serve o
-  // contrato legado (emoji em `icon`, sem `iconFallback`). Nesse formato ela
-  // não tem como confirmar identificadores que ainda não conhece. Assim que o
-  // novo contrato subir, a presença de `iconFallback` religa a comparação
-  // estrita automaticamente — sem flag e sem data para alguém esquecer.
-  const apiTemContratoCanonico = sports.every((s) => Object.hasOwn(s, 'iconFallback'))
+  const naLanding = [
+    ...arquivo(fonte).matchAll(
+      /{ id: '([^']+)', label: '([^']+)', icon: '([^']+)', iconFallback: (?:'([^']*)'|null)/g,
+    ),
+  ].map((m) => ({ id: m[1], label: m[2], icon: m[3], iconFallback: m[4] ?? null }))
+  const naApi = sports.map((s) => ({
+    id: s.id,
+    label: s.label,
+    icon: s.icon,
+    iconFallback: s.iconFallback,
+  }))
+
+  // Sem isto, uma mudança de formatação na lista faria o regex achar zero
+  // modalidades e a seção inteira aprovaria em silêncio.
+  if (naLanding.length !== sports.length) {
+    problemas.push(
+      `${fonte}: li ${naLanding.length} modalidades no fallback e a api serve ${sports.length} — ` +
+        'a forma da lista mudou e este script deixou de enxergá-la',
+    )
+  }
 
   const idsLanding = naLanding.map((s) => s.id)
   const idsApi = naApi.map((s) => s.id)
@@ -182,24 +193,143 @@ const tags = await catalogo('/review-tags')
   for (const s of sobrando) problemas.push(`${fonte}: o fallback mostra "${s.id}", que a api não serve`)
   for (const esperado of naApi) {
     const atual = naLanding.find((s) => s.id === esperado.id)
-    if (atual && atual.label !== esperado.label) {
+    if (!atual) continue
+    if (atual.label !== esperado.label) {
       problemas.push(`${fonte}: ${esperado.id} usa o nome "${atual.label}" e a api usa "${esperado.label}"`)
     }
-    if (apiTemContratoCanonico && atual && atual.icon !== esperado.icon) {
+    if (atual.icon !== esperado.icon) {
       problemas.push(`${fonte}: ${esperado.id} usa o ícone "${atual.icon}" e a api usa "${esperado.icon}"`)
+    }
+    // O emoji do fallback é o que a vitrine desenha enquanto a api não responde.
+    // Divergir aqui é o defeito da #440 reaparecendo justamente na hora em que
+    // ninguém tem como conferir contra a api.
+    if (atual.iconFallback !== esperado.iconFallback) {
+      const mostra = atual.iconFallback ?? 'null'
+      const serve = esperado.iconFallback ?? 'null'
+      problemas.push(`${fonte}: ${esperado.id} cai para ${mostra} e a api serve ${serve}`)
     }
   }
   if (new Set(naLanding.map((s) => s.icon)).size !== naLanding.length) {
     problemas.push(`${fonte}: duas modalidades compartilham o mesmo identificador de ícone`)
   }
-  conferido.push(
-    apiTemContratoCanonico
-      ? `${naLanding.length} modalidades com nome e ícone canônicos`
-      : `${naLanding.length} modalidades por id e nome; api ainda no contrato legado de ícones`,
-  )
+  const emojis = naLanding.map((s) => s.iconFallback).filter((e) => e !== null)
+  if (new Set(emojis).size !== emojis.length) {
+    problemas.push(`${fonte}: duas modalidades caem para o mesmo emoji`)
+  }
+  conferido.push(`${naLanding.length} modalidades do fallback com nome, ícone e emoji`)
 }
 
-// ── 3. As tags de avaliação, nomeadas uma a uma no FAQ ──────────────────────
+// ── 3. Os ícones do mockup do app, e os três desenhados à mão ───────────────
+//
+// A conferência de nomes acima passava com o tênis errado: a landing mostrava
+// 🎾 — o mesmo emoji do Beach Tennis, no cartão ao lado — enquanto a api servia
+// 🥎.
+//
+// A vitrine deixou de ter lista própria: a `CourtsSection` recebe as
+// modalidades da api e a seção 2 confere o fallback. Sobra aqui o que **ainda**
+// é escrito à mão na landing — o mockup de partidas, que mostra seis das doze
+// e inventa o emoji se ninguém olhar.
+//
+// Quem decide é `src/constants/sports.ts` da api: `iconFallback` é o emoji,
+// ou `null` para modalidade que precisa do SVG desenhado pelo cliente.
+{
+  const fontes = [
+    {
+      caminho: 'src/components/landing/AppPreviewSection.tsx',
+      esperado: 6,
+      regex: /\{\s*id: '([A-Z_]+)',[^\n]*icon: '([^']*)'/g,
+    },
+  ]
+
+  let total = 0
+  for (const fonte of fontes) {
+    const itens = [...arquivo(fonte.caminho).matchAll(fonte.regex)].map((m) => ({
+      id: m[1],
+      emoji: m[2],
+      componente: m[3],
+    }))
+    total += itens.length
+
+    // Mudança de formatação não pode fazer uma lista desaparecer do radar.
+    if (itens.length !== fonte.esperado) {
+      problemas.push(
+        `${fonte.caminho}: li ${itens.length} itens com \`id\` e esperava ${fonte.esperado} — ` +
+          'a forma da lista mudou e este script deixou de enxergá-la',
+      )
+    }
+
+    for (const item of itens) {
+      const naApi = sports.find((s) => s.id === item.id)
+      if (!naApi) {
+        problemas.push(`${fonte.caminho}: \`${item.id}\` não é uma modalidade que a api serve`)
+        continue
+      }
+
+      if (naApi.iconFallback === null) {
+        if (!item.componente) {
+          problemas.push(
+            `${fonte.caminho}: ${naApi.label} mostra o emoji ${item.emoji} e a api serve ` +
+              '`iconFallback: null` — esta modalidade precisa do SVG desenhado',
+          )
+        }
+      } else if (item.emoji !== naApi.iconFallback) {
+        const mostrado = item.componente ? `<${item.componente} />` : item.emoji
+        problemas.push(`${fonte.caminho}: ${naApi.label} mostra ${mostrado} e a api serve ${naApi.iconFallback}`)
+      }
+    }
+
+    // A colisão importa dentro de cada lista, onde os itens aparecem juntos.
+    const vistos = new Map()
+    for (const item of itens) {
+      const chave = item.componente ? `<${item.componente} />` : item.emoji
+      if (vistos.has(chave)) {
+        problemas.push(`${fonte.caminho}: ${vistos.get(chave)} e ${item.id} mostram o mesmo ícone ${chave}`)
+      }
+      vistos.set(chave, item.id)
+    }
+  }
+
+  conferido.push(`${total} ícones de modalidade no mockup do app`)
+}
+
+// ── 3b. Toda modalidade sem emoji tem o SVG que ela exige ───────────────────
+//
+// `iconFallback: null` é a api dizendo "esta não tem emoji correto, desenhe".
+// Quem atende esse pedido é o `iconeDe` da `CourtsSection`, que casa o
+// `sport.icon` com um componente. Se a api passar a servir uma quarta
+// modalidade sem emoji, o `iconeDe` devolve `null` e o cartão sobe **sem ícone
+// nenhum** — sem erro, sem aviso, só um buraco na grade.
+//
+// Este é o contrário do modo de falha da seção 2: lá o risco é a landing
+// inventar um emoji, aqui é ela não desenhar nada.
+{
+  const fonte = 'src/components/landing/CourtsSection.tsx'
+  const desenhados = new Set(
+    [...arquivo(fonte).matchAll(/sport\.icon === '([^']+)'/g)].map((m) => m[1]),
+  )
+  const precisamDeDesenho = sports.filter((s) => s.iconFallback === null)
+
+  for (const s of precisamDeDesenho) {
+    if (!desenhados.has(s.icon)) {
+      problemas.push(
+        `${fonte}: a api serve ${s.label} com \`iconFallback: null\` e o \`iconeDe\` não tem ` +
+          `ramo para \`${s.icon}\` — o cartão sobe sem ícone`,
+      )
+    }
+  }
+  for (const icon of desenhados) {
+    if (!precisamDeDesenho.some((s) => s.icon === icon)) {
+      problemas.push(
+        `${fonte}: o \`iconeDe\` desenha \`${icon}\`, e a api não serve modalidade sem emoji com ` +
+          'esse ícone — ou o identificador mudou, ou o desenho virou sobra',
+      )
+    }
+  }
+
+  conferido.push(`${precisamDeDesenho.length} modalidades sem emoji com SVG próprio`)
+}
+
+// ── 4. As tags de avaliação, nomeadas uma a uma no FAQ ──────────────────────
 {
   const fonte = 'src/components/landing/FAQSection.tsx'
   const copy = copyDe(fonte)
@@ -211,7 +341,7 @@ const tags = await catalogo('/review-tags')
   conferido.push(`${naApi.length} tags citadas`)
 }
 
-// ── 4. O total de tags, onde a copy o afirma ────────────────────────────────
+// ── 5. O total de tags, onde a copy o afirma ────────────────────────────────
 {
   const fontes = ['src/components/landing/FAQSection.tsx', 'src/components/landing/FeaturesSection.tsx']
   let mencoes = 0
@@ -228,7 +358,7 @@ const tags = await catalogo('/review-tags')
   conferido.push(`${tags.length} tags em ${mencoes} menção(ões)`)
 }
 
-// ── 5. O roadmap ainda é futuro ─────────────────────────────────────────────
+// ── 6. O roadmap ainda é futuro ─────────────────────────────────────────────
 //
 // A #62 achou os cinco itens da seção **todos entregues**, com a página ainda
 // chamando cada um de "Planejado" — a landing prometendo menos do que o produto
