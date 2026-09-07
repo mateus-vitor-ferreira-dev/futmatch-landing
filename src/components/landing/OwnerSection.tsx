@@ -6,7 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useMobileScrollAnimation } from '@/lib/useMobileScrollAnimation'
-import { ArrowRight, BarChart2, LayoutGrid, Users, MapPin, Package, ClipboardList, CheckCircle } from 'lucide-react'
+import { ArrowRight, BarChart2, LayoutGrid, Users, MapPin, Package, ClipboardList, CheckCircle, GraduationCap, Ticket } from 'lucide-react'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -18,9 +18,33 @@ gsap.registerPlugin(ScrollTrigger)
  * versão do erro que a #15 pegou na prova social, então cada item aqui aponta
  * para uma tela que existe no painel.
  */
+/*
+ * A turma e o day use entraram no levantamento da #79.
+ *
+ * A quadra se vende de três jeitos, e a página contava um. A **partida** é
+ * combinada e rateada; a **turma** é a regra semanal da escolinha — mesmo dia,
+ * mesmo horário, mensalidade por aluno; o **day use** é a entrada avulsa do
+ * dia. Os três dividem a mesma agenda de quadra, e é ela que impede o dono de
+ * vender a mesma sexta duas vezes.
+ *
+ * As duas ausências não eram detalhe: são 26 das 148 rotas que a api publica em
+ * produção hoje — turma, aula, matrícula, mensalidade, chamada, membro do
+ * espaço e day use —, e a landing não dizia uma palavra sobre nenhuma delas.
+ *
+ * As duas linhas seguem a regra desta lista: cada uma aponta para tela que
+ * existe **em produção**, e não na `develop`.
+ */
 const benefits = [
   { Icon: BarChart2,     text: 'Painel com seus espaços, quadras e partidas ativas' },
   { Icon: LayoutGrid,    text: 'Cadastro de quadras por modalidade, com preço e status' },
+  // `/owner/turmas` (web) — a tela cadastra quadra, modalidade, dia da semana,
+  // horário, duração, vagas, valor da mensalidade e o professor, que sai de
+  // `/owner/professores`. As duas estão na `main` do web.
+  { Icon: GraduationCap, text: 'Turmas da escolinha: dia fixo, professor e mensalidade por aluno' },
+  // `/owner/day-uses` (web) do lado do dono, e `components/DayUsesDoDia` dentro
+  // do "Quero Jogar" do lado do jogador — as duas na `main`. É o único dos três
+  // formatos em que a landing pode prometer as duas pontas.
+  { Icon: Ticket,        text: 'Day use por entrada avulsa, que o jogador encontra no Quero Jogar' },
   { Icon: Package,       text: 'Controle de estoque do bar, com alerta de estoque baixo' },
   { Icon: ClipboardList, text: 'Controle de equipamentos emprestados, da saída à devolução' },
   { Icon: Users,         text: 'Visibilidade para todos os jogadores da plataforma' },
