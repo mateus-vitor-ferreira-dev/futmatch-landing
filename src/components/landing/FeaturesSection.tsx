@@ -5,7 +5,7 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Badge } from '@/components/ui/badge'
 import { useMobileScrollAnimation } from '@/lib/useMobileScrollAnimation'
-import { Search, Shuffle, Star, Zap, BarChart2, QrCode, UserCheck, ShieldCheck } from 'lucide-react'
+import { Search, Shuffle, Star, Zap, BarChart2, QrCode, UserCheck, ShieldCheck, UserRoundPlus } from 'lucide-react'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -123,6 +123,52 @@ const features = [
     border: 'border-rose-500/20',
     hoverBorder: 'hover:border-rose-500/40',
     glow: 'hover:shadow-[0_0_24px_rgba(244,63,94,0.1)]',
+  },
+  /*
+   * A rede social (#88, épico api#387).
+   *
+   * ## Por que card, e não bloco na AcessoSection
+   *
+   * A `AcessoSection` conta a rede **pelo avesso**: lá ela é critério que
+   * *barra* — a partida pode exigir que você siga o organizador. Isso é
+   * verdade e continua lá, mas responde outra pergunta.
+   *
+   * Aqui é a rede como coisa de usar: seguir alguém, ter amigos, abrir o perfil
+   * de um jogador. Misturar as duas no mesmo bloco juntaria "o que te impede de
+   * entrar" com "o que você faz" — e a `AcessoSection` ficaria falando de duas
+   * coisas.
+   *
+   * ## Por que não seção própria
+   *
+   * Este arquivo já diz a regra: card de um parágrafo existe para o que não tem
+   * seção. A rede não tem, e não pede uma — ela é uma tela de lista e um botão
+   * no perfil, não um fluxo com etapas como time, acesso ou campeonato.
+   *
+   * A `FeaturesSection` passou de oito para nove cards, e a grade absorve: ela
+   * é `md:grid-cols-2 lg:grid-cols-3`, então nove fecham três fileiras cheias
+   * onde oito deixavam um vão.
+   *
+   * ## O que sustenta cada afirmação
+   *
+   * - **seguir sem pedir aceite** — `follows` é assimétrico por desenho; não há
+   *   solicitação nem resposta
+   * - **amigo é o follow mútuo** — não existe tabela de amizade: ela é derivada,
+   *   e é isso que o `useRedeSocial` do web calcula
+   * - **perfil do jogador** — `/jogador/:userId` no web (web#375), com o botão
+   *   de seguir; autenticada, porque seguir exige sessão
+   * - **a lista de amigos** — `/amigos`, item próprio no menu do jogador
+   */
+  {
+    Icon: UserRoundPlus,
+    title: 'Gente que você segue',
+    description:
+      'Siga quem joga bem com você — sem pedir aceite. Quem te segue de volta vira amigo, e a lista fica no menu. É dela que saem os requisitos de entrada das partidas fechadas.',
+    highlight: 'Sua rede',
+    color: 'text-violet-400',
+    bg: 'bg-violet-500/10',
+    border: 'border-violet-500/20',
+    hoverBorder: 'hover:border-violet-500/40',
+    glow: 'hover:shadow-[0_0_24px_rgba(167,139,250,0.1)]',
   },
   {
     Icon: ShieldCheck,
