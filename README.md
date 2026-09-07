@@ -91,7 +91,7 @@ flowchart LR
   <tbody>
     <tr><td><code>Navbar</code></td><td>Âncoras e os CTAs de <em>Entrar</em> / <em>Começar grátis</em>; fica sólida com blur após 40px de scroll</td><td>GSAP na entrada</td></tr>
     <tr><td><code>Hero</code></td><td>Headline, subheadline e um card de partida real (vagas 8/12, horário, quadra, Pix)</td><td>Timeline GSAP + campo em SVG que se desenha</td></tr>
-    <tr><td><code>Stats</code></td><td>Dois cartões fixos (modalidades, gratuidade) + até quatro vindos de <code>GET /stats</code>, cada um sumindo abaixo do seu limiar</td><td>Stagger no scroll</td></tr>
+    <tr><td><code>Stats</code></td><td>Dois cartões fixos (modalidades, gratuidade) + até quatro vindos de <code>GET /stats</code>, cada um sumindo abaixo do seu limiar. Ícones do <code>lucide-react</code>, como as outras — emoji de métrica saiu na #79</td><td>Stagger no scroll</td></tr>
     <tr><td><code>Features</code></td><td>8 cards — descoberta, sorteio por nível ou aleatório, avaliações, tempo real (SSE), perfil, rateio por Pix, presença confirmada, controle de conta e dados. Torneios saiu daqui e virou seção própria</td><td><code>autoAlpha</code> + stagger</td></tr>
     <tr><td><code>Times</code></td><td>O grupo que joga toda quarta: capitão, convite com aceite, vaga reservada por uma janela e histórico próprio</td><td>Entrada lateral + cartão de time</td></tr>
     <tr><td><code>Acesso</code></td><td>Quem vê e quem entra — três visibilidades em cartões, e os requisitos de entrada numa faixa</td><td>Stagger nos cartões, depois nos chips</td></tr>
@@ -99,7 +99,7 @@ flowchart LR
     <tr><td><code>Campeonatos</code></td><td>Do formato à súmula: inscrição, chaveamento, árbitro e placar, em linha do tempo horizontal</td><td>Cascata da esquerda para a direita</td></tr>
     <tr><td><code>App Preview</code></td><td>Mock vivo do produto: lista de partidas e notificações que ciclam sozinhas</td><td>Entrada lateral + ciclagem ativada no viewport</td></tr>
     <tr><td><code>How It Works</code></td><td>3 passos: criar conta → achar ou criar partida → jogar e avaliar</td><td>Linha tracejada em SVG que se desenha ligando os passos</td></tr>
-    <tr><td><code>Owner</code></td><td>O outro público: dono de quadra, com mock do painel de parceiro, os módulos de estoque e equipamentos e a nota da assinatura</td><td>Entrada lateral</td></tr>
+    <tr><td><code>Owner</code></td><td>O outro público: dono de quadra, com mock do painel de parceiro, <strong>os três jeitos de a quadra vender</strong> — partida, turma da escolinha e day use —, os módulos de estoque e equipamentos e a nota da assinatura</td><td>Entrada lateral</td></tr>
     <tr><td><code>Courts</code></td><td><strong>12 modalidades</strong> — do futsal ao poker, cada card entrando de uma direção diferente</td><td>Direção por card + campo em SVG</td></tr>
     <tr><td><code>Roadmap</code></td><td><strong>O que ainda não existe</strong> — 3 trilhas com card aberto no board, cada uma declarando a issue que a sustenta. Desenhada para <em>não</em> parecer a de funcionalidades: borda tracejada, paleta âmbar e status por cartão</td><td>Stagger no scroll</td></tr>
     <tr><td><code>FAQ</code></td><td>8 objeções tratadas antes do cadastro (é grátis? como sorteia? como pago? e meus dados?)</td><td>Accordion + stagger</td></tr>

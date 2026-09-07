@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { Building2, CalendarCheck, Gift, MapPin, Shapes, Users } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import { useMobileScrollAnimation } from '@/lib/useMobileScrollAnimation'
 import type { NumerosPublicos } from '@/lib/stats'
 
@@ -25,7 +27,24 @@ interface Cartao {
   target: number
   suffix: string
   label: string
-  icon: string
+  /**
+   * Ícone do `lucide-react`, como nas outras quinze seções — e não emoji.
+   *
+   * Emoji **não é desenho, é fonte**: cada sistema operacional entrega o seu, e
+   * quem decide a aparência é a máquina de quem visita. Enquanto esta seção
+   * usou emoji, os dois cartões fixos apareciam lado a lado como uma medalha em
+   * cor cheia e um **retângulo cinza chapado** escrito "FREE" — o 🆓, que não
+   * tem desenho em boa parte das fontes. Numa seção de prova social, logo abaixo
+   * do herói.
+   *
+   * Isto **não** vale para o emoji de **modalidade** do `CourtsSection` e do
+   * `AppPreviewSection`, que fica. Ali ele tem fonte — a api decide em
+   * `src/constants/sports.ts` e o `contrato:check` reprova divergência — e
+   * repetir o mesmo símbolo que a tela de seleção do app mostra é coerência.
+   * O que não se sustenta é emoji para **métrica**: "gratuito" não tem emoji
+   * canônico, e foi por isso que saiu um bloco cinza. Ver #79.
+   */
+  Icon: LucideIcon
   /** Linha de apoio, só onde acrescenta — nem todo cartão precisa. */
   description?: string
   /**
@@ -61,8 +80,8 @@ const LIMIARES = {
 }
 
 const FIXOS: Cartao[] = [
-  { target: 12,  suffix: '',  label: 'Modalidades esportivas',  icon: '🏅', description: 'do futsal ao poker' },
-  { target: 100, suffix: '%', label: 'Gratuito para jogadores', icon: '🆓', description: 'sem taxas, para sempre' },
+  { target: 12,  suffix: '',  label: 'Modalidades esportivas',  Icon: Shapes, description: 'do futsal ao poker' },
+  { target: 100, suffix: '%', label: 'Gratuito para jogadores', Icon: Gift,   description: 'sem taxas, para sempre' },
 ]
 
 /**
@@ -79,13 +98,13 @@ function montarCartoes(numeros: NumerosPublicos | null): Cartao[] {
   if (!numeros) return FIXOS
 
   const doDado: Cartao[] = [
-    { target: numeros.arenas,         suffix: '', label: 'Arenas parceiras',    icon: '🏟️', minimo: LIMIARES.arenas },
-    { target: numeros.jogadores,      suffix: '', label: 'Jogadores na plataforma', icon: '👥', minimo: LIMIARES.jogadores },
+    { target: numeros.arenas,         suffix: '', label: 'Arenas parceiras',    Icon: Building2, minimo: LIMIARES.arenas },
+    { target: numeros.jogadores,      suffix: '', label: 'Jogadores na plataforma', Icon: Users, minimo: LIMIARES.jogadores },
     // A chave acompanhou o rótulo. `peladasAbertas` conviveu com esta durante
     // a janela de dois nomes (api#414) e saiu na api#418 — hoje é o único nome
     // que a rota emite.
-    { target: numeros.matchesAbertas, suffix: '', label: 'Partidas abertas',    icon: '⚽', description: 'atualizado a cada 5 minutos', minimo: LIMIARES.matchesAbertas },
-    { target: numeros.cidades,        suffix: '', label: 'Cidades atendidas',   icon: '📍', minimo: LIMIARES.cidades },
+    { target: numeros.matchesAbertas, suffix: '', label: 'Partidas abertas',    Icon: CalendarCheck, description: 'atualizado a cada 5 minutos', minimo: LIMIARES.matchesAbertas },
+    { target: numeros.cidades,        suffix: '', label: 'Cidades atendidas',   Icon: MapPin, minimo: LIMIARES.cidades },
   ]
 
   return [...doDado.filter(cartao => cartao.target >= (cartao.minimo ?? 1)), ...FIXOS]
@@ -161,7 +180,12 @@ export default function StatsSection({ numeros }: StatsSectionProps) {
               className="stat-card group relative bg-gray-900/60 border border-white/5 hover:border-green-500/25 rounded-2xl p-8 flex items-center gap-6 transition-all duration-300 overflow-hidden hover:shadow-[0_0_30px_rgba(34,197,94,0.06)]"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-green-500/0 to-green-500/[0.03] group-hover:from-green-500/[0.03] group-hover:to-green-500/[0.06] transition-all duration-500 pointer-events-none" />
-              <span className="text-4xl group-hover:scale-110 transition-transform duration-300 flex-shrink-0">{item.icon}</span>
+              {/* O mesmo quadrado arredondado das outras seções — fundo e borda
+                  na cor do tema. `aria-hidden` porque o ícone não acrescenta
+                  nada a quem ouve: o número e o rótulo ao lado já dizem tudo. */}
+              <div className="w-14 h-14 rounded-xl bg-green-500/10 border border-green-500/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                <item.Icon size={26} className="text-green-400" aria-hidden="true" />
+              </div>
               <div>
                 <div className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-300 leading-none mb-1">
                   <span ref={el => { countRefs.current[i] = el }}>0{item.suffix}</span>

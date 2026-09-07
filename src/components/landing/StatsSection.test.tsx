@@ -167,3 +167,69 @@ describe('StatsSection — colunas', () => {
     expect(grade(container)).toContain('md:grid-cols-3')
   })
 })
+
+/**
+ * A linguagem de ícone da seção (#79).
+ *
+ * O defeito não era feio por gosto: **emoji não é desenho, é fonte**. Os dois
+ * cartões fixos apareciam lado a lado como uma medalha em cor cheia e um
+ * retângulo cinza chapado escrito "FREE" — o 🆓, que boa parte das fontes de
+ * emoji não desenha. Quem decidia a aparência era a máquina de quem visita, e
+ * ela decide diferente em cada uma.
+ *
+ * O teste olha o texto renderizado inteiro, e não uma lista dos seis emoji que
+ * havia. Um cartão novo com um símbolo novo precisa reprovar aqui também —
+ * senão a regra vale só para o passado.
+ */
+describe('StatsSection — linguagem de ícone', () => {
+  /**
+   * A faixa começa em `1F000`, e não em `1F300`, por causa do 🆓.
+   *
+   * Ele é `U+1F193`, do bloco *Enclosed Alphanumeric Supplement* — **abaixo**
+   * da faixa dos pictogramas, onde estão os outros cinco. Uma regex que
+   * começasse nos pictogramas pegaria 🏅, 🏟️, 👥, ⚽ e 📍 e deixaria passar
+   * justamente o único que causou a issue: o que sai como retângulo cinza
+   * chapado escrito "FREE".
+   *
+   * `2600–27BF` são os símbolos diversos e dingbats, `2B00–2BFF` traz o ⭐, e
+   * `FE0F` é o seletor de apresentação que acompanha os emoji compostos.
+   * Fora tudo isso ficam letras, números, pontuação e acentuação — o texto
+   * legítimo dos cartões.
+   */
+  const EMOJI = /[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}]/u
+
+  it('não usa emoji em cartão nenhum — nem nos fixos, nem nos da API', () => {
+    const { container } = render(<StatsSection numeros={NUMEROS} />)
+
+    const texto = container.textContent ?? ''
+    expect(texto).not.toMatch(EMOJI)
+  })
+
+  it('desenha um ícone lucide por cartão', () => {
+    const { container } = render(<StatsSection numeros={NUMEROS} />)
+
+    const cartoes = container.querySelectorAll('.stat-card')
+    expect(cartoes).toHaveLength(6)
+
+    for (const cartao of cartoes) {
+      // O lucide renderiza um `<svg class="lucide lucide-...">`: desenho que
+      // viaja com a página, igual em toda máquina que a abrir.
+      expect(cartao.querySelector('svg.lucide')).not.toBeNull()
+    }
+  })
+
+  it('o ícone não é anunciado a quem ouve — o número e o rótulo já dizem tudo', () => {
+    const { container } = render(<StatsSection numeros={NUMEROS} />)
+
+    for (const svg of container.querySelectorAll('svg.lucide')) {
+      expect(svg.getAttribute('aria-hidden')).toBe('true')
+    }
+  })
+
+  it('continua sem emoji quando a API não responde', () => {
+    const { container } = render(<StatsSection numeros={null} />)
+
+    expect(container.textContent ?? '').not.toMatch(EMOJI)
+    expect(container.querySelectorAll('svg.lucide')).toHaveLength(2)
+  })
+})
