@@ -1,5 +1,5 @@
 /**
- * A lista de benefícios do dono, e o que ela promete (#79).
+ * A lista de benefícios do dono, e o que ela promete (#79, #87).
  *
  * Esta lista já teve um acidente: dizia *"métricas de ocupação e receita"* e
  * *"agenda integrada"*, e nenhuma das duas existia. Prometer relatório de
@@ -23,7 +23,7 @@
  */
 
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render } from '@testing-library/react'
 
 vi.mock('gsap', () => {
   const gsap = {
@@ -44,22 +44,19 @@ vi.mock('gsap/ScrollTrigger', () => ({ ScrollTrigger: {} }))
 import OwnerSection from './OwnerSection'
 
 describe('OwnerSection — os três jeitos de a quadra vender', () => {
-  it('conta a turma da escolinha, com o que a tela do dono realmente tem', () => {
-    render(<OwnerSection />)
+  it('não repete a escolinha nem o day use — eles têm seção própria (#87)', () => {
+    const { container } = render(<OwnerSection />)
+    const texto = container.textContent ?? ''
 
-    // `/owner/turmas`, na `main` do web: dia da semana, professor e valor da
-    // mensalidade são campos daquela tela.
-    expect(screen.getByText(/Turmas da escolinha/)).toBeInTheDocument()
-    expect(screen.getByText(/mensalidade por aluno/)).toBeInTheDocument()
-  })
-
-  it('conta o day use, e diz que o jogador o encontra', () => {
-    render(<OwnerSection />)
-
-    // É o único dos dois formatos com as duas pontas em produção:
-    // `/owner/day-uses` do lado do dono e `DayUsesDoDia` dentro do Quero Jogar.
-    expect(screen.getByText(/Day use por entrada avulsa/)).toBeInTheDocument()
-    expect(screen.getByText(/Quero Jogar/)).toBeInTheDocument()
+    /*
+     * Entraram aqui como duas linhas na #79, quando a página não mencionava
+     * dois dos três jeitos de a quadra vender. Saíram na #87, pela mesma
+     * decisão que a #63 tomou com o card de torneios: item de uma linha existe
+     * para o que NÃO tem seção própria, e mantê-los seria um resumo do que o
+     * leitor encontra na rolagem seguinte.
+     */
+    expect(texto).not.toMatch(/Turmas da escolinha/)
+    expect(texto).not.toMatch(/Day use por entrada avulsa/)
   })
 
   it('não promete a área do aluno, que não existe', () => {
