@@ -6,7 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useMobileScrollAnimation } from '@/lib/useMobileScrollAnimation'
-import { ArrowRight, BarChart3, Building2, Dumbbell, Package, Volleyball } from 'lucide-react'
+import { ArrowRight, BarChart3, Building2, Dumbbell, GraduationCap, Package, Ticket, Volleyball } from 'lucide-react'
 import type { GradeDePlanos, PlanoPublico } from '@/lib/planos'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -37,11 +37,20 @@ const INCLUSO_EM_TODO_PLANO = [
   { chave: 'partidas',  Icon: Volleyball, texto: 'Receber e administrar as partidas' },
 ] as const
 
-/** Rótulo de cada funcionalidade, na ordem em que os degraus as abrem. */
+/**
+ * Rótulo de cada funcionalidade, na ordem em que os degraus as abrem.
+ *
+ * A escolinha é uma linha só porque é uma funcionalidade só (api#531) — quebrá-la
+ * em "turmas", "mensalidades" e "chamada" encheria o cartão do Premium de itens
+ * que ninguém compra separado, e faria o degrau parecer uma lista em vez de um
+ * modelo de negócio.
+ */
 const FUNCIONALIDADES = [
-  { chave: 'ESTATISTICAS', Icon: BarChart3, texto: 'Estatísticas do espaço' },
-  { chave: 'EQUIPAMENTOS', Icon: Dumbbell,  texto: 'Controle de equipamento' },
-  { chave: 'ESTOQUE',      Icon: Package,   texto: 'Controle de estoque' },
+  { chave: 'DAY_USE',      Icon: Ticket,        texto: 'Day use — entrada avulsa na quadra' },
+  { chave: 'ESTATISTICAS', Icon: BarChart3,     texto: 'Estatísticas do espaço' },
+  { chave: 'ESCOLINHA',    Icon: GraduationCap, texto: 'Escolinha — turmas, matrículas, mensalidades e chamada' },
+  { chave: 'EQUIPAMENTOS', Icon: Dumbbell,      texto: 'Controle de equipamento' },
+  { chave: 'ESTOQUE',      Icon: Package,       texto: 'Controle de estoque' },
 ] as const
 
 /**
