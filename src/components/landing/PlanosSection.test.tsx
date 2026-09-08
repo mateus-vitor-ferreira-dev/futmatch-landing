@@ -44,8 +44,11 @@ import type { GradeDePlanos } from '@/lib/planos'
 const GRADE: GradeDePlanos = {
   planos: [
     { nome: 'Só+1 Básico', funcionalidades: [] },
-    { nome: 'Só+1 Pro', funcionalidades: ['ESTATISTICAS'] },
-    { nome: 'Só+1 Premium', funcionalidades: ['ESTATISTICAS', 'EQUIPAMENTOS', 'ESTOQUE'] },
+    { nome: 'Só+1 Pro', funcionalidades: ['DAY_USE', 'ESTATISTICAS'] },
+    {
+      nome: 'Só+1 Premium',
+      funcionalidades: ['DAY_USE', 'ESTATISTICAS', 'ESCOLINHA', 'EQUIPAMENTOS', 'ESTOQUE'],
+    },
   ],
   parceiroUrl: 'https://app.so-mais-um.com/seja-parceiro',
 }
@@ -70,10 +73,29 @@ describe('PlanosSection com a grade da API', () => {
   it('cada degrau mostra só o que ele abre', () => {
     render(<PlanosSection grade={GRADE} />)
 
-    // Estatística está no Pro e no Premium; estoque e equipamento, só no Premium.
+    // Day use e estatística estão no Pro e no Premium; escolinha, estoque e
+    // equipamento, só no Premium.
+    expect(screen.getAllByText('Day use — entrada avulsa na quadra')).toHaveLength(2)
     expect(screen.getAllByText('Estatísticas do espaço')).toHaveLength(2)
+    expect(
+      screen.getAllByText('Escolinha — turmas, matrículas e mensalidades'),
+    ).toHaveLength(1)
     expect(screen.getAllByText('Controle de estoque')).toHaveLength(1)
     expect(screen.getAllByText('Controle de equipamento')).toHaveLength(1)
+  })
+
+  it('a escolinha é uma linha só, e não uma lista de módulos', () => {
+    render(<PlanosSection grade={GRADE} />)
+
+    // A api#531 empacotou turma, matrícula, mensalidade, aula, chamada e o
+    // vínculo do professor num valor só de `PlanFeature`. Se um dia alguém
+    // quebrar isso em linhas separadas aqui, o cartão do Premium vira uma lista
+    // de itens que ninguém compra separado — e o degrau deixa de parecer um
+    // modelo de negócio.
+    const premium = screen.getByText('Só+1 Premium').closest('.plano-card')
+
+    expect(premium).not.toBeNull()
+    expect(premium!.querySelectorAll('li')).toHaveLength(2 + 5)
   })
 
   it('não promete teto de quantidade em lugar nenhum', () => {

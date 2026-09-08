@@ -18,8 +18,16 @@
  * A grade deixou de se diferenciar por quantidade — quadras, espaços e modalidades
  * — na api#278. Aquele eixo media o tamanho do cliente, não o que ele ganha ao
  * subir de plano.
+ *
+ * `DAY_USE` e `ESCOLINHA` entraram na api#531: até lá a grade descrevia o produto
+ * de agosto, e tudo que foi entregue depois dela vinha junto do degrau de entrada
+ * — não por decisão, mas porque ninguém reabriu a tabela a cada entrega.
+ *
+ * `ESCOLINHA` é um valor só, e não cinco: cobre turma, matrícula, mensalidade,
+ * aula, chamada e o vínculo do professor. Vender "turma sem chamada" seria vender
+ * um caderno pela metade.
  */
-export type Funcionalidade = 'ESTATISTICAS' | 'EQUIPAMENTOS' | 'ESTOQUE'
+export type Funcionalidade = 'DAY_USE' | 'ESTATISTICAS' | 'ESCOLINHA' | 'EQUIPAMENTOS' | 'ESTOQUE'
 
 export interface PlanoPublico {
   nome: string
@@ -42,7 +50,13 @@ const API_URL = process.env.API_URL ?? 'https://api.so-mais-um.com'
 /** Os mesmos cinco minutos que a api cacheia do lado dela. */
 const REVALIDAR_SEGUNDOS = 300
 
-const FUNCIONALIDADES: readonly Funcionalidade[] = ['ESTATISTICAS', 'EQUIPAMENTOS', 'ESTOQUE']
+const FUNCIONALIDADES: readonly Funcionalidade[] = [
+  'DAY_USE',
+  'ESTATISTICAS',
+  'ESCOLINHA',
+  'EQUIPAMENTOS',
+  'ESTOQUE',
+]
 
 /** Campo inesperado derruba a resposta inteira: meia grade é pior que nenhuma. */
 function ehPlanoValido(valor: unknown): valor is PlanoPublico {
