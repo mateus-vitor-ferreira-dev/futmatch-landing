@@ -22,8 +22,8 @@ const socialLinks = [
   {
     Icon: AtSign,
     label: 'Instagram',
-    href: 'https://www.instagram.com/somaisumempresa/',
-    text: 'somaisumempresa',
+    href: 'https://www.instagram.com/so_mais1_oficial/',
+    text: 'so_mais1_oficial',
   },
 ]
 
