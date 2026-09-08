@@ -48,7 +48,10 @@ const INCLUSO_EM_TODO_PLANO = [
 const FUNCIONALIDADES = [
   { chave: 'DAY_USE',      Icon: Ticket,        texto: 'Day use — entrada avulsa na quadra' },
   { chave: 'ESTATISTICAS', Icon: BarChart3,     texto: 'Estatísticas do espaço' },
-  { chave: 'ESCOLINHA',    Icon: GraduationCap, texto: 'Escolinha — turmas, matrículas, mensalidades e chamada' },
+  // Só o que o plano de fato tranca: a chamada e a agenda de aulas ficaram
+  // fora do portão na api#531, e citá-las aqui prometeria um corte que não
+  // existe — no lugar mais caro para prometer errado.
+  { chave: 'ESCOLINHA',    Icon: GraduationCap, texto: 'Escolinha — turmas, matrículas e mensalidades' },
   { chave: 'EQUIPAMENTOS', Icon: Dumbbell,      texto: 'Controle de equipamento' },
   { chave: 'ESTOQUE',      Icon: Package,       texto: 'Controle de estoque' },
 ] as const

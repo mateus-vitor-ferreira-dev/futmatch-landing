@@ -78,7 +78,7 @@ describe('PlanosSection com a grade da API', () => {
     expect(screen.getAllByText('Day use — entrada avulsa na quadra')).toHaveLength(2)
     expect(screen.getAllByText('Estatísticas do espaço')).toHaveLength(2)
     expect(
-      screen.getAllByText('Escolinha — turmas, matrículas, mensalidades e chamada'),
+      screen.getAllByText('Escolinha — turmas, matrículas e mensalidades'),
     ).toHaveLength(1)
     expect(screen.getAllByText('Controle de estoque')).toHaveLength(1)
     expect(screen.getAllByText('Controle de equipamento')).toHaveLength(1)
