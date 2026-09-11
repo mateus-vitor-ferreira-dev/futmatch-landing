@@ -123,6 +123,29 @@ describe('nada aqui é roadmap', () => {
  * A conferência é sobre o fonte porque os dois lados são estáticos, e porque
  * montar a página inteira aqui exigiria a API que o Server Component consulta.
  */
+/**
+ * As âncoras da página, na ordem em que aparecem.
+ *
+ * Lidas do `page.tsx`, pelo mesmo motivo das conferências abaixo: montar a
+ * página exigiria a API. Cada `<XSection` vale o `id` da `<section>` no arquivo
+ * do componente, e o `<div id="...">` que agrupa seções vale o próprio id.
+ * Seção sem id não entra, porque não há como o menu apontar para ela.
+ */
+function ancorasNaOrdemDaPagina(ler: (caminho: string) => string): string[] {
+  const ordem: string[] = []
+
+  for (const m of ler('src/app/page.tsx').matchAll(/<(\w+Section)\b|<div id="([\w-]+)"/g)) {
+    if (m[2]) {
+      ordem.push(m[2])
+      continue
+    }
+    const secao = ler(`src/components/landing/${m[1]}.tsx`).match(/<section\b[^>]*\bid="([\w-]+)"/)
+    if (secao) ordem.push(secao[1])
+  }
+
+  return ordem
+}
+
 describe('o menu e as âncoras', () => {
   it('todo link do menu tem uma seção com aquele id', async () => {
     const { readFileSync, readdirSync } = await import('node:fs')
@@ -142,6 +165,36 @@ describe('o menu e as âncoras', () => {
     for (const alvo of alvos) {
       expect(fontes, `#${alvo} não existe em nenhuma seção`).toContain(`id="${alvo}"`)
     }
+  })
+
+  /**
+   * A ordem do menu é a da página (#97).
+   *
+   * Fora de ordem, clicar no menu da esquerda para a direita desce e sobe a
+   * página, e o destaque da seção ativa anda para trás ao rolar. O defeito
+   * cresceu por mudanças que nem tocaram o menu — cada seção nova do `page.tsx`
+   * entrou entre "Para espaços" e "Modalidades" —, e é por isso que a
+   * conferência lê a ordem do `page.tsx`, e não só o `Navbar`.
+   */
+  it.each([
+    { nome: 'menu', arquivo: 'src/components/landing/Navbar.tsx' },
+    { nome: 'rodapé', arquivo: 'src/components/landing/Footer.tsx' },
+  ])('o $nome segue a ordem das seções na página', async ({ arquivo }) => {
+    const { readFileSync } = await import('node:fs')
+    const ler = (caminho: string) => readFileSync(caminho, 'utf8')
+
+    const pagina = ancorasNaOrdemDaPagina(ler)
+    const alvos = [...ler(arquivo).matchAll(/href: '#([\w-]+)'/g)].map((m) => m[1])
+
+    expect(alvos.length).toBeGreaterThan(1)
+    for (const alvo of alvos) {
+      expect(pagina, `#${alvo} não é âncora de nenhuma seção do page.tsx`).toContain(alvo)
+    }
+
+    // Comparar com a lista reordenada, e não posição a posição, faz a falha
+    // mostrar a ordem certa inteira — que é a correção a aplicar.
+    const naOrdemDaPagina = [...alvos].sort((a, b) => pagina.indexOf(a) - pagina.indexOf(b))
+    expect(alvos).toEqual(naOrdemDaPagina)
   })
 
   it('as quatro seções novas são alcançáveis pelo bloco que entrou no menu', async () => {
