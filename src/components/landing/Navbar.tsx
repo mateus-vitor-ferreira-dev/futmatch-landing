@@ -7,6 +7,15 @@ import { Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import LogoSvg from '@/components/LogoSvg'
 
+/**
+ * Na ordem em que as seções aparecem na página (#97).
+ *
+ * Fora de ordem, navegar pelo menu da esquerda para a direita desce e sobe a
+ * página, e o destaque da seção ativa pula para trás ao rolar. Foi assim por
+ * meses: "Modalidades" vinha antes de "Para espaços", e a distância cresceu a
+ * cada seção nova que entrou entre as duas. O teste "o menu e as âncoras"
+ * (`secoes-dos-epicos.test.tsx`) confere a ordem contra o `page.tsx`.
+ */
 const links = [
   { label: 'Funcionalidades', href: '#features' },
   // As quatro seções da #63 entram no menu como uma só: cada uma tem id
@@ -14,8 +23,8 @@ const links = [
   // itens — e quem procura no menu procura o assunto, não a seção.
   { label: 'Recursos',        href: '#recursos' },
   { label: 'Como funciona',   href: '#how-it-works' },
-  { label: 'Modalidades',     href: '#courts' },
   { label: 'Para espaços',    href: '#owner' },
+  { label: 'Modalidades',     href: '#courts' },
   { label: 'Em breve',        href: '#roadmap' },
 ]
 
